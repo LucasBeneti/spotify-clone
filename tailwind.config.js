@@ -15,6 +15,7 @@ export default {
             primary: '#1ed760',
             black: '#000',
             white: '#fff',
+            subdued: '#a7a7a7',
         },
     },
     plugins: [],
