@@ -6,9 +6,9 @@ export const DefaultLayout = () => {
     return (
         <>
             <div className='flex bg-black flex-col text-white h-screen'>
-                <div className='flex'>
+                <div className='flex gap-x-2 p-2'>
                     <Sidebar />
-                    <main className='flex-1 bg-base my-2 p-2 rounded-md '>
+                    <main className='flex-1 bg-base p-2 rounded-md h-[calc(100vh-4rem)]'>
                         <div className='flex gap-x-2'>
                             <button className='rounded-full bg-base p-2'>
                                 <CaretLeft size={24} />
@@ -20,7 +20,7 @@ export const DefaultLayout = () => {
                         <Outlet />
                     </main>
                 </div>
-                <footer>player</footer>
+                <footer className='h-14 bg-primary w-screen'>player</footer>
             </div>
         </>
     );
