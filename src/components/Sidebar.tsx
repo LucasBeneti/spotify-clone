@@ -209,7 +209,7 @@ export const Sidebar = () => {
         },
     ];
     return (
-        <aside className='flex flex-col gap-y-2 w-3/12 max-w-sm h-[calc(100vh - 6.5rem)]'>
+        <aside className='flex flex-col gap-y-2 w-3/12 max-w-sm h-[calc(100vh-5.5rem)] rounded-md overflow-hidden'>
             <nav className='flex flex-col gap-y-4 bg-base rounded-md px-3 py-2'>
                 <a
                     className='flex items-center px-3 py-1 cursor-pointer'
