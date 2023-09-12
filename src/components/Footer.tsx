@@ -1,12 +1,35 @@
 import * as Slider from '@radix-ui/react-slider';
-import {
-    Play,
-    SkipForward,
-    SkipBack,
-    ArrowsOutSimple,
-    SpeakerSimpleLow,
-} from '@phosphor-icons/react';
+import { ArrowsOutSimple, SpeakerSimpleLow } from '@phosphor-icons/react';
 import { MicIcon } from '../components/CustomIcons';
+import { AudioPlayer } from './AudioPlayer';
+
+const testTracks = [
+    {
+        title: 'Tokyo Lo-fi 1',
+        artist: 'Unknown',
+        color: 'purple',
+        audioSrc: 'tvari-tokyo-cafe-159065.mp3',
+    },
+    {
+        title: 'Tokyo Lo-fi 2',
+        artist: 'Unknown',
+        color: 'purple',
+        audioSrc: 'tvari-tokyo-cafe-159065.mp3',
+    },
+    {
+        title: 'Tokyo Lo-fi 3',
+        artist: 'Unknown',
+        color: 'purple',
+        audioSrc: 'tvari-tokyo-cafe-159065.mp3',
+    },
+    {
+        title: 'Tokyo Lo-fi 4',
+        artist: 'Unknown',
+        color: 'purple',
+        audioSrc: 'tvari-tokyo-cafe-159065.mp3',
+    },
+];
+
 export const Footer = () => {
     return (
         <footer className='grid grid-cols-3 items-center h-20 bg-black w-screen fixed bottom-0'>
@@ -17,11 +40,7 @@ export const Footer = () => {
                 />
             </section>
             <section className='justify-self-center'>
-                <section className='flex gap-x-6'>
-                    <SkipBack size={24} weight='fill' />
-                    <Play size={24} weight='fill' />
-                    <SkipForward size={24} weight='fill' />
-                </section>
+                <AudioPlayer tracks={testTracks} />
             </section>
             <section className='justify-self-end flex gap-x-2 pr-4'>
                 <MicIcon stroke='#fff' className='h-6 w-6' />
