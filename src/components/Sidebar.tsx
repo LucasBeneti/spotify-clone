@@ -247,9 +247,10 @@ export const Sidebar = () => {
                 <nav className='flex'>
                     <ScrollArea.Root className='w-full'>
                         <ScrollArea.Viewport className='flex flex-1 flex-col gap-y-4 h-[calc(100vh-14rem)]'>
-                            {playlists.map((el) => {
+                            {playlists.map((el, index) => {
                                 return (
                                     <PlaylistItem
+                                        key={el.name + index}
                                         name={el.name}
                                         type={el.type}
                                         author={el.author}

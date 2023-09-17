@@ -18,7 +18,7 @@ export const AudioPlayer = ({ tracks }: PlayerProps) => {
     const [trackIndex, setTrackIndex] = useState(0);
     const [trackProgress, setTrackProgress] = useState(0);
     const [isPlaying, setIsPlaying] = useState(false);
-    const { title, artist, color, img, audioSrc } = tracks[trackIndex];
+    const { audioSrc } = tracks[trackIndex];
     const audioRef = useRef(new Audio(audioSrc));
 
     const intervalRef = useRef();
@@ -92,7 +92,7 @@ export const AudioPlayer = ({ tracks }: PlayerProps) => {
         setTrackProgress(audioRef.current.currentTime);
 
         if (isReady.current) {
-            // audioRef.current.play();
+            audioRef.current.play();
             setIsPlaying(true);
             startTimer();
         } else {

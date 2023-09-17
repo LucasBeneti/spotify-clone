@@ -1,8 +1,8 @@
+import { useState } from 'react';
 import * as Slider from '@radix-ui/react-slider';
 import { ArrowsOutSimple, SpeakerSimpleLow } from '@phosphor-icons/react';
 import { MicIcon } from '../components/CustomIcons';
 import { AudioPlayer } from './AudioPlayer';
-import { useState } from 'react';
 
 const testTracks = [
     {

@@ -77,9 +77,10 @@ export const Home = () => {
                             </NavLink>
                         </header>
                         <section className='flex flex-wrap gap-6 h-80'>
-                            {testPodcasts.map((p) => {
+                            {testPodcasts.map((p, index) => {
                                 return (
                                     <RecentPodcast
+                                        key={p.title + index}
                                         title={p.title}
                                         subtitle={p.subtitle}
                                         coverSrc={p.coverSrc}
@@ -102,9 +103,10 @@ export const Home = () => {
                             </NavLink>
                         </header>
                         <section className='flex flex-wrap gap-6 h-80'>
-                            {testPodcasts.map((p) => {
+                            {testPodcasts.map((p, index) => {
                                 return (
                                     <RecentPodcast
+                                        key={p.title + index}
                                         title={p.title}
                                         subtitle={p.subtitle}
                                         coverSrc={p.coverSrc}
@@ -127,9 +129,10 @@ export const Home = () => {
                             </NavLink>
                         </header>
                         <section className='flex flex-wrap gap-6 h-80'>
-                            {testPodcasts.map((p) => {
+                            {testPodcasts.map((p, index) => {
                                 return (
                                     <RecentPodcast
+                                        key={p.title + index}
                                         title={p.title}
                                         subtitle={p.subtitle}
                                         coverSrc={p.coverSrc}
@@ -152,9 +155,10 @@ export const Home = () => {
                             </NavLink>
                         </header>
                         <section className='flex flex-wrap gap-6 h-80'>
-                            {testPodcasts.map((p) => {
+                            {testPodcasts.map((p, index) => {
                                 return (
                                     <RecentPodcast
+                                        key={p.title + index}
                                         title={p.title}
                                         subtitle={p.subtitle}
                                         coverSrc={p.coverSrc}
@@ -177,9 +181,10 @@ export const Home = () => {
                             </NavLink>
                         </header>
                         <section className='flex flex-wrap gap-6 h-80'>
-                            {testPodcasts.map((p) => {
+                            {testPodcasts.map((p, index) => {
                                 return (
                                     <RecentPodcast
+                                        key={p.title + index}
                                         title={p.title}
                                         subtitle={p.subtitle}
                                         coverSrc={p.coverSrc}
@@ -202,9 +207,10 @@ export const Home = () => {
                             </NavLink>
                         </header>
                         <section className='flex flex-wrap gap-6 h-80'>
-                            {testPodcasts.map((p) => {
+                            {testPodcasts.map((p, index) => {
                                 return (
                                     <RecentPodcast
+                                        key={p.title + index}
                                         title={p.title}
                                         subtitle={p.subtitle}
                                         coverSrc={p.coverSrc}
