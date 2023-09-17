@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
+import * as Slider from '@radix-ui/react-slider';
 import { Play, Pause, SkipBack, SkipForward } from '@phosphor-icons/react';
 
 interface Track {
@@ -53,6 +54,19 @@ export const AudioPlayer = ({ tracks }: PlayerProps) => {
         }, 1000);
     };
 
+    const onScrub = (value: number[]) => {
+        clearInterval(intervalRef.current);
+        audioRef.current.currentTime = Number(value[0]);
+        setTrackProgress(audioRef.current.currentTime);
+    };
+
+    const onScrubEnd = () => {
+        if (!isPlaying) {
+            setIsPlaying(true);
+        }
+        startTimer();
+    };
+
     useEffect(() => {
         if (isPlaying) {
             audioRef.current.play();
@@ -87,13 +101,32 @@ export const AudioPlayer = ({ tracks }: PlayerProps) => {
     }, [trackIndex, audioSrc]);
 
     return (
-        <div className='flex flex-col w-56'>
+        <div className='flex flex-col'>
             <AudioControls
                 isPlaying={isPlaying}
                 onPlayPauseClick={setIsPlaying}
                 onPreviousClick={toPreviousTrack}
                 onNextClick={toNextTrack}
             />
+            <div className='w-full'>
+                <Slider.Root
+                    value={[trackProgress]}
+                    onValueChange={onScrub}
+                    step={1}
+                    min={0}
+                    max={duration}
+                    onPointerUp={onScrubEnd}
+                    className='relative flex items-center w-full h-5'
+                >
+                    <Slider.Track className='bg-subdued relative flex-1 rounded-full h-1'>
+                        <Slider.Range className='absolute bg-white rounded-full h-full' />
+                    </Slider.Track>
+                    <Slider.Thumb
+                        aria-label='Volume'
+                        className='block bg-white shadow-md rounded-lg'
+                    />
+                </Slider.Root>
+            </div>
         </div>
     );
 };
@@ -112,7 +145,7 @@ const AudioControls = ({
     onNextClick,
 }: AudioControlsProps) => {
     return (
-        <div className='flex gap-x-6'>
+        <div className='flex gap-x-6 justify-center'>
             <button className='p-2' onClick={onPreviousClick}>
                 <SkipBack size={24} weight='fill' color='white' />
             </button>
