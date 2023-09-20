@@ -4,33 +4,6 @@ import { ArrowsOutSimple, SpeakerSimpleLow } from '@phosphor-icons/react';
 import { MicIcon } from '../components/CustomIcons';
 import { AudioPlayer } from './AudioPlayer';
 
-const testTracks = [
-    {
-        title: 'Tokyo Lo-fi 1',
-        artist: 'Unknown',
-        color: 'purple',
-        audioSrc: 'tvari-tokyo-cafe-159065.mp3',
-    },
-    {
-        title: 'Tokyo Lo-fi 2',
-        artist: 'Unknown',
-        color: 'purple',
-        audioSrc: 'tvari-tokyo-cafe-159065.mp3',
-    },
-    {
-        title: 'Tokyo Lo-fi 3',
-        artist: 'Unknown',
-        color: 'purple',
-        audioSrc: 'tvari-tokyo-cafe-159065.mp3',
-    },
-    {
-        title: 'Tokyo Lo-fi 4',
-        artist: 'Unknown',
-        color: 'purple',
-        audioSrc: 'tvari-tokyo-cafe-159065.mp3',
-    },
-];
-
 export const Footer = () => {
     const [volume, setVolume] = useState<number[]>([0]);
     const handleVolumeChange = (value: number[]) => {
@@ -46,7 +19,7 @@ export const Footer = () => {
                 />
             </section>
             <section className='justify-self-center w-96'>
-                <AudioPlayer tracks={testTracks} />
+                <AudioPlayer />
             </section>
             <section className='justify-self-end flex gap-x-2 pr-4'>
                 <MicIcon stroke='#fff' className='h-6 w-6' />
