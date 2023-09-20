@@ -1,4 +1,4 @@
-import { createContext, useRef, useState, useEffect } from 'react';
+import { createContext, useRef, useState, useEffect, useContext } from 'react';
 
 const testTracks = [
     {
@@ -48,7 +48,9 @@ type CustomAudioContextProps = {
     onScrubEnd: () => void;
 };
 
-export const CustomAudioContext = createContext<CustomAudioContextProps>({});
+export const CustomAudioContext = createContext<CustomAudioContextProps | null>(
+    null
+);
 
 interface AudioContextProviderProps {
     children: React.ReactNode;
@@ -71,7 +73,6 @@ export const AudioContextProvider = ({
     const { duration } = audioRef.current;
 
     const toggleIsPlaying = () => {
-        console.log('clicked!!!');
         setIsPlaying(!isPlaying);
     };
 
@@ -167,4 +168,15 @@ export const AudioContextProvider = ({
             {children}
         </CustomAudioContext.Provider>
     );
+};
+
+export const useCustomAudioContext = () => {
+    const context = useContext(CustomAudioContext);
+    if (!context) {
+        throw new Error(
+            'useCustomAudioContext must be used within AudioContextProvider.'
+        );
+    }
+
+    return context;
 };

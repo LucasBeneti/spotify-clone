@@ -1,11 +1,10 @@
-import { useContext } from 'react';
 import * as Slider from '@radix-ui/react-slider';
 import { Play, Pause, SkipBack, SkipForward } from '@phosphor-icons/react';
-import { CustomAudioContext } from '../contexts/CustomAudioContext';
+import { useCustomAudioContext } from '../contexts/CustomAudioContext';
 
 export const AudioPlayer = () => {
     const { duration, trackProgress, onScrub, onScrubEnd } =
-        useContext(CustomAudioContext);
+        useCustomAudioContext();
 
     return (
         <div className='flex flex-col'>
@@ -35,7 +34,7 @@ export const AudioPlayer = () => {
 
 const AudioControls = () => {
     const { isPlaying, toNextTrack, toPreviousTrack, toggleIsPlaying } =
-        useContext(CustomAudioContext);
+        useCustomAudioContext();
     return (
         <div className='flex gap-x-6 justify-center'>
             <button className='p-2' onClick={toPreviousTrack}>
