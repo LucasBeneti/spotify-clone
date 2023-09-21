@@ -1,15 +1,13 @@
-import { useState } from 'react';
 import * as Slider from '@radix-ui/react-slider';
-import { ArrowsOutSimple, SpeakerSimpleLow } from '@phosphor-icons/react';
+import { ArrowsOutSimple } from '@phosphor-icons/react';
 import { MicIcon } from '../components/CustomIcons';
 import { AudioPlayer } from './AudioPlayer';
+import { useCustomAudioContext } from '../contexts/CustomAudioContext';
+import { SpeakerButton } from './SpeakerButton';
 
 export const Footer = () => {
-    const [volume, setVolume] = useState<number[]>([0]);
-    const handleVolumeChange = (value: number[]) => {
-        setVolume(value);
-        console.log('volume', volume);
-    };
+    const { volume, handleVolumeChange } = useCustomAudioContext();
+
     return (
         <footer className='grid grid-cols-3 items-center h-20 bg-black w-screen fixed bottom-0'>
             <section className='justify-self-start pl-4'>
@@ -23,12 +21,13 @@ export const Footer = () => {
             </section>
             <section className='justify-self-end flex gap-x-2 pr-4'>
                 <MicIcon stroke='#fff' className='h-6 w-6' />
-                <SpeakerSimpleLow size={24} />
+                <SpeakerButton />
                 <div className='w-24'>
                     <Slider.Root
                         value={volume}
                         onValueChange={handleVolumeChange}
                         defaultValue={[50]}
+                        min={0}
                         max={100}
                         step={1}
                         className='relative flex items-center w-24 h-5'

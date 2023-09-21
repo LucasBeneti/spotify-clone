@@ -46,6 +46,9 @@ type CustomAudioContextProps = {
     currPlaying?: { title: string; author: string };
     onScrub: (n: number[]) => void;
     onScrubEnd: () => void;
+    volume: number[];
+    handleVolumeChange: (n: number[]) => void;
+    toggleAudioMute: () => void;
 };
 
 export const CustomAudioContext = createContext<CustomAudioContextProps | null>(
@@ -62,6 +65,7 @@ export const AudioContextProvider = ({
     const [trackIndex, setTrackIndex] = useState(0);
     const [trackProgress, setTrackProgress] = useState(0);
     const [isPlaying, setIsPlaying] = useState(false);
+    const [volume, setVolume] = useState<number[]>([0]);
 
     const { audioSrc } = tracks[trackIndex];
     const audioRef = useRef(new Audio(audioSrc));
@@ -117,6 +121,23 @@ export const AudioContextProvider = ({
         startTimer();
     };
 
+    const handleVolumeChange = (value: number[]) => {
+        setVolume(value);
+        audioRef.current.volume = value[0] > 1 ? value[0] / 100 : value[0];
+        console.log('volume', volume);
+    };
+
+    const toggleAudioMute = () => {
+        if (audioRef.current.volume === 0) {
+            audioRef.current.volume = volume[0] / 100;
+            // TODO need to figure out how to set the volume to previous value
+            // to the value that it was right before muting
+        } else {
+            audioRef.current.volume = 0;
+            setVolume([0]);
+        }
+    };
+
     useEffect(() => {
         if (isPlaying) {
             audioRef.current.play();
@@ -163,6 +184,9 @@ export const AudioContextProvider = ({
                 currPlaying,
                 onScrub,
                 onScrubEnd,
+                volume,
+                handleVolumeChange,
+                toggleAudioMute,
             }}
         >
             {children}
