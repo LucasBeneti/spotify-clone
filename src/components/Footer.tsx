@@ -1,4 +1,5 @@
 import * as Slider from '@radix-ui/react-slider';
+import { Link } from 'react-router-dom';
 import { ArrowsOutSimple } from '@phosphor-icons/react';
 import { MicIcon } from '../components/CustomIcons';
 import { AudioPlayer } from './AudioPlayer';
@@ -68,12 +69,12 @@ const CurrentlyPlaying = ({ title, artist }: CurrentlyPlayingProps) => {
                 >
                     {title ? title : ''}
                 </a>
-                <a
-                    href='#'
+                <Link
+                    to={`/artist/${artist}`}
                     className='text-xs block text-subdued hover:underline hover cursor-pointer'
                 >
                     {artist ? artist : ''}
-                </a>
+                </Link>
             </div>
         </div>
     );
