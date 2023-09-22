@@ -6,14 +6,14 @@ import { useCustomAudioContext } from '../contexts/CustomAudioContext';
 import { SpeakerButton } from './SpeakerButton';
 
 export const Footer = () => {
-    const { volume, handleVolumeChange } = useCustomAudioContext();
+    const { volume, handleVolumeChange, currPlaying } = useCustomAudioContext();
 
     return (
         <footer className='grid grid-cols-3 items-center h-20 bg-black w-screen fixed bottom-0'>
             <section className='justify-self-start pl-4'>
                 <CurrentlyPlaying
-                    songName='What you know'
-                    author='Two Door Cinema Club'
+                    title={currPlaying?.title}
+                    artist={currPlaying?.artist}
                 />
             </section>
             <section className='justify-self-center w-96'>
@@ -47,12 +47,13 @@ export const Footer = () => {
     );
 };
 
-interface CurrentlyPlayingProps {
-    songName: string;
-    author: string;
+type CurrentlyPlayingProps = {
+    title?: string;
+    artist?: string;
     album?: string;
-}
-const CurrentlyPlaying = ({ songName, author }: CurrentlyPlayingProps) => {
+};
+
+const CurrentlyPlaying = ({ title, artist }: CurrentlyPlayingProps) => {
     return (
         <div className='flex gap-x-4 items-center'>
             <img
@@ -65,13 +66,13 @@ const CurrentlyPlaying = ({ songName, author }: CurrentlyPlayingProps) => {
                     href='#'
                     className='text-sm block hover:underline hover:cursor-pointer'
                 >
-                    {songName}
+                    {title ? title : ''}
                 </a>
                 <a
                     href='#'
                     className='text-xs block text-subdued hover:underline hover cursor-pointer'
                 >
-                    {author}
+                    {artist ? artist : ''}
                 </a>
             </div>
         </div>

@@ -43,7 +43,7 @@ type CustomAudioContextProps = {
     toggleIsPlaying: () => void;
     toPreviousTrack: () => void;
     toNextTrack: () => void;
-    currPlaying?: { title: string; author: string };
+    currPlaying?: { title: string; artist: string };
     onScrub: (n: number[]) => void;
     onScrubEnd: () => void;
     volume: number[];
@@ -67,9 +67,9 @@ export const AudioContextProvider = ({
     const [isPlaying, setIsPlaying] = useState(false);
     const [volume, setVolume] = useState<number[]>([0]);
 
-    const { audioSrc } = tracks[trackIndex];
+    const { audioSrc, title, artist } = tracks[trackIndex];
+    const currPlaying = { title, artist };
     const audioRef = useRef(new Audio(audioSrc));
-    const currPlaying = { title: '', author: '' };
 
     const intervalRef = useRef();
     const isReady = useRef(false);
@@ -124,7 +124,6 @@ export const AudioContextProvider = ({
     const handleVolumeChange = (value: number[]) => {
         setVolume(value);
         audioRef.current.volume = value[0] > 1 ? value[0] / 100 : value[0];
-        console.log('volume', volume);
     };
 
     const toggleAudioMute = () => {
@@ -132,6 +131,8 @@ export const AudioContextProvider = ({
             audioRef.current.volume = volume[0] / 100;
             // TODO need to figure out how to set the volume to previous value
             // to the value that it was right before muting
+            /* One idea is to save the volume on localStorage when muting, this way we can 
+            recover it further on */
         } else {
             audioRef.current.volume = 0;
             setVolume([0]);
@@ -163,6 +164,7 @@ export const AudioContextProvider = ({
         setTrackProgress(audioRef.current.currentTime);
 
         if (isReady.current) {
+            audioRef.current.volume = 0.2; // TODO refactor to serve a better logic for UX
             audioRef.current.play();
             setIsPlaying(true);
             startTimer();
