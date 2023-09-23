@@ -7,7 +7,7 @@ import { Footer } from '../components/Footer';
 export const DefaultLayout = () => {
     const { pathname } = useLocation();
 
-    const showSearchInput = pathname === 'search';
+    const showSearchInput = pathname === '/search';
     return (
         <>
             <AudioContextProvider>
@@ -26,14 +26,13 @@ export const DefaultLayout = () => {
                                     <button className='rounded-full bg-black p-2'>
                                         <CaretRight size={24} />
                                     </button>
-
-                                    <div>
+                                    {showSearchInput && (
                                         <input
                                             type='text'
                                             className='active:border-2 active:border-white bg-highlight h-10 w-56 rounded-full py-2 pl-4'
                                             placeholder='O que você quer ouvir?'
                                         />
-                                    </div>
+                                    )}
                                 </div>
 
                                 <div className='flex items-center gap-x-4'>
