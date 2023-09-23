@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { PlaylistItem } from './PlaylistItem';
 import * as ScrollArea from '@radix-ui/react-scroll-area';
 import {
@@ -211,14 +212,16 @@ export const Sidebar = () => {
     return (
         <aside className='flex flex-col gap-y-2 w-3/12 max-w-sm h-[calc(100vh-5.5rem)] rounded-md overflow-hidden'>
             <nav className='flex flex-col gap-y-4 bg-base rounded-md px-3 py-2'>
-                <a
+                <Link
+                    to='/'
                     className='flex items-center px-3 py-1 cursor-pointer'
                     onClick={() => setSelected('home')}
                 >
                     <House size={24} />
                     <p className='text-base font-bold ml-4 text-white'>Home</p>
-                </a>
-                <a
+                </Link>
+                <Link
+                    to='/search'
                     className='flex items-center px-3 py-1 cursor-pointer'
                     onClick={() => setSelected('search')}
                 >
@@ -229,7 +232,7 @@ export const Sidebar = () => {
                     <p className='text-base font-bold ml-4 text-white'>
                         Search
                     </p>
-                </a>
+                </Link>
             </nav>
             <div className='flex flex-col bg-base rounded-md px-3 py-2'>
                 <div className='flex items-center justify-between'>

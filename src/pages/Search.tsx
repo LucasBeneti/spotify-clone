@@ -1,7 +1,3 @@
 export const Search = () => {
-    return (
-        <div>
-            <h1>Search</h1>
-        </div>
-    );
+    return <section className='mt-20'>Seatch content</section>;
 };

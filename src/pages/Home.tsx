@@ -34,8 +34,10 @@ export const Home = () => {
     return (
         <ScrollArea.Root>
             <ScrollArea.Viewport>
-                <div className='flex flex-1 flex-col gap-y-6 p-6 h-screen'>
-                    <h1 className='text-4xl font-bold'>Boa noite</h1>
+                <div className='flex flex-1 flex-col gap-y-6 p-6 h-screen relative'>
+                    <h1 className='text-4xl font-display font-bold mt-20'>
+                        Boa noite
+                    </h1>
                     <section className='flex  flex-wrap gap-x-6 gap-y-4 mt-4'>
                         <RecentPlayedCard
                             currentlyPlaying

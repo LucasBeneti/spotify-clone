@@ -7,6 +7,7 @@ export default {
         extend: {
             fontFamily: {
                 sans: ['Nunito', ...defaultTheme.fontFamily.sans],
+                display: ['Poppins', ...defaultTheme.fontFamily.sans],
             },
         },
         colors: {
