@@ -3,12 +3,15 @@ import { Form } from 'react-router-dom';
 
 export const SearchInput = () => {
     const [searchTerm, setSearchTerm] = useState('');
-    const handleSubmit = () => {
-        console.log('');
+    const handleSubmit = (e: React.ChangeEvent<HTMLInputElement>) => {
+        console.log(e.target.value);
     };
     return (
         <form onSubmit={handleSubmit}>
-            <input type='text' />
+            <input
+                type='text'
+                onChange={(e) => console.log('', e.target.value)}
+            />
         </form>
     );
 };
