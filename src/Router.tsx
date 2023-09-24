@@ -2,6 +2,7 @@ import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import { DefaultLayout } from './layouts/DefaultLayout';
 import { Home } from './pages/Home';
 import { Search } from './pages/Search';
+import { searchTermLoader } from './components/SearchInput';
 import { ArtistDetail } from './pages/ArtistDetail';
 
 export const Router = () => {
@@ -16,6 +17,7 @@ export const Router = () => {
                 },
                 {
                     path: '/search',
+                    loader: searchTermLoader,
                     element: <Search />,
                 },
                 {
