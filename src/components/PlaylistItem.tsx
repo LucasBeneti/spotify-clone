@@ -13,7 +13,7 @@ export const PlaylistItem = ({
   pinned,
 }: PaylistItemProps) => {
   return (
-    <div className="flex gap-x-4 p-3 rounded-md hover:bg-highlight cursor-pointer">
+    <div className="flex gap-x-4 p-3 rounded-md hover:bg-highlight cursor-pointer transition">
       <img
         className="rounded-md"
         src="https://images.unsplash.com/photo-1513104487127-813ea879b8da?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2746&q=80"

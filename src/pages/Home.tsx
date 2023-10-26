@@ -1,6 +1,6 @@
 import { NavLink } from "react-router-dom";
 import { RecentPlayedCard } from "../components/RecentPlayedCard";
-import { RecentPodcast } from "../components/RecentPodcast";
+import { VerticalCard } from "../components/VerticalCard";
 import * as ScrollArea from "@radix-ui/react-scroll-area";
 
 export const Home = () => {
@@ -79,7 +79,7 @@ export const Home = () => {
             <section className="flex flex-wrap gap-6 h-80">
               {testPodcasts.map((p, index) => {
                 return (
-                  <RecentPodcast
+                  <VerticalCard
                     key={p.title + index}
                     title={p.title}
                     subtitle={p.subtitle}
@@ -105,7 +105,7 @@ export const Home = () => {
             <section className="flex flex-wrap gap-6 h-80">
               {testPodcasts.map((p, index) => {
                 return (
-                  <RecentPodcast
+                  <VerticalCard
                     key={p.title + index}
                     title={p.title}
                     subtitle={p.subtitle}
@@ -131,7 +131,7 @@ export const Home = () => {
             <section className="flex flex-wrap gap-6 h-80">
               {testPodcasts.map((p, index) => {
                 return (
-                  <RecentPodcast
+                  <VerticalCard
                     key={p.title + index}
                     title={p.title}
                     subtitle={p.subtitle}
@@ -157,7 +157,7 @@ export const Home = () => {
             <section className="flex flex-wrap gap-6 h-80">
               {testPodcasts.map((p, index) => {
                 return (
-                  <RecentPodcast
+                  <VerticalCard
                     key={p.title + index}
                     title={p.title}
                     subtitle={p.subtitle}
@@ -183,7 +183,7 @@ export const Home = () => {
             <section className="flex flex-wrap gap-6 h-80">
               {testPodcasts.map((p, index) => {
                 return (
-                  <RecentPodcast
+                  <VerticalCard
                     key={p.title + index}
                     title={p.title}
                     subtitle={p.subtitle}
@@ -209,7 +209,7 @@ export const Home = () => {
             <section className="flex flex-wrap gap-6 h-80">
               {testPodcasts.map((p, index) => {
                 return (
-                  <RecentPodcast
+                  <VerticalCard
                     key={p.title + index}
                     title={p.title}
                     subtitle={p.subtitle}

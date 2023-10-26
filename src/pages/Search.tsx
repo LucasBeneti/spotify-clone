@@ -3,6 +3,7 @@ import { useLoaderData, useNavigation } from "react-router-dom";
 import { FilterItem } from "../components/FilterItem";
 import { ArtistCard } from "../components/ArtistCard";
 import { SongList } from "../components/SongList";
+import { VerticalCard } from "../components/VerticalCard";
 
 type SearchResult = {
   artist: string;
@@ -34,6 +35,68 @@ const testSearchData = {
         name: "GONE, GONE/ THANK YOU",
         albumCover:
           "https://i.scdn.co/image/ab6761610000f1788278b782cbb5a3963db88ada",
+      },
+    ],
+    playlists: [
+      {
+        name: "This is Tyler, the Creator",
+        coverSrc:
+          "https://i.scdn.co/image/ab6761610000f1788278b782cbb5a3963db88ada",
+        owner: "Spotify",
+      },
+      {
+        name: "This is Tyler, the Creator",
+        coverSrc:
+          "https://i.scdn.co/image/ab6761610000f1788278b782cbb5a3963db88ada",
+        owner: "Spotify",
+      },
+      {
+        name: "This is Tyler, the Creator",
+        coverSrc:
+          "https://i.scdn.co/image/ab6761610000f1788278b782cbb5a3963db88ada",
+        owner: "Spotify",
+      },
+      {
+        name: "This is Tyler, the Creator",
+        coverSrc:
+          "https://i.scdn.co/image/ab6761610000f1788278b782cbb5a3963db88ada",
+        owner: "Spotify",
+      },
+      {
+        name: "This is Tyler, the Creator",
+        coverSrc:
+          "https://i.scdn.co/image/ab6761610000f1788278b782cbb5a3963db88ada",
+        owner: "Spotify",
+      },
+      {
+        name: "This is Tyler, the Creator",
+        coverSrc:
+          "https://i.scdn.co/image/ab6761610000f1788278b782cbb5a3963db88ada",
+        owner: "Spotify",
+      },
+      {
+        name: "This is Tyler, the Creator",
+        coverSrc:
+          "https://i.scdn.co/image/ab6761610000f1788278b782cbb5a3963db88ada",
+        owner: "Spotify",
+      },
+      {
+        name: "This is Tyler, the Creator",
+        coverSrc:
+          "https://i.scdn.co/image/ab6761610000f1788278b782cbb5a3963db88ada",
+        owner: "Spotify",
+      },
+      {
+        name: "This is Tyler, the Creator",
+        coverSrc:
+          "https://i.scdn.co/image/ab6761610000f1788278b782cbb5a3963db88ada",
+        owner: "Spotify",
+      },
+      {
+        name: "This is Tyler, the Creator",
+        coverSrc:
+          "https://i.scdn.co/image/ab6761610000f1788278b782cbb5a3963db88ada",
+        owner: "Spotify",
       },
     ],
   },
@@ -73,7 +136,7 @@ export const Search = () => {
   // TODO depending on the filter selected, should render a different UI with the result of the filtered search
   const searchFilters = ["All", "Artists", "Songs", "Albums"];
   return (
-    <section className="mt-20 mx-6">
+    <section className="mt-20 mx-6 flex flex-col">
       {state === "loading" && <h2>Loading...</h2>}
       <section className="flex gap-x-4">
         {searchFilters.map((filter) => (
@@ -98,6 +161,22 @@ export const Search = () => {
           </section>
         </section>
       </main>
+      <section className="flex flex-1 flex-col mt-4">
+        <h3 className="text-2xl font-display font-bold mb-4">
+          With {artist.name}
+        </h3>
+        <div className="">
+          <section className="flex gap-x-6 scroll-smooth overflow-x-auto">
+            {artist.playlists.map((playlist) => (
+              <VerticalCard
+                title={playlist.name}
+                subtitle={playlist.owner}
+                coverSrc={playlist.coverSrc}
+              />
+            ))}
+          </section>
+        </div>
+      </section>
     </section>
   );
 };
