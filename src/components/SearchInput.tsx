@@ -54,6 +54,31 @@ export const searchTermLoader = async ({ request }) => {
   const url = new URL(request.url);
   const searchTerm = url.searchParams.get("q");
   if (!searchTerm) return null;
-  const res = await fetch(`https://swapi.dev/api/planets/${searchTerm}`);
-  return await res.json();
+  // const res = await fetch(`https://swapi.dev/api/planets/${searchTerm}`);
+  const res = new Promise((resolve, reject) => {
+    resolve({
+      artist: {
+        name: "Tyler, The Creator",
+        songs: [
+          {
+            name: "See You Again (feat. Kali Uchis)",
+            album: "Flower Boy",
+          },
+          {
+            name: "EARTHQUAKE",
+            album: "Igor",
+          },
+          {
+            name: "NEW MAGIC WAND",
+            album: "Igor",
+          },
+          {
+            name: "GONE, GONE/ THANK YOU",
+            album: "Igor",
+          },
+        ],
+      },
+    });
+  });
+  return await res;
 };
