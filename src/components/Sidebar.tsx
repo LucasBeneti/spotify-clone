@@ -248,13 +248,15 @@ export const Sidebar = () => {
             <ScrollArea.Viewport className="flex flex-1 flex-col gap-y-4 h-[calc(100vh-14rem)]">
               {playlists.map((el, index) => {
                 return (
-                  <PlaylistItem
-                    key={el.name + index}
-                    name={el.name}
-                    type={el.type}
-                    author={el.author}
-                    pinned={el.pinned}
-                  />
+                  <Link to={`/playlist/${index}`}>
+                    <PlaylistItem
+                      key={el.name + index}
+                      name={el.name}
+                      type={el.type}
+                      author={el.author}
+                      pinned={el.pinned}
+                    />
+                  </Link>
                 );
               })}
             </ScrollArea.Viewport>
