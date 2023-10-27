@@ -5,25 +5,29 @@ const testTracks = [
     title: "Tokyo Lo-fi 1",
     artist: "Unknown",
     color: "purple",
-    audioSrc: "tvari-tokyo-cafe-159065.mp3",
+    audioSrc:
+      "https://utfs.io/f/8d860e35-4ae3-4d7a-a98e-2a5db3692b21-no9q48.mp3",
   },
   {
     title: "Tokyo Lo-fi 2",
     artist: "Unknown",
     color: "purple",
-    audioSrc: "tvari-tokyo-cafe-159065.mp3",
+    audioSrc:
+      "https://utfs.io/f/8d860e35-4ae3-4d7a-a98e-2a5db3692b21-no9q48.mp3",
   },
   {
     title: "Tokyo Lo-fi 3",
     artist: "Unknown",
     color: "purple",
-    audioSrc: "tvari-tokyo-cafe-159065.mp3",
+    audioSrc:
+      "https://utfs.io/f/8d860e35-4ae3-4d7a-a98e-2a5db3692b21-no9q48.mp3",
   },
   {
     title: "Tokyo Lo-fi 4",
     artist: "Unknown",
     color: "purple",
-    audioSrc: "tvari-tokyo-cafe-159065.mp3",
+    audioSrc:
+      "https://utfs.io/f/8d860e35-4ae3-4d7a-a98e-2a5db3692b21-no9q48.mp3",
   },
 ];
 
