@@ -1,6 +1,7 @@
 import { Clock, Play } from "@phosphor-icons/react";
 import { useNavigation, useLoaderData } from "react-router-dom";
 import { useCustomAudioContext } from "../contexts/CustomAudioContext";
+import { getSongDurationInMinutes } from "../utils";
 
 type SongData = {
   name: string;
@@ -19,22 +20,12 @@ type PlaylistData = {
 
 export const PlaylistPage = () => {
   const data = useLoaderData() as PlaylistData;
-  // const { isPlaying } = useCustomAudioContext();
   const { state } = useNavigation();
 
   // TODO create the function that will actually play the song, given some information
   const handlePlayThis = (song: SongData) => {
     console.log("Now playing...", song);
     // here we would call the function from the context to play the song
-  };
-
-  const getSongDurationInMinutes = (durationInSeconds: number) => {
-    const minutes = Math.floor(durationInSeconds / 60);
-    const seconds = durationInSeconds % 60;
-    const formattedString = `${minutes.toString().padStart(2, "0")}:${seconds
-      .toString()
-      .padStart(2, "0")}`;
-    return formattedString;
   };
 
   return (

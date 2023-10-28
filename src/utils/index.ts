@@ -1,4 +1,4 @@
 import { debounce } from "./debounce";
-import { handleToggleLikeSong } from "./songs";
+import { handleToggleLikeSong, getSongDurationInMinutes } from "./songs";
 
-export { debounce, handleToggleLikeSong };
+export { debounce, handleToggleLikeSong, getSongDurationInMinutes };
