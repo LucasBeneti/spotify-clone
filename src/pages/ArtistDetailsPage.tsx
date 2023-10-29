@@ -55,7 +55,7 @@ const albums = [
   },
 ];
 
-export const ArtistDetail = () => {
+export const ArtistDetailsPage = () => {
   const { artistId } = useParams();
   const handlePlayArtistSong = () => {
     console.log(`play the first song for ${artistId}`);
