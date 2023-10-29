@@ -1,8 +1,10 @@
-import { Clock, Play } from "@phosphor-icons/react";
+import { Clock, Play, Heart } from "@phosphor-icons/react";
 import { useNavigation, useLoaderData } from "react-router-dom";
 import { useCustomAudioContext } from "../contexts/CustomAudioContext";
 import { getSongDurationInMinutes } from "../utils";
 import { SongItem } from "../components/reusable/SongItem";
+import { BigPlayButton } from "../components/reusable/BigPlayButton";
+import { useState } from "react";
 
 type SongData = {
   name: string;
@@ -16,17 +18,25 @@ type PlaylistData = {
   cover_src: string;
   name: string;
   author: string;
+  liked: boolean;
   songs: SongData[];
 };
 
 export const PlaylistPage = () => {
   const data = useLoaderData() as PlaylistData;
   const { state } = useNavigation();
+  const [likedPlaylist, setLikedPlaylist] = useState(data.liked);
 
   // TODO create the function that will actually play the song, given some information
   const handlePlayThis = (song: SongData) => {
     console.log("Now playing...", song);
     // here we would call the function from the context to play the song
+  };
+
+  const handleLikePlaylist = () => {
+    // TODO implement this feature
+    setLikedPlaylist(!likedPlaylist);
+    console.log("Liked this playlist");
   };
 
   return (
@@ -49,8 +59,25 @@ export const PlaylistPage = () => {
           </section>
         </header>
         <main className="w-full">
+          <section className="flex gap-x-8 items-center my-8">
+            <BigPlayButton
+              onClickHandle={() => {
+                console.log("play this playlist");
+              }}
+            />
+            <button
+              onClick={handleLikePlaylist}
+              className="hover:scale-105 transition-all delay-75"
+            >
+              <Heart
+                fill="#1ed760"
+                weight={likedPlaylist ? "fill" : "regular"}
+                size={32}
+              />
+            </button>
+          </section>
           <table className="table-auto border-collapse bg-transparent w-full">
-            <thead className="my-2">
+            <thead className="my-2 border-b-gray-700 border-b">
               <tr>
                 <th className="p-4 text-center text-white">#</th>
                 <th className="p-4 text-left text-white">Title</th>
@@ -119,6 +146,7 @@ export const playlistLoader = async ({ params }) => {
         "https://i.scdn.co/image/ab6761610000f1788278b782cbb5a3963db88ada",
       name: "Kenny Beats Boiler Room Barcelona",
       author: "lucasbeneti",
+      liked: true,
       songs: [
         {
           name: "LUMBERJACK",
