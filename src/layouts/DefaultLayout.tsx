@@ -1,4 +1,4 @@
-import { Outlet, useLocation } from "react-router-dom";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { CaretLeft, CaretRight, Bell } from "@phosphor-icons/react";
 import {
   RedirectToSignIn,
@@ -13,8 +13,11 @@ import { SearchInput } from "../components/SearchInput";
 
 export const DefaultLayout = () => {
   const { pathname } = useLocation();
+  const navigate = useNavigate();
   const { user } = useUser();
 
+  const navigateBack = () => navigate(-1);
+  const navigateForward = () => navigate(1);
   const showSearchInput = pathname === "/search";
   return (
     <>
@@ -29,10 +32,16 @@ export const DefaultLayout = () => {
                   style={{ zIndex: 100 }}
                 >
                   <div className="flex gap-x-2">
-                    <button className="rounded-full bg-black p-2">
+                    <button
+                      className="rounded-full bg-black p-2"
+                      onClick={navigateBack}
+                    >
                       <CaretLeft size={24} />
                     </button>
-                    <button className="rounded-full bg-black p-2">
+                    <button
+                      className="rounded-full bg-black p-2"
+                      onClick={navigateForward}
+                    >
                       <CaretRight size={24} />
                     </button>
                     {showSearchInput && <SearchInput />}

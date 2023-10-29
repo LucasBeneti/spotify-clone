@@ -2,6 +2,7 @@ import { useParams } from "react-router-dom";
 import { Play } from "@phosphor-icons/react";
 import { VerticalCard } from "../components/VerticalCard";
 import { getSongDurationInMinutes } from "../utils";
+import { BigPlayButton } from "../components/reusable/BigPlayButton";
 const songs = [
   {
     name: "LUMBERJACK",
@@ -67,6 +68,7 @@ export const ArtistDetail = () => {
   const handlePlayThis = (song) => {
     console.log("play song", song);
   };
+  // TODO check the viability to create pages like variants, since the structure seems to be pretty close between each other
   return (
     <>
       <header className="h-64 w-full bg-highlight">
@@ -83,12 +85,7 @@ export const ArtistDetail = () => {
       </header>
       <main className="mt-16 px-4 pb-4">
         <section className="flex gap-x-4 items-center">
-          <button
-            onClick={handlePlayArtistSong}
-            className="p-4 rounded-full bg-primary hover:scale-105 hover:cursor-pointer transition delay-75"
-          >
-            <Play size={20} fill="#000" weight="fill" />
-          </button>
+          <BigPlayButton onClickHandle={handlePlayArtistSong} />
           <button
             onClick={handleFollowArtist}
             className="h-8 py-0 px-6 border border-gray-600 hover:border-white text-white text-xs font-bold rounded-full hover:cursor-pointer hover:scale-105 transition delay-75"

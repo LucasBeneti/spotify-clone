@@ -2,6 +2,7 @@ import { Clock, Play } from "@phosphor-icons/react";
 import { useNavigation, useLoaderData } from "react-router-dom";
 import { useCustomAudioContext } from "../contexts/CustomAudioContext";
 import { getSongDurationInMinutes } from "../utils";
+import { SongItem } from "../components/reusable/SongItem";
 
 type SongData = {
   name: string;
@@ -70,16 +71,23 @@ export const PlaylistPage = () => {
                       className="group/item hover:bg-highlight transition cursor-pointer"
                       onClick={() => handlePlayThis(song)}
                     >
-                      <td className="text-sm p-4 text-white text-center flex justify-center">
-                        <span className="block group-hover/item:hidden px-2">
-                          {index + 1}
-                        </span>
-                        <span className="hidden group-hover/item:block">
-                          <Play size={14} weight="fill" fill="white" />
+                      <td className="text-sm p-4 text-white ">
+                        <span className="flex justify-center items-center">
+                          <span className="block group-hover/item:hidden px-2">
+                            {index + 1}
+                          </span>
+                          <span className="hidden group-hover/item:block">
+                            <Play size={14} weight="fill" fill="white" />
+                          </span>
                         </span>
                       </td>
                       <td className="text-sm p-4 text-left text-white">
-                        {song.name}
+                        <SongItem
+                          artist={song.artist}
+                          name={song.name}
+                          imgSrc={data.cover_src}
+                          variant="playlist"
+                        />
                       </td>
                       <td className="text-sm p-4 text-left text-white">
                         {song.album}
