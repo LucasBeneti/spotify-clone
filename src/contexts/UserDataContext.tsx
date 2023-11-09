@@ -1,23 +1,9 @@
 import { createContext, useRef, useState, useEffect, useContext } from "react";
 import { useUser } from "@clerk/clerk-react";
-import { getUserPlaylists } from "../services/playlistServices";
-
-type Playlist = {
-  name: string;
-  cover_src: string;
-  author: string;
-  liked?: boolean;
-  songs: {
-    name: string;
-    artist: string;
-    album: string;
-    date_added: Date;
-    duration: number;
-  }[];
-};
+import { getUserPlaylists, Playlist } from "../services/playlistServices";
 
 type UserDataContext = {
-  playlists?: Playlist[];
+  playlists?: Promise<Playlist[] | undefined> | undefined;
   username: string;
 };
 
@@ -33,6 +19,7 @@ export const UserDataContextProvider = ({ children }: UserDataContextProps) => {
   const playlists = async () => {
     try {
       const usersPlaylist = await getUserPlaylists(username);
+      return usersPlaylist;
     } catch (error) {
       console.error(error);
     }
