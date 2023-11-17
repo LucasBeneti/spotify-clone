@@ -1,5 +1,5 @@
 import { createContext, useRef, useState, useEffect, useContext } from "react";
-import { useUser } from "@clerk/clerk-react";
+import { useUser, useSession } from "@clerk/clerk-react";
 import { getUserPlaylists, Playlist } from "../services/playlistServices";
 
 type UserDataContext = {
@@ -14,6 +14,7 @@ interface UserDataContextProps {
 
 export const UserDataContextProvider = ({ children }: UserDataContextProps) => {
   const { user } = useUser();
+
   const username = user?.username ? user.username : "random123";
 
   const playlists = async () => {

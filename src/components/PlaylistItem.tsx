@@ -1,11 +1,12 @@
+import { memo } from "react";
 import { Dot, PushPin } from "@phosphor-icons/react";
 
-interface PaylistItemProps {
+type PaylistItemProps = {
   name: string;
   type: string;
   author: string;
   pinned?: boolean;
-}
+};
 export const PlaylistItem = ({
   name,
   type,
@@ -32,3 +33,5 @@ export const PlaylistItem = ({
     </div>
   );
 };
+
+export const PLaylistItemMemo = memo(PlaylistItem);

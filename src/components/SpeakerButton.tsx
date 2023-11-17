@@ -3,16 +3,21 @@ import {
   SpeakerSimpleHigh,
   SpeakerSimpleSlash,
 } from "@phosphor-icons/react";
-import { useCustomAudioContext } from "../contexts/CustomAudioContext";
 
-export const SpeakerButton = () => {
-  const { volume, toggleAudioMute } = useCustomAudioContext();
+type SpeakerButtonProps = {
+  volumeValue: number[];
+  handleClick: () => void;
+};
 
+export const SpeakerButton = ({
+  volumeValue,
+  handleClick,
+}: SpeakerButtonProps) => {
   return (
-    <button onClick={toggleAudioMute}>
-      {volume[0] < 5 ? (
+    <button onClick={handleClick}>
+      {volumeValue[0] < 5 ? (
         <SpeakerSimpleSlash size={24} />
-      ) : volume[0] > 50 ? (
+      ) : volumeValue[0] > 50 ? (
         <SpeakerSimpleHigh size={24} />
       ) : (
         <SpeakerSimpleLow size={24} />

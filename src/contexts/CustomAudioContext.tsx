@@ -1,4 +1,5 @@
-import { createContext, useRef, useState, useEffect, useContext } from "react";
+import { createContext, useContext, useReducer } from "react";
+import AudioContextReducer from "./AudioContextReducer";
 
 const testTracks = [
   {
@@ -41,18 +42,14 @@ type Track = {
 
 type CustomAudioContextProps = {
   tracks: Track[];
-  duration: number;
+  trackIndex: number;
   isPlaying: boolean;
   trackProgress: number;
   toggleIsPlaying: () => void;
   toPreviousTrack: () => void;
   toNextTrack: () => void;
-  currPlaying?: { title: string; artist: string };
-  onScrub: (n: number[]) => void;
-  onScrubEnd: () => void;
-  volume: number[];
-  handleVolumeChange: (n: number[]) => void;
-  toggleAudioMute: () => void;
+  currentSong?: Track;
+  setCurrentSong: (data: Track) => void;
 };
 
 export const CustomAudioContext = createContext<CustomAudioContextProps | null>(
@@ -65,134 +62,76 @@ interface AudioContextProviderProps {
 export const AudioContextProvider = ({
   children,
 }: AudioContextProviderProps) => {
-  const [tracks, setTrack] = useState(testTracks); // TODO used for adding/removing tracks to the queue
-  const [trackIndex, setTrackIndex] = useState(0);
-  const [trackProgress, setTrackProgress] = useState(0);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [volume, setVolume] = useState<number[]>([0]);
+  const initialState = {
+    tracks: testTracks,
+    trackIndex: 0,
+    trackProgress: 0,
+    isPlaying: false,
+    volume: [0],
+    currentSong: testTracks[0],
+  };
 
-  const { audioSrc, title, artist } = tracks[trackIndex];
-  const currPlaying = { title, artist };
-  const audioRef = useRef(new Audio(audioSrc));
-
-  const intervalRef = useRef();
-  const isReady = useRef(false);
-
-  const { duration } = audioRef.current;
+  const [state, dispatch] = useReducer(AudioContextReducer, initialState);
 
   const toggleIsPlaying = () => {
-    setIsPlaying(!isPlaying);
+    // const isAudioPaused =audioRef.current.paused;
+    // TODO aqui está o problema, não tem source e o current existe em teoria
+    if (state.currentSong.audioSrc) {
+      dispatch({
+        type: "SET_IS_PLAYING",
+        data: !state.isPlaying,
+      });
+    } else {
+      console.log("audioref does not have a source");
+    }
+  };
+
+  const setCurrentSong = (songData: Track) => {
+    console.log("setting this one now: ", songData);
+    dispatch({ type: "SET_CURRENT_SONG", data: songData });
   };
 
   const toPreviousTrack = () => {
-    if (trackIndex - 1 < 0) {
-      setTrackIndex(tracks.length - 1);
+    console.log("toPreviousTrack called");
+    let newTrackIndex;
+    if (state.trackIndex - 1 < 0) {
+      newTrackIndex = state.tracks.length - 1;
+      dispatch({ type: "SET_TRACK_INDEX", data: newTrackIndex });
     } else {
-      setTrackIndex(trackIndex - 1);
+      newTrackIndex = state.trackIndex - 1;
+      dispatch({ type: "SET_TRACK_INDEX", data: newTrackIndex });
     }
+    setCurrentSong(state.tracks[newTrackIndex]);
   };
 
   const toNextTrack = () => {
-    if (trackIndex < tracks.length - 1) {
-      setTrackIndex(trackIndex + 1);
+    console.log("toNextTrack called");
+    let newTrackIndex;
+    if (state.trackIndex < state.tracks.length - 1) {
+      newTrackIndex = state.trackIndex + 1;
+      dispatch({ type: "SET_TRACK_INDEX", data: newTrackIndex });
     } else {
-      setTrackIndex(0);
+      // TODO implementar algo pra lidar com o fim da lista
+      // quando acabar as tracks, o que devemos fazer?
+      // no momento esta num loop infinito
+      newTrackIndex = 0;
+      dispatch({ type: "SET_TRACK_INDEX", data: newTrackIndex });
     }
+    setCurrentSong(state.tracks[newTrackIndex]);
   };
-
-  const startTimer = () => {
-    clearInterval(intervalRef.current);
-    intervalRef.current = setInterval(() => {
-      if (audioRef.current.ended) {
-        toNextTrack();
-      } else {
-        setTrackProgress(audioRef.current.currentTime);
-      }
-    }, 1000);
-  };
-
-  const onScrub = (value: number[]) => {
-    clearInterval(intervalRef.current);
-    audioRef.current.currentTime = Number(value[0]);
-    setTrackProgress(audioRef.current.currentTime);
-  };
-
-  const onScrubEnd = () => {
-    if (!isPlaying) {
-      setIsPlaying(true);
-    }
-    startTimer();
-  };
-
-  const handleVolumeChange = (value: number[]) => {
-    setVolume(value);
-    audioRef.current.volume = value[0] > 1 ? value[0] / 100 : value[0];
-  };
-
-  const toggleAudioMute = () => {
-    if (audioRef.current.volume === 0) {
-      audioRef.current.volume = volume[0] / 100;
-      // TODO need to figure out how to set the volume to previous value
-      // to the value that it was right before muting
-      /* One idea is to save the volume on localStorage when muting, this way we can 
-            recover it further on */
-    } else {
-      audioRef.current.volume = 0;
-      setVolume([0]);
-    }
-  };
-
-  useEffect(() => {
-    if (isPlaying) {
-      audioRef.current.play();
-      startTimer();
-    } else {
-      audioRef.current.pause();
-    }
-  }, [isPlaying]);
-
-  useEffect(() => {
-    setTrack(testTracks);
-    const currAudioRef = audioRef.current;
-    const currIntervalRef = intervalRef.current;
-    return () => {
-      currAudioRef.pause();
-      clearInterval(currIntervalRef);
-    };
-  }, []);
-
-  useEffect(() => {
-    audioRef.current.pause();
-
-    audioRef.current = new Audio(audioSrc);
-    setTrackProgress(audioRef.current.currentTime);
-
-    if (isReady.current) {
-      audioRef.current.volume = 0.2; // TODO refactor to serve a better logic for UX
-      audioRef.current.play();
-      setIsPlaying(true);
-      startTimer();
-    } else {
-      isReady.current = true;
-    }
-  }, [trackIndex, audioSrc]);
 
   return (
     <CustomAudioContext.Provider
       value={{
-        tracks,
-        duration,
-        isPlaying,
-        trackProgress,
+        tracks: state.tracks,
+        trackIndex: state.trackIndex,
+        trackProgress: state.trackProgress,
+        isPlaying: state.isPlaying,
+        currentSong: state.currentSong,
+        setCurrentSong,
         toNextTrack,
         toPreviousTrack,
         toggleIsPlaying,
-        currPlaying,
-        onScrub,
-        onScrubEnd,
-        volume,
-        handleVolumeChange,
-        toggleAudioMute,
       }}
     >
       {children}

@@ -1,17 +1,15 @@
 import { useState } from "react";
 import { Play, Pause } from "@phosphor-icons/react";
+import { useCustomAudioContext } from "../contexts/CustomAudioContext";
 type RecentPlayedCardProps = {
   name: string;
   imgSrc: string;
-  currentlyPlaying?: boolean;
 };
-export const RecentPlayedCard = ({
-  name,
-  imgSrc,
-  currentlyPlaying,
-}: RecentPlayedCardProps) => {
+export const RecentPlayedCard = ({ name, imgSrc }: RecentPlayedCardProps) => {
+  const { isPlaying, setCurrentSong, tracks } = useCustomAudioContext();
   const [playing, setPlaying] = useState<boolean>(true);
   const handlePlayingToggle = () => {
+    setCurrentSong(tracks[0]);
     setPlaying(!playing);
   };
   return (
@@ -20,18 +18,18 @@ export const RecentPlayedCard = ({
         <img className="w-20 h-20 object-cover" src={imgSrc} alt="" />
         <h2 className="text-2xl font-bold">{name}</h2>
       </div>
-      {currentlyPlaying ? (
-        <button
-          onClick={handlePlayingToggle}
-          className="self-center justify-end bg-primary p-2 mr-4 rounded-full transition hover:scale-105"
-        >
-          {playing ? (
-            <Pause size={24} weight="fill" fill="black" />
-          ) : (
-            <Play size={24} weight="fill" fill="black" />
-          )}
-        </button>
-      ) : null}
+      {/* {isPlaying ? ( */}
+      <button
+        onClick={handlePlayingToggle}
+        className="self-center justify-end bg-primary p-2 mr-4 rounded-full transition hover:scale-105"
+      >
+        {isPlaying ? (
+          <Pause size={24} weight="fill" fill="black" />
+        ) : (
+          <Play size={24} weight="fill" fill="black" />
+        )}
+      </button>
+      {/* ) : null} */}
     </div>
   );
 };
