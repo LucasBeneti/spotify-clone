@@ -2,8 +2,15 @@ import { createContext, useRef, useState, useEffect, useContext } from "react";
 import { useUser } from "@clerk/clerk-react";
 import { getUserPlaylists, Playlist } from "../services/playlistServices";
 
+type TempPlaylist = {
+  playlist_id: number;
+  cover_src?: string;
+  name: string;
+  author: string;
+};
+
 type UserDataContext = {
-  playlists?: Promise<Playlist[] | undefined> | undefined;
+  playlists?: TempPlaylist[] | undefined;
   username: string;
 };
 
@@ -14,12 +21,13 @@ interface UserDataContextProps {
 
 export const UserDataContextProvider = ({ children }: UserDataContextProps) => {
   const { user } = useUser();
+  const [playlists, setPlaylists] = useState<TempPlaylist[] | []>([]);
   const username = user?.username ? user.username : "random123";
 
-  const playlists = async () => {
+  const getUsersPlaylist = () => {
     try {
-      const usersPlaylist = await getUserPlaylists(username);
-      return usersPlaylist;
+      const usersPlaylist = getUserPlaylists(username);
+      return usersPlaylist || [];
     } catch (error) {
       console.error(error);
     }
