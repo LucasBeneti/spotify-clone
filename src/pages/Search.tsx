@@ -139,11 +139,12 @@ export const Search = () => {
     <section className="mt-20 mx-6 flex flex-col">
       {state === "loading" && <h2>Loading...</h2>}
       <section className="flex gap-x-4">
-        {searchFilters.map((filter) => (
+        {searchFilters.map((filter, index) => (
           <FilterItem
             onClickHandle={() => setSelectedFilter(filter)}
             text={filter}
             selected={filter === selectedFilter}
+            key={`${filter}_${index}`}
           />
         ))}
       </section>
@@ -167,11 +168,12 @@ export const Search = () => {
         </h3>
         <div className="">
           <section className="flex gap-x-6 scroll-smooth overflow-x-auto">
-            {artist.playlists.map((playlist) => (
+            {artist.playlists.map((playlist, index) => (
               <VerticalCard
                 title={playlist.name}
                 subtitle={playlist.owner}
                 coverSrc={playlist.coverSrc}
+                key={`${playlist}_${index}`}
               />
             ))}
           </section>

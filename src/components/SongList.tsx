@@ -14,7 +14,7 @@ export const SongList = ({ songs, artist }: SongListProps) => {
   console.log(songs);
   return (
     <ul className="flex flex-1 flex-col gap-y-2">
-      {songs.map(({ name, albumCover, explicit, liked }) => {
+      {songs.map(({ name, albumCover, explicit, liked }, index) => {
         return (
           <SongItem
             imgSrc={albumCover}
@@ -23,6 +23,7 @@ export const SongList = ({ songs, artist }: SongListProps) => {
             explicit={explicit}
             liked={liked}
             variant="search"
+            key={`${name}_${index}`}
           />
         );
       })}

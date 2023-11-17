@@ -8,3 +8,9 @@ export const getUserInfo = async (username: string) => {
     });
   });
 };
+
+// TODO GET user playlists (only main info)
+
+// TODO GET last search or a random content
+
+// TODO GET song that was being played before (maybe from local storage)

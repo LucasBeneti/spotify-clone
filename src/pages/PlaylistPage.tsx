@@ -93,6 +93,7 @@ export const PlaylistPage = () => {
                   <tr
                     className="group/item hover:bg-highlight transition cursor-pointer"
                     onClick={() => handlePlayThis(song)}
+                    key={`${song}_${index}`}
                   >
                     <td className="text-sm p-4 text-white ">
                       <span className="flex justify-center items-center">

@@ -65,7 +65,7 @@ export const ArtistDetailsPage = () => {
     console.log(`follow artist ${artistId}`);
   };
 
-  const handlePlayThis = (song) => {
+  const handlePlayThis = (song: any) => {
     console.log("play song", song);
   };
   // TODO check the viability to create pages like variants, since the structure seems to be pretty close between each other
@@ -102,6 +102,7 @@ export const ArtistDetailsPage = () => {
                   <tr
                     className="group/item hover:bg-highlight transition cursor-pointer"
                     onClick={() => handlePlayThis(song)}
+                    key={`${song}_${index}`}
                   >
                     <td className="text-sm p-4 text-white text-center flex justify-center">
                       <span className="block group-hover/item:hidden px-2">
@@ -132,11 +133,12 @@ export const ArtistDetailsPage = () => {
         <section>
           <h3 className="text-xl font-display font-bold mb-4">Discography</h3>
           <section className="flex gap-x-6 scroll-smooth overflow-x-auto">
-            {albums.map((album) => (
+            {albums.map((album, index) => (
               <VerticalCard
                 title={album.name}
                 subtitle={album.launch_year}
                 coverSrc={album.coverSrc}
+                key={`${album}_${index}`}
               />
             ))}
           </section>
