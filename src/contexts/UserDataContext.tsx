@@ -7,13 +7,15 @@ export type Playlist = {
   cover_src?: string;
   name: string;
   id: number;
-  author_username: string;
+  author_username?: string;
+  author?: string;
   type?: string;
 };
 
 type UserDataContext = {
   playlists?: Playlist[] | undefined;
   username: string;
+  getUserToken: () => Promise<string | null>;
 };
 
 export const UserDataContext = createContext<UserDataContext>({ username: "" });
@@ -22,10 +24,18 @@ interface UserDataContextProps {
 }
 
 export const UserDataContextProvider = ({ children }: UserDataContextProps) => {
-  const { user } = useUser();
+  const { user } = useUser(); // username nao esta definido quando renderiza o componente (tenho que entender melhor isso)
   const { getToken } = useAuth();
   const [playlists, setPlaylists] = useState<Playlist[] | []>([]);
   const username = user?.username ? user.username : "random123";
+
+  const getUserToken = async () => {
+    const token = await getToken({
+      template: "spotify-clone-template", // TODO passar para env variables
+    });
+
+    return token;
+  };
 
   const initUserPlaylists = async () => {
     try {
@@ -38,8 +48,17 @@ export const UserDataContextProvider = ({ children }: UserDataContextProps) => {
         return;
       }
       const { userPlaylists } = await getUserPlaylists(token);
-      console.log("usersPlaylist", userPlaylists);
-      setPlaylists([...userPlaylists]);
+      const typedPlaylists = userPlaylists.map((playlistData: Playlist) => {
+        // TODO rever se estou errando em algo aqui
+        const playlistAuthor =
+          user?.username === playlistData.author_username
+            ? "Eu"
+            : playlistData.author_username;
+        return { ...playlistData, type: "playlist", author: playlistAuthor };
+      });
+      console.log("usersPlaylist", typedPlaylists);
+      console.log("username", user?.username);
+      setPlaylists([...typedPlaylists]);
     } catch (error) {
       console.error(error);
     }
@@ -58,6 +77,7 @@ export const UserDataContextProvider = ({ children }: UserDataContextProps) => {
       value={{
         playlists,
         username,
+        getUserToken,
       }}
     >
       {children}

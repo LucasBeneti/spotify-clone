@@ -54,14 +54,13 @@ export const Sidebar = () => {
         <nav className="flex">
           <ScrollArea.Root className="w-full">
             <ScrollArea.Viewport className="flex flex-1 flex-col gap-y-4 h-[calc(100vh-14rem)]">
-              {playlists?.map((el, index) => {
+              {playlists?.map((el) => {
                 return (
-                  <Link to={`/playlist/${index}`} key={el.name + index}>
+                  <Link to={`/playlist/${el.id}`} key={el.name + el.id}>
                     <PlaylistItem
                       name={el.name}
                       type={el.type}
-                      author={el.author_username}
-                      pinned={el.pinned} // TODO fica pra store lidar
+                      author={el.author}
                     />
                   </Link>
                 );

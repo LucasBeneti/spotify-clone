@@ -2,8 +2,8 @@ import { Dot, PushPin } from "@phosphor-icons/react";
 
 interface PaylistItemProps {
   name: string;
-  type: string;
-  author: string;
+  type?: string;
+  author?: string;
   pinned?: boolean;
 }
 export const PlaylistItem = ({
@@ -24,7 +24,7 @@ export const PlaylistItem = ({
         <p className="text-lg font-bold">{name}</p>
         <div className="flex gap-x-1 items-center">
           {pinned ? <PushPin weight="fill" fill="#1ed760" /> : null}
-          <p className="text-subdued">{type}</p>
+          <p className="text-subdued capitalize">{type}</p>
           <Dot size={24} fill="#a7a7a7" />
           <p className="text-subdued">{author}</p>
         </div>

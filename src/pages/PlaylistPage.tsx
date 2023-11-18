@@ -1,10 +1,12 @@
 import { Clock, Play, Heart } from "@phosphor-icons/react";
 import { useNavigation, useLoaderData } from "react-router-dom";
 import { useCustomAudioContext } from "../contexts/CustomAudioContext";
+import { useUserDataContext } from "../contexts/UserDataContext";
 import { getSongDurationInMinutes } from "../utils";
 import { SongItem } from "../components/reusable/SongItem";
 import { BigPlayButton } from "../components/reusable/BigPlayButton";
 import { useState } from "react";
+import { getPlaylistFullInfo } from "../services/playlistServices";
 
 type SongData = {
   name: string;
@@ -24,10 +26,10 @@ type PlaylistData = {
 };
 
 export const PlaylistPage = () => {
-  const data = useLoaderData() as PlaylistData;
+  const data = useLoaderData();
   const { state } = useNavigation();
   const [likedPlaylist, setLikedPlaylist] = useState(data.liked);
-
+  console.log("data playlist page", data);
   // TODO create the function that will actually play the song, given some information
   const handlePlayThis = (song: SongData) => {
     console.log("Now playing...", song);
@@ -86,47 +88,43 @@ export const PlaylistPage = () => {
             </tr>
           </thead>
           <tbody>
-            {state === "loading" ? (
-              <h2>Loading...</h2>
-            ) : (
-              data.songs.map((song, index) => {
-                return (
-                  <tr
-                    className="group/item hover:bg-highlight transition cursor-pointer"
-                    onClick={() => handlePlayThis(song)}
-                    key={`${song}_${index}`}
-                  >
-                    <td className="text-sm p-4 text-white ">
-                      <span className="flex justify-center items-center">
-                        <span className="block group-hover/item:hidden px-2">
-                          {index + 1}
-                        </span>
-                        <span className="hidden group-hover/item:block">
-                          <Play size={14} weight="fill" fill="white" />
-                        </span>
+            {data.songs.map((song, index) => {
+              return (
+                <tr
+                  className="group/item hover:bg-highlight transition cursor-pointer"
+                  onClick={() => handlePlayThis(song)}
+                  key={`${song}_${index}`}
+                >
+                  <td className="text-sm p-4 text-white ">
+                    <span className="flex justify-center items-center">
+                      <span className="block group-hover/item:hidden px-2">
+                        {index + 1}
                       </span>
-                    </td>
-                    <td className="text-sm p-4 text-left text-white">
-                      <SongItem
-                        artist={song.artist}
-                        name={song.name}
-                        imgSrc={data.cover_src}
-                        variant="playlist"
-                      />
-                    </td>
-                    <td className="text-sm p-4 text-left text-white">
-                      {song.album}
-                    </td>
-                    <td className="text-sm p-4 text-left text-white">
-                      9 de jun. de 2022
-                    </td>
-                    <td className="p-4 text-left text-white">
-                      {getSongDurationInMinutes(song.duration)}
-                    </td>
-                  </tr>
-                );
-              })
-            )}
+                      <span className="hidden group-hover/item:block">
+                        <Play size={14} weight="fill" fill="white" />
+                      </span>
+                    </span>
+                  </td>
+                  <td className="text-sm p-4 text-left text-white">
+                    <SongItem
+                      artist={song.artist}
+                      name={song.name}
+                      imgSrc={data.cover_src}
+                      variant="playlist"
+                    />
+                  </td>
+                  <td className="text-sm p-4 text-left text-white">
+                    {song.album_name}
+                  </td>
+                  <td className="text-sm p-4 text-left text-white">
+                    9 de jun. de 2022
+                  </td>
+                  <td className="p-4 text-left text-white">
+                    {getSongDurationInMinutes(song.duration)}
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </main>
@@ -135,47 +133,11 @@ export const PlaylistPage = () => {
 };
 
 export const playlistLoader = async ({ params }) => {
+  const { getUserToken } = useUserDataContext();
   const { id } = params;
+  const userToken = await getUserToken();
+  const playlistData = await getPlaylistFullInfo(userToken, id);
 
-  const res = new Promise((resolve, reject) => {
-    resolve({
-      cover_src:
-        "https://i.scdn.co/image/ab6761610000f1788278b782cbb5a3963db88ada",
-      name: "Kenny Beats Boiler Room Barcelona",
-      author: "lucasbeneti",
-      liked: true,
-      songs: [
-        {
-          name: "LUMBERJACK",
-          artist: "Tyler, The Creator",
-          album: "Call Me If You Get Lost",
-          date_added: Date.now(),
-          duration: 138,
-        },
-        {
-          name: "LUMBERJACK",
-          artist: "Tyler, The Creator",
-          album: "Call Me If You Get Lost",
-          date_added: Date.now(),
-          duration: 138,
-        },
-        {
-          name: "LUMBERJACK",
-          artist: "Tyler, The Creator",
-          album: "Call Me If You Get Lost",
-          date_added: Date.now(),
-          duration: 138,
-        },
-        {
-          name: "LUMBERJACK",
-          artist: "Tyler, The Creator",
-          album: "Call Me If You Get Lost",
-          date_added: Date.now(),
-          duration: 138,
-        },
-      ],
-    });
-  });
-
-  return await res;
+  console.log("playlistFullData", playlistData);
+  return playlistData;
 };
