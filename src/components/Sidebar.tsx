@@ -9,206 +9,14 @@ import {
   Plus,
   ArrowRight,
 } from "@phosphor-icons/react";
+import { useUserDataContext } from "../contexts/UserDataContext";
 export const Sidebar = () => {
   const [selected, setSelected] = useState<"home" | "search">("home");
-  const playlists = [
-    {
-      name: "Liked songs",
-      type: "Playlist",
-      author: "Eu",
-      pinned: true,
-    },
-    {
-      name: "Liked songs",
-      type: "Playlist",
-      author: "Eu",
-    },
-    {
-      name: "Liked songs",
-      type: "Playlist",
-      author: "Eu",
-    },
-    {
-      name: "Liked songs",
-      type: "Playlist",
-      author: "Eu",
-    },
-    {
-      name: "Liked songs",
-      type: "Playlist",
-      author: "Eu",
-    },
-    {
-      name: "Liked songs",
-      type: "Playlist",
-      author: "Eu",
-    },
-    {
-      name: "Liked songs",
-      type: "Playlist",
-      author: "Eu",
-    },
-    {
-      name: "Liked songs",
-      type: "Playlist",
-      author: "Eu",
-    },
-    {
-      name: "Liked songs",
-      type: "Playlist",
-      author: "Eu",
-    },
-    {
-      name: "Liked songs",
-      type: "Playlist",
-      author: "Eu",
-    },
-    {
-      name: "Liked songs",
-      type: "Playlist",
-      author: "Eu",
-    },
-    {
-      name: "Liked songs",
-      type: "Playlist",
-      author: "Eu",
-    },
-    {
-      name: "Liked songs",
-      type: "Playlist",
-      author: "Eu",
-    },
-    {
-      name: "Liked songs",
-      type: "Playlist",
-      author: "Eu",
-    },
-    {
-      name: "Liked songs",
-      type: "Playlist",
-      author: "Eu",
-    },
-    {
-      name: "Liked songs",
-      type: "Playlist",
-      author: "Eu",
-    },
-    {
-      name: "Liked songs",
-      type: "Playlist",
-      author: "Eu",
-    },
-    {
-      name: "Liked songs",
-      type: "Playlist",
-      author: "Eu",
-    },
-    {
-      name: "Liked songs",
-      type: "Playlist",
-      author: "Eu",
-    },
-    {
-      name: "Liked songs",
-      type: "Playlist",
-      author: "Eu",
-    },
-    {
-      name: "Liked songs",
-      type: "Playlist",
-      author: "Eu",
-    },
-    {
-      name: "Liked songs",
-      type: "Playlist",
-      author: "Eu",
-    },
-    {
-      name: "Liked songs",
-      type: "Playlist",
-      author: "Eu",
-    },
-    {
-      name: "Liked songs",
-      type: "Playlist",
-      author: "Eu",
-    },
-    {
-      name: "Liked songs",
-      type: "Playlist",
-      author: "Eu",
-    },
-    {
-      name: "Liked songs",
-      type: "Playlist",
-      author: "Eu",
-    },
-    {
-      name: "Liked songs",
-      type: "Playlist",
-      author: "Eu",
-    },
-    {
-      name: "Liked songs",
-      type: "Playlist",
-      author: "Eu",
-    },
-    {
-      name: "Liked songs",
-      type: "Playlist",
-      author: "Eu",
-    },
-    {
-      name: "Liked songs",
-      type: "Playlist",
-      author: "Eu",
-    },
-    {
-      name: "Liked songs",
-      type: "Playlist",
-      author: "Eu",
-    },
-    {
-      name: "Liked songs",
-      type: "Playlist",
-      author: "Eu",
-    },
-    {
-      name: "Liked songs",
-      type: "Playlist",
-      author: "Eu",
-    },
-    {
-      name: "Liked songs",
-      type: "Playlist",
-      author: "Eu",
-    },
-    {
-      name: "Liked songs",
-      type: "Playlist",
-      author: "Eu",
-    },
-    {
-      name: "Liked songs",
-      type: "Playlist",
-      author: "Eu",
-    },
-    {
-      name: "Liked songs",
-      type: "Playlist",
-      author: "Eu",
-    },
-    {
-      name: "Liked songs",
-      type: "Playlist",
-      author: "Eu",
-    },
-    {
-      name: "Liked songs",
-      type: "Playlist",
-      author: "Eu",
-    },
-  ];
+  const { playlists } = useUserDataContext();
+
+  // TODO the type of items presented on the sidebar list could be more general
+  // and its types could be dynamic
+
   return (
     <aside className="flex flex-col gap-y-2 w-3/12 max-w-sm h-[calc(100vh-5.5rem)] rounded-md overflow-hidden">
       <nav className="flex flex-col gap-y-4 bg-base rounded-md px-3 py-2">
@@ -246,14 +54,14 @@ export const Sidebar = () => {
         <nav className="flex">
           <ScrollArea.Root className="w-full">
             <ScrollArea.Viewport className="flex flex-1 flex-col gap-y-4 h-[calc(100vh-14rem)]">
-              {playlists.map((el, index) => {
+              {playlists?.map((el, index) => {
                 return (
                   <Link to={`/playlist/${index}`} key={el.name + index}>
                     <PlaylistItem
                       name={el.name}
                       type={el.type}
-                      author={el.author}
-                      pinned={el.pinned}
+                      author={el.author_username}
+                      pinned={el.pinned} // TODO fica pra store lidar
                     />
                   </Link>
                 );

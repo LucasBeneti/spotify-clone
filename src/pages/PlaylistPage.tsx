@@ -14,6 +14,7 @@ type SongData = {
   duration: number;
 };
 
+// TODO duplicate?
 type PlaylistData = {
   cover_src: string;
   name: string;
