@@ -1,6 +1,7 @@
 import { createContext, useState, useEffect, useContext } from "react";
 import { useUser, useAuth } from "@clerk/clerk-react";
 import { getUserPlaylists } from "../services/playlistServices";
+import { useCookies } from "react-cookie";
 
 export type Playlist = {
   playlist_id: number;
@@ -15,7 +16,6 @@ export type Playlist = {
 type UserDataContext = {
   playlists?: Playlist[] | undefined;
   username: string;
-  getUserToken: () => Promise<string | null>;
 };
 
 export const UserDataContext = createContext<UserDataContext>({ username: "" });
@@ -24,6 +24,7 @@ interface UserDataContextProps {
 }
 
 export const UserDataContextProvider = ({ children }: UserDataContextProps) => {
+  const [cookies, setCookies] = useCookies(["user_jwt"]);
   const { user } = useUser(); // username nao esta definido quando renderiza o componente (tenho que entender melhor isso)
   const { getToken } = useAuth();
   const [playlists, setPlaylists] = useState<Playlist[] | []>([]);
@@ -37,17 +38,23 @@ export const UserDataContextProvider = ({ children }: UserDataContextProps) => {
     return token;
   };
 
+  const initState = async () => {
+    if (!cookies.user_jwt) {
+      const token = await getToken({ template: "spotify-clone-template" });
+      setCookies("user_jwt", token, { path: "/" });
+    }
+    initUserPlaylists();
+  };
+
   const initUserPlaylists = async () => {
     try {
-      const token = await getToken({
-        template: "spotify-clone-template", // TODO passar para env variables
-      });
+      const userToken = cookies.user_jwt;
 
-      if (!token) {
+      if (!userToken) {
         console.error("No token available for this user.");
         return;
       }
-      const { userPlaylists } = await getUserPlaylists(token);
+      const { userPlaylists } = await getUserPlaylists(userToken);
       const typedPlaylists = userPlaylists.map((playlistData: Playlist) => {
         // TODO rever se estou errando em algo aqui
         const playlistAuthor =
@@ -64,10 +71,6 @@ export const UserDataContextProvider = ({ children }: UserDataContextProps) => {
     }
   };
 
-  const initState = () => {
-    initUserPlaylists();
-  };
-
   useEffect(() => {
     initState();
   }, []);
@@ -77,7 +80,6 @@ export const UserDataContextProvider = ({ children }: UserDataContextProps) => {
       value={{
         playlists,
         username,
-        getUserToken,
       }}
     >
       {children}
