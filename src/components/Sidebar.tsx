@@ -1,6 +1,6 @@
 import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
-import { PlaylistItem } from "./PlaylistItem";
 import * as ScrollArea from "@radix-ui/react-scroll-area";
 import {
   MagnifyingGlass,
@@ -10,12 +10,31 @@ import {
   ArrowRight,
 } from "@phosphor-icons/react";
 import { useUserDataContext } from "../contexts/UserDataContext";
+import { PlaylistItem } from "./PlaylistItem";
+
 export const Sidebar = () => {
   const [selected, setSelected] = useState<"home" | "search">("home");
-  const { playlists } = useUserDataContext();
+  const { getUserToken, userToken } = useUserDataContext();
 
-  // TODO the type of items presented on the sidebar list could be more general
-  // and its types could be dynamic
+  const { data: userPlaylistsData, isLoading } = useQuery({
+    queryKey: ["user_playlists"],
+    queryFn: async () => {
+      console.log("userToken", userToken);
+      const token = userToken ? userToken : await getUserToken();
+      const response = await fetch("http://localhost:3000/playlist/user", {
+        method: "GET",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const { userPlaylists } = await response.json();
+      console.log("userPlaylists", userPlaylists);
+      const typedPlaylists = userPlaylists.map((playlistInfo) => {
+        return { ...playlistInfo, type: "playlist" };
+      });
+      return typedPlaylists;
+    },
+    refetchOnWindowFocus: false,
+    refetchOnMount: true,
+  });
 
   return (
     <aside className="flex flex-col gap-y-2 w-3/12 max-w-sm h-[calc(100vh-5.5rem)] rounded-md overflow-hidden">
@@ -54,17 +73,21 @@ export const Sidebar = () => {
         <nav className="flex">
           <ScrollArea.Root className="w-full">
             <ScrollArea.Viewport className="flex flex-1 flex-col gap-y-4 h-[calc(100vh-14rem)]">
-              {playlists?.map((el) => {
-                return (
-                  <Link to={`/playlist/${el.id}`} key={el.name + el.id}>
-                    <PlaylistItem
-                      name={el.name}
-                      type={el.type}
-                      author={el.author}
-                    />
-                  </Link>
-                );
-              })}
+              {isLoading ? (
+                <h2>Loading...</h2>
+              ) : (
+                userPlaylistsData?.map((el) => {
+                  return (
+                    <Link to={`/playlist/${el.id}`} key={el.name + el.id}>
+                      <PlaylistItem
+                        name={el.name}
+                        type={el.type}
+                        author={el.author_username}
+                      />
+                    </Link>
+                  );
+                })
+              )}
             </ScrollArea.Viewport>
             <ScrollArea.Scrollbar orientation="vertical">
               <ScrollArea.Thumb />

@@ -1,3 +1,6 @@
+import { useCookies } from "react-cookie";
+import { useQuery } from "@tanstack/react-query";
+
 export type Playlist = {
   id: number;
   playlist_id: number;
@@ -7,18 +10,26 @@ export type Playlist = {
   type?: string;
 };
 
-export const getUserPlaylists = async (token: string | null | undefined) => {
+export const getUserPlaylists = async () => {
+  const [cookies] = useCookies(["user_jwt"]);
+
   console.log("Looking for playlists");
-  if (!token) {
+  if (!cookies.user_jwt) {
     return console.error("Token not provided.");
   }
-  const headers = { Authorization: `Bearer ${token}` };
-  const response = await fetch("http://localhost:3000/playlist/user", {
-    method: "GET",
-    headers,
-  });
+  const headers = { Authorization: `Bearer ${cookies.user_jwt}` };
+  const { data, isError, isLoading } = useQuery({
+    queryKey: ["user_playlists"],
+    queryFn: async () => {
+      const response = await fetch("http://localhost:3000/playlist/user", {
+        method: "GET",
+        headers,
+      });
 
-  return await response.json();
+      return (await response.json()) as object;
+    },
+  });
+  return { data, isError, isLoading };
 };
 
 export const getPlaylistFullInfo = async (

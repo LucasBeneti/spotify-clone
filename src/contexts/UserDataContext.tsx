@@ -1,7 +1,7 @@
-import { createContext, useState, useEffect, useContext } from "react";
+import { createContext, useEffect, useContext, useReducer } from "react";
 import { useUser, useAuth } from "@clerk/clerk-react";
-import { getUserPlaylists } from "../services/playlistServices";
 import { useCookies } from "react-cookie";
+import { userReducer, initialUserState } from "./UserDataReducer";
 
 export type Playlist = {
   playlist_id: number;
@@ -15,7 +15,9 @@ export type Playlist = {
 
 type UserDataContext = {
   playlists?: Playlist[] | undefined;
-  username: string;
+  username?: string;
+  userToken?: string;
+  getUserToken: () => Promise<string | null>;
 };
 
 export const UserDataContext = createContext<UserDataContext>({ username: "" });
@@ -27,59 +29,43 @@ export const UserDataContextProvider = ({ children }: UserDataContextProps) => {
   const [cookies, setCookies] = useCookies(["user_jwt"]);
   const { user } = useUser(); // username nao esta definido quando renderiza o componente (tenho que entender melhor isso)
   const { getToken } = useAuth();
-  const [playlists, setPlaylists] = useState<Playlist[] | []>([]);
-  const username = user?.username ? user.username : "random123";
+  const [state, dispatch] = useReducer(userReducer, initialUserState);
 
   const getUserToken = async () => {
-    const token = await getToken({
-      template: "spotify-clone-template", // TODO passar para env variables
-    });
-
-    return token;
-  };
-
-  const initState = async () => {
-    if (!cookies.user_jwt) {
-      const token = await getToken({ template: "spotify-clone-template" });
-      setCookies("user_jwt", token, { path: "/" });
-    }
-    initUserPlaylists();
-  };
-
-  const initUserPlaylists = async () => {
     try {
-      const userToken = cookies.user_jwt;
+      return await getToken({ template: "spotify-clone-template" });
+    } catch (error) {
+      console.error(error);
+      return null;
+    }
+  };
 
-      if (!userToken) {
-        console.error("No token available for this user.");
-        return;
+  const setUserToken = async () => {
+    try {
+      let token;
+      if (!cookies.user_jwt) {
+        token = await getUserToken();
+        setCookies("user_jwt", token, { path: "/" });
+      } else {
+        token = cookies.user_jwt;
       }
-      const { userPlaylists } = await getUserPlaylists(userToken);
-      const typedPlaylists = userPlaylists.map((playlistData: Playlist) => {
-        // TODO rever se estou errando em algo aqui
-        const playlistAuthor =
-          user?.username === playlistData.author_username
-            ? "Eu"
-            : playlistData.author_username;
-        return { ...playlistData, type: "playlist", author: playlistAuthor };
-      });
-      console.log("usersPlaylist", typedPlaylists);
-      console.log("username", user?.username);
-      setPlaylists([...typedPlaylists]);
+      dispatch({ type: "SET_TOKEN", data: token });
     } catch (error) {
       console.error(error);
     }
   };
 
   useEffect(() => {
-    initState();
+    setUserToken();
   }, []);
 
   return (
     <UserDataContext.Provider
       value={{
-        playlists,
-        username,
+        playlists: state.playlists,
+        username: state.userinfo.username,
+        userToken: state.userinfo.token,
+        getUserToken,
       }}
     >
       {children}
