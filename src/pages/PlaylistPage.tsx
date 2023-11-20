@@ -1,11 +1,11 @@
 import { Clock, Play, Heart } from "@phosphor-icons/react";
-import { useNavigation, useLoaderData, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { getSongDurationInMinutes } from "../utils";
 import { SongItem } from "../components/reusable/SongItem";
 import { BigPlayButton } from "../components/reusable/BigPlayButton";
-import { useEffect, useState } from "react";
 import { getPlaylistFullInfo } from "../services/playlistServices";
 import { useCookies } from "react-cookie";
+import { useQuery } from "@tanstack/react-query";
 
 type SongData = {
   name: string;
@@ -26,29 +26,24 @@ type PlaylistData = {
 };
 
 export const PlaylistPage = () => {
-  // const data = useLoaderData();
-  const [playlistData, setPLaylistData] = useState<PlaylistData>();
-  const { state } = useNavigation();
   const { id } = useParams();
-  const [likedPlaylist, setLikedPlaylist] = useState(playlistData?.liked);
+  // const [likedPlaylist, setLikedPlaylist] = useState(playlistData?.liked);
   const [cookies] = useCookies(["user_jwt"]);
+  // TODO implement the error handling for this
+  const { data: playlistData, isLoading } = useQuery<PlaylistData | null>({
+    queryKey: ["playlist_data", id],
+    queryFn: async () => {
+      if (!id) return null;
 
-  const getSongPlaylists = async (playlistId: string) => {
-    try {
       const userToken = cookies.user_jwt;
-      const playlistData = await getPlaylistFullInfo(userToken, playlistId);
-      setPLaylistData(playlistData);
-    } catch (error) {
-      console.error(error);
-    }
-  };
+      const playlistData = await getPlaylistFullInfo(userToken, id);
 
-  // TODO implement this first fetch using react-query
-  useEffect(() => {
-    if (id) {
-      getSongPlaylists(id);
-    }
-  }, []);
+      return playlistData;
+    },
+    refetchOnMount: true,
+    refetchOnWindowFocus: false,
+  });
+
   // TODO create the function that will actually play the song, given some information
   const handlePlayThis = (song: SongData) => {
     console.log("Now playing...", song);
@@ -57,7 +52,7 @@ export const PlaylistPage = () => {
 
   const handleLikePlaylist = () => {
     // TODO implement this feature
-    setLikedPlaylist(!likedPlaylist);
+    // setLikedPlaylist(!likedPlaylist);
     console.log("Liked this playlist");
   };
 
@@ -92,11 +87,7 @@ export const PlaylistPage = () => {
             onClick={handleLikePlaylist}
             className="hover:scale-105 transition-all delay-75"
           >
-            <Heart
-              fill="#1ed760"
-              weight={likedPlaylist ? "fill" : "regular"}
-              size={32}
-            />
+            <Heart fill="#1ed760" weight={"regular"} size={32} />
           </button>
         </section>
         <table className="table-auto border-collapse bg-transparent w-full">
@@ -112,7 +103,7 @@ export const PlaylistPage = () => {
             </tr>
           </thead>
           <tbody>
-            {state === "loading" || !playlistData?.songs?.length ? (
+            {isLoading || !playlistData?.songs?.length ? (
               <tr>
                 <td>
                   <h2>Loading...</h2>
