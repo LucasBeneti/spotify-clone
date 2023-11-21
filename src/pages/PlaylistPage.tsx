@@ -1,5 +1,5 @@
 import { Clock, Play, Heart } from "@phosphor-icons/react";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import { getSongDurationInMinutes } from "../utils";
 import { SongItem } from "../components/reusable/SongItem";
 import { BigPlayButton } from "../components/reusable/BigPlayButton";
@@ -12,6 +12,7 @@ type SongData = {
   artist: string;
   album: string;
   album_name?: string;
+  album_id?: string;
   date_added: Date;
   duration: number;
 };
@@ -37,7 +38,6 @@ export const PlaylistPage = () => {
 
       const userToken = cookies.user_jwt;
       const playlistData = await getPlaylistFullInfo(userToken, id);
-
       return playlistData;
     },
     refetchOnMount: true,
@@ -135,8 +135,10 @@ export const PlaylistPage = () => {
                         variant="playlist"
                       />
                     </td>
-                    <td className="text-sm p-4 text-left text-white">
-                      {song.album_name}
+                    <td className="text-sm p-4 text-left text-white hover:underline">
+                      <Link to={`/album/${song.album_id}`}>
+                        {song.album_name}
+                      </Link>
                     </td>
                     <td className="text-sm p-4 text-left text-white">
                       9 de jun. de 2022

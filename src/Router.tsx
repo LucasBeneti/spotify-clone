@@ -5,6 +5,7 @@ import { Search } from "./pages/Search";
 import { searchTermLoader } from "./components/SearchInput";
 import { ArtistDetailsPage } from "./pages/ArtistDetailsPage";
 import { PlaylistPage } from "./pages/PlaylistPage";
+import { AlbumPage } from "./pages/AlbumPage";
 
 export const Router = () => {
   const router = createBrowserRouter([
@@ -24,6 +25,10 @@ export const Router = () => {
         {
           path: "/artist/:artistId",
           element: <ArtistDetailsPage />,
+        },
+        {
+          path: "/album/:id",
+          element: <AlbumPage />,
         },
         {
           path: "/playlist/:id",
