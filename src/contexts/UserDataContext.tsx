@@ -2,6 +2,7 @@ import { createContext, useEffect, useContext, useReducer } from "react";
 import { useUser, useAuth } from "@clerk/clerk-react";
 import { useCookies } from "react-cookie";
 import { userReducer, initialUserState } from "./UserDataReducer";
+import { getCookieExpDate } from "../utils";
 
 export type Playlist = {
   playlist_id: number;
@@ -17,7 +18,7 @@ type UserDataContext = {
   playlists?: Playlist[] | undefined;
   username?: string;
   userToken?: string;
-  getUserToken: () => Promise<string | null>;
+  getUserToken?: () => Promise<string | null>;
 };
 
 export const UserDataContext = createContext<UserDataContext>({ username: "" });
@@ -45,7 +46,10 @@ export const UserDataContextProvider = ({ children }: UserDataContextProps) => {
       let token;
       if (!cookies.user_jwt) {
         token = await getUserToken();
-        setCookies("user_jwt", token, { path: "/" });
+        setCookies("user_jwt", token, {
+          path: "/",
+          expires: getCookieExpDate(new Date(), 1),
+        });
       } else {
         token = cookies.user_jwt;
       }
