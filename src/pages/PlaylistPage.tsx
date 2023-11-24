@@ -1,4 +1,11 @@
-import { Clock, Play, Heart } from "@phosphor-icons/react";
+import { useState } from "react";
+import {
+  Clock,
+  Play,
+  Heart,
+  MusicNotesSimple,
+  PencilSimple,
+} from "@phosphor-icons/react";
 import { useParams, Link } from "react-router-dom";
 import { getSongDurationInMinutes } from "../utils";
 import { SongItem } from "../components/reusable/SongItem";
@@ -6,6 +13,7 @@ import { BigPlayButton } from "../components/reusable/BigPlayButton";
 import { getPlaylistFullInfo } from "../services/playlistServices";
 import { useCookies } from "react-cookie";
 import { useQuery } from "@tanstack/react-query";
+import { Modal } from "../components/Modal";
 
 type SongData = {
   name: string;
@@ -27,6 +35,7 @@ type PlaylistData = {
 };
 
 export const PlaylistPage = () => {
+  const [showModal, setShowModal] = useState(true);
   const { id } = useParams();
   // const [likedPlaylist, setLikedPlaylist] = useState(playlistData?.liked);
   const [cookies] = useCookies(["user_jwt"]);
@@ -153,6 +162,55 @@ export const PlaylistPage = () => {
           </tbody>
         </table>
       </main>
+      {showModal && (
+        <Modal handleClose={() => setShowModal(false)}>
+          <NewPlaylistModalContent />
+        </Modal>
+      )}
     </>
+  );
+};
+
+const NewPlaylistModalContent = () => {
+  return (
+    <section className="grid w-full gap-4 grid-cols-5 transition pb-3">
+      <span className="w-44 h-44  group/item flex items-center justify-center shadow-neutral-900 shadow-md bg-[#2a2a2a] col-span-2 hover:cursor-pointer">
+        <span className="block group-hover/item:hidden">
+          <MusicNotesSimple size={48} fill="#a7a7a7" className="" />
+        </span>
+        <span className="hidden group-hover/item:block">
+          <PencilSimple size={48} fill="#a7a7a7" className="" />
+        </span>
+      </span>
+      <span className="col-span-3 grid grid-rows-4 gap-3">
+        <input
+          id="playlistname"
+          name="playlistname"
+          type="text"
+          className="row-span-1 rounded-md bg-inputfocus py-1 pl-3 outline-none text-sm placeholder-subdued"
+          placeholder="Título (Ex: Melhor playlist)"
+          spellCheck="false"
+        />
+        <textarea
+          name="playlistdescription"
+          id="playlistdescription"
+          className="w-full row-span-3 rounded-md bg-inputfocus px-3 pt-3 pb-6 outline-none resize-none text-sm placeholder-subdued"
+          placeholder="Adicione uma descrição opcional"
+          spellCheck="false"
+        ></textarea>
+      </span>
+      <section className="justify-end items-center w-full grid col-span-2 col-start-5 col-end-6">
+        <button className="py-3 px-8 bg-white text-black focus:bg-black focus-text-white rounded-full font-bold transition-transform delay-150 hover:scale-105">
+          Salvar
+        </button>
+      </section>
+      <section className="grid col-span-5 font-bold text-xs text-white">
+        <span>
+          Ao continuar, você autoriza o Spotify a acessar a imagem enviada.
+          Certifique-se de que você tem o direito de fazer o upload dessa
+          imagem.
+        </span>
+      </section>
+    </section>
   );
 };

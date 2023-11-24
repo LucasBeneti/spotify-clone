@@ -11,16 +11,18 @@ import {
 } from "@phosphor-icons/react";
 import { useUserDataContext } from "../contexts/UserDataContext";
 import { PlaylistItem } from "./PlaylistItem";
+import { useCookies } from "react-cookie";
 
 export const Sidebar = () => {
+  const [cookies] = useCookies(["user_jwt"]);
   const [selected, setSelected] = useState<"home" | "search">("home");
-  const { getUserToken, userToken } = useUserDataContext();
+  const { userToken } = useUserDataContext();
 
   const { data: userPlaylistsData, isLoading } = useQuery({
     queryKey: ["user_playlists"],
     queryFn: async () => {
       console.log("userToken", userToken);
-      const token = userToken ? userToken : await getUserToken();
+      const token = cookies.user_jwt;
       const response = await fetch("http://localhost:3000/playlist/user", {
         method: "GET",
         headers: { Authorization: `Bearer ${token}` },
@@ -66,7 +68,13 @@ export const Sidebar = () => {
             <p className="text-base font-bold text-white ml-4">Your library</p>
           </div>
           <div className="flex gap-x-4">
-            <Plus size={24} />
+            <button
+              onClick={() => {
+                console.log("add playlist");
+              }}
+            >
+              <Plus size={24} />
+            </button>
             <ArrowRight size={24} />
           </div>
         </div>
