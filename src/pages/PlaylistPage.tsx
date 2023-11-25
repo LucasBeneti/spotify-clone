@@ -1,11 +1,5 @@
-import { useState } from "react";
-import {
-  Clock,
-  Play,
-  Heart,
-  MusicNotesSimple,
-  PencilSimple,
-} from "@phosphor-icons/react";
+import { ChangeEvent, FormEvent, useRef, useState } from "react";
+import { Clock, Play, Heart } from "@phosphor-icons/react";
 import { useParams, Link } from "react-router-dom";
 import { getSongDurationInMinutes } from "../utils";
 import { SongItem } from "../components/reusable/SongItem";
@@ -34,8 +28,13 @@ type PlaylistData = {
   songs: SongData[];
 };
 
+type PlaylistInfoDTO = {
+  playlist_name?: string;
+  playlist_description?: string;
+};
+
 export const PlaylistPage = () => {
-  const [showModal, setShowModal] = useState(true);
+  const [showModal, setShowModal] = useState(false);
   const { id } = useParams();
   // const [likedPlaylist, setLikedPlaylist] = useState(playlistData?.liked);
   const [cookies] = useCookies(["user_jwt"]);
@@ -65,6 +64,38 @@ export const PlaylistPage = () => {
     console.log("Liked this playlist");
   };
 
+  const [playlistInfo, setPlaylistData] = useState<PlaylistInfoDTO>();
+
+  const handleChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
+    const fieldName = e.target.name;
+    const fieldData = e.target.value;
+
+    setPlaylistData((prev) => ({ ...prev, [fieldName]: fieldData }));
+  };
+
+  const handleSaveEdit = async () => {
+    try {
+      if (id && playlistInfo?.playlist_name) {
+        console.log("sending new playlist data", {
+          ...playlistInfo,
+          playlist_id: id,
+        });
+
+        return await fetch(`http://localhost:3000/playlist/${id}`, {
+          method: "PUT",
+          headers: { Authorization: `Bearer ${cookies.user_jwt}` },
+          body: JSON.stringify({
+            name: playlistInfo?.playlist_name,
+            description: playlistInfo?.playlist_description,
+          }),
+        });
+      }
+    } catch (error) {
+      console.error("Erro while trying to submit the edit.", error);
+    }
+  };
   // TODO create a way to select random colors (from an array for example)
   // to be the color for this gradient on the header of the playlist
   return (
@@ -76,7 +107,7 @@ export const PlaylistPage = () => {
             alt="playlist cover art"
             className="w-48"
           />
-          <div>
+          <div onClick={() => setShowModal(true)}>
             <p className="text-xs">Playlist</p>
             <h3 className="sm:text-lg md:text-2xl xl:text-5xl font-display font-bold mt-3 mb-6">
               {playlistData?.name}
@@ -164,53 +195,38 @@ export const PlaylistPage = () => {
       </main>
       {showModal && (
         <Modal handleClose={() => setShowModal(false)}>
-          <NewPlaylistModalContent />
+          <section className="flex flex-col w-full gap-6 pb-3">
+            <input
+              id="playlist_name"
+              name="playlist_name"
+              type="text"
+              className="row-span-1 rounded-md bg-inputfocus py-1 pl-3 outline-none text-sm placeholder-subdued"
+              placeholder="Título (Ex: Melhor playlist)"
+              spellCheck="false"
+              onBlur={handleChange}
+            />
+            <textarea
+              name="playlist_description"
+              id="playlist_description"
+              className="w-full row-span-3 rounded-md bg-inputfocus px-3 pt-3 pb-6 outline-none resize-none text-sm placeholder-subdued"
+              placeholder="Adicione uma descrição opcional"
+              spellCheck="false"
+              onBlur={handleChange}
+            ></textarea>
+            <button
+              onClick={handleSaveEdit}
+              className="py-3 px-8 bg-white text-black focus:bg-black focus-text-white rounded-full font-bold transition-transform delay-150 hover:scale-105"
+            >
+              Salvar
+            </button>
+            <span className="font-bold text-xs text-white">
+              Ao continuar, você autoriza o Spotify a acessar a imagem enviada.
+              Certifique-se de que você tem o direito de fazer o upload dessa
+              imagem.
+            </span>
+          </section>
         </Modal>
       )}
     </>
-  );
-};
-
-const NewPlaylistModalContent = () => {
-  return (
-    <section className="grid w-full gap-4 grid-cols-5 transition pb-3">
-      <span className="w-44 h-44  group/item flex items-center justify-center shadow-neutral-900 shadow-md bg-[#2a2a2a] col-span-2 hover:cursor-pointer">
-        <span className="block group-hover/item:hidden">
-          <MusicNotesSimple size={48} fill="#a7a7a7" className="" />
-        </span>
-        <span className="hidden group-hover/item:block">
-          <PencilSimple size={48} fill="#a7a7a7" className="" />
-        </span>
-      </span>
-      <span className="col-span-3 grid grid-rows-4 gap-3">
-        <input
-          id="playlistname"
-          name="playlistname"
-          type="text"
-          className="row-span-1 rounded-md bg-inputfocus py-1 pl-3 outline-none text-sm placeholder-subdued"
-          placeholder="Título (Ex: Melhor playlist)"
-          spellCheck="false"
-        />
-        <textarea
-          name="playlistdescription"
-          id="playlistdescription"
-          className="w-full row-span-3 rounded-md bg-inputfocus px-3 pt-3 pb-6 outline-none resize-none text-sm placeholder-subdued"
-          placeholder="Adicione uma descrição opcional"
-          spellCheck="false"
-        ></textarea>
-      </span>
-      <section className="justify-end items-center w-full grid col-span-2 col-start-5 col-end-6">
-        <button className="py-3 px-8 bg-white text-black focus:bg-black focus-text-white rounded-full font-bold transition-transform delay-150 hover:scale-105">
-          Salvar
-        </button>
-      </section>
-      <section className="grid col-span-5 font-bold text-xs text-white">
-        <span>
-          Ao continuar, você autoriza o Spotify a acessar a imagem enviada.
-          Certifique-se de que você tem o direito de fazer o upload dessa
-          imagem.
-        </span>
-      </section>
-    </section>
   );
 };
