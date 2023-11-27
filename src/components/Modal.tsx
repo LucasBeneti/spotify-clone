@@ -22,7 +22,7 @@ export const Modal = ({
           <h1 className="text-white text-2xl font-bold">{title}</h1>
           {showCloseButton && (
             <button className="" onClick={handleClose}>
-              <X size={20} fill="#a7a7a7" />
+              <X size={24} fill="#a7a7a7" />
             </button>
           )}
         </header>

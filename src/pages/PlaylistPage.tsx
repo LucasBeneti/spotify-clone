@@ -1,4 +1,4 @@
-import { ChangeEvent, FormEvent, useRef, useState } from "react";
+import { useState } from "react";
 import { Clock, Play, Heart } from "@phosphor-icons/react";
 import { useParams, Link } from "react-router-dom";
 import { getSongDurationInMinutes } from "../utils";
@@ -8,6 +8,7 @@ import { getPlaylistFullInfo } from "../services/playlistServices";
 import { useCookies } from "react-cookie";
 import { useQuery } from "@tanstack/react-query";
 import { Modal } from "../components/Modal";
+import { PlaylistModalContent } from "../components/PlaytlistModalContent";
 
 type SongData = {
   name: string;
@@ -23,6 +24,7 @@ type SongData = {
 type PlaylistData = {
   cover_src: string;
   name: string;
+  description: string;
   author: string;
   liked: boolean;
   songs: SongData[];
@@ -67,7 +69,7 @@ export const PlaylistPage = () => {
   const [playlistInfo, setPlaylistData] = useState<PlaylistInfoDTO>();
 
   const handleChange = (
-    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
     const fieldName = e.target.name;
     const fieldData = e.target.value;
@@ -109,9 +111,12 @@ export const PlaylistPage = () => {
           />
           <div onClick={() => setShowModal(true)}>
             <p className="text-xs">Playlist</p>
-            <h3 className="sm:text-lg md:text-2xl xl:text-5xl font-display font-bold mt-3 mb-6">
+            <h3 className="sm:text-lg md:text-2xl xl:text-5xl font-display font-bold mt-3 mb-2">
               {playlistData?.name}
             </h3>
+            <p className="text-sm text-white mb-6">
+              {playlistData?.description}
+            </p>
             <p className="text-xs font-bold">{playlistData?.author}</p>
           </div>
         </section>
@@ -194,37 +199,14 @@ export const PlaylistPage = () => {
         </table>
       </main>
       {showModal && (
-        <Modal handleClose={() => setShowModal(false)}>
-          <section className="flex flex-col w-full gap-6 pb-3">
-            <input
-              id="playlist_name"
-              name="playlist_name"
-              type="text"
-              className="row-span-1 rounded-md bg-inputfocus py-1 pl-3 outline-none text-sm placeholder-subdued"
-              placeholder="Título (Ex: Melhor playlist)"
-              spellCheck="false"
-              onBlur={handleChange}
-            />
-            <textarea
-              name="playlist_description"
-              id="playlist_description"
-              className="w-full row-span-3 rounded-md bg-inputfocus px-3 pt-3 pb-6 outline-none resize-none text-sm placeholder-subdued"
-              placeholder="Adicione uma descrição opcional"
-              spellCheck="false"
-              onBlur={handleChange}
-            ></textarea>
-            <button
-              onClick={handleSaveEdit}
-              className="py-3 px-8 bg-white text-black focus:bg-black focus-text-white rounded-full font-bold transition-transform delay-150 hover:scale-105"
-            >
-              Salvar
-            </button>
-            <span className="font-bold text-xs text-white">
-              Ao continuar, você autoriza o Spotify a acessar a imagem enviada.
-              Certifique-se de que você tem o direito de fazer o upload dessa
-              imagem.
-            </span>
-          </section>
+        <Modal
+          handleClose={() => setShowModal(false)}
+          title="Editar Playlist Information"
+        >
+          <PlaylistModalContent
+            handleChange={handleChange}
+            handleSaveEdit={handleSaveEdit}
+          />
         </Modal>
       )}
     </>
