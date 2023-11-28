@@ -4,11 +4,18 @@ type PlaylistModalContentProps = {
   handleChange: (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => void;
+  defaultValues?: DefaultValuesType;
+};
+
+type DefaultValuesType = {
+  name?: string;
+  description?: string;
 };
 
 export const PlaylistModalContent = ({
   handleSaveEdit,
   handleChange,
+  defaultValues,
 }: PlaylistModalContentProps) => {
   const [hasError, setHasError] = useState(false);
   const nameInputRef = useRef<HTMLInputElement | null>(null);
@@ -26,7 +33,7 @@ export const PlaylistModalContent = ({
       <span className="row-span-1">
         <input
           id="playlist_name"
-          name="playlist_name"
+          name="name"
           type="text"
           className="w-full rounded-md bg-inputfocus py-1 pl-2 outline-none text-sm placeholder-subdued"
           placeholder="Título (Ex: Melhor playlist)"
@@ -34,6 +41,7 @@ export const PlaylistModalContent = ({
           onBlur={handleChange}
           onFocus={() => setHasError(false)}
           ref={nameInputRef}
+          defaultValue={defaultValues?.name || ""}
         />
         {hasError ? (
           <p className="text-xs text-red-700 font-bold mt-2">
@@ -42,12 +50,13 @@ export const PlaylistModalContent = ({
         ) : null}
       </span>
       <textarea
-        name="playlist_description"
         id="playlist_description"
+        name="description"
         className="w-full row-span-3 rounded-md bg-inputfocus pl-2 pt-3 pb-6 outline-none resize-none text-sm placeholder-subdued"
         placeholder="Adicione uma descrição opcional"
         spellCheck="false"
         onBlur={handleChange}
+        defaultValue={defaultValues?.description || ""}
       ></textarea>
       <button
         onClick={isAbleToSave}

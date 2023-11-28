@@ -139,23 +139,26 @@ const CreateNewPlaylistModal = ({
           ...playlistInfo,
         });
 
-        return await fetch(`http://localhost:3000/playlist/create`, {
-          method: "POST",
-          headers: { Authorization: `Bearer ${cookies.user_jwt}` },
-          body: JSON.stringify({
-            name: playlistInfo?.name,
-            description: playlistInfo?.description,
-          }),
-        });
+        const createPlaylistRes = await fetch(
+          `http://localhost:3000/playlist/create`,
+          {
+            method: "POST",
+            headers: { Authorization: `Bearer ${cookies.user_jwt}` },
+            body: JSON.stringify({
+              name: playlistInfo?.name,
+              description: playlistInfo?.description,
+            }),
+          },
+        );
+
+        return createPlaylistRes;
       }
     } catch (error) {
       console.error("Erro while trying to submit the edit.", error);
-    } finally {
-      handleClose();
     }
   };
   return (
-    <Modal handleClose={handleClose} title="Criar Playlist Information">
+    <Modal handleClose={handleClose} title="Criar Playlist">
       <PlaylistModalContent
         handleChange={handleChange}
         handleSaveEdit={handleSaveEdit}

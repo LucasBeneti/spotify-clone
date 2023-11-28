@@ -31,8 +31,8 @@ type PlaylistData = {
 };
 
 type PlaylistInfoDTO = {
-  playlist_name?: string;
-  playlist_description?: string;
+  name?: string;
+  description?: string;
 };
 
 export const PlaylistPage = () => {
@@ -79,7 +79,7 @@ export const PlaylistPage = () => {
 
   const handleSaveEdit = async () => {
     try {
-      if (id && playlistInfo?.playlist_name) {
+      if (id && playlistInfo?.name) {
         console.log("sending new playlist data", {
           ...playlistInfo,
           playlist_id: id,
@@ -89,8 +89,8 @@ export const PlaylistPage = () => {
           method: "PUT",
           headers: { Authorization: `Bearer ${cookies.user_jwt}` },
           body: JSON.stringify({
-            name: playlistInfo?.playlist_name,
-            description: playlistInfo?.playlist_description,
+            name: playlistInfo?.name,
+            description: playlistInfo?.description,
           }),
         });
       }
@@ -206,6 +206,10 @@ export const PlaylistPage = () => {
           <PlaylistModalContent
             handleChange={handleChange}
             handleSaveEdit={handleSaveEdit}
+            defaultValues={{
+              name: playlistData?.name,
+              description: playlistData?.description,
+            }}
           />
         </Modal>
       )}
