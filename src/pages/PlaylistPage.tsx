@@ -1,31 +1,58 @@
+import { useState } from "react";
 import { Clock, Play, Heart } from "@phosphor-icons/react";
-import { useNavigation, useLoaderData } from "react-router-dom";
-import { useCustomAudioContext } from "../contexts/CustomAudioContext";
+import { useParams, Link } from "react-router-dom";
 import { getSongDurationInMinutes } from "../utils";
 import { SongItem } from "../components/reusable/SongItem";
 import { BigPlayButton } from "../components/reusable/BigPlayButton";
-import { useState } from "react";
+import { getPlaylistFullInfo } from "../services/playlistServices";
+import { useCookies } from "react-cookie";
+import { useQuery } from "@tanstack/react-query";
+import { Modal } from "../components/Modal";
+import { PlaylistModalContent } from "../components/PlaytlistModalContent";
 
 type SongData = {
   name: string;
   artist: string;
   album: string;
+  album_name?: string;
+  album_id?: string;
   date_added: Date;
   duration: number;
 };
 
+// TODO duplicate?
 type PlaylistData = {
   cover_src: string;
   name: string;
+  description: string;
   author: string;
   liked: boolean;
   songs: SongData[];
 };
 
+type PlaylistInfoDTO = {
+  name?: string;
+  description?: string;
+};
+
 export const PlaylistPage = () => {
-  const data = useLoaderData() as PlaylistData;
-  const { state } = useNavigation();
-  const [likedPlaylist, setLikedPlaylist] = useState(data.liked);
+  const [showModal, setShowModal] = useState(false);
+  const { id } = useParams();
+  // const [likedPlaylist, setLikedPlaylist] = useState(playlistData?.liked);
+  const [cookies] = useCookies(["user_jwt"]);
+  // TODO implement the error handling for this
+  const { data: playlistData, isLoading } = useQuery<PlaylistData | null>({
+    queryKey: ["playlist_data", id],
+    queryFn: async () => {
+      if (!id) return null;
+
+      const userToken = cookies.user_jwt;
+      const playlistData = await getPlaylistFullInfo(userToken, id);
+      return playlistData;
+    },
+    refetchOnMount: true,
+    refetchOnWindowFocus: false,
+  });
 
   // TODO create the function that will actually play the song, given some information
   const handlePlayThis = (song: SongData) => {
@@ -35,8 +62,41 @@ export const PlaylistPage = () => {
 
   const handleLikePlaylist = () => {
     // TODO implement this feature
-    setLikedPlaylist(!likedPlaylist);
+    // setLikedPlaylist(!likedPlaylist);
     console.log("Liked this playlist");
+  };
+
+  const [playlistInfo, setPlaylistData] = useState<PlaylistInfoDTO>();
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
+    const fieldName = e.target.name;
+    const fieldData = e.target.value;
+
+    setPlaylistData((prev) => ({ ...prev, [fieldName]: fieldData }));
+  };
+
+  const handleSaveEdit = async () => {
+    try {
+      if (id && playlistInfo?.name) {
+        console.log("sending new playlist data", {
+          ...playlistInfo,
+          playlist_id: id,
+        });
+
+        return await fetch(`http://localhost:3000/playlist/${id}`, {
+          method: "PUT",
+          headers: { Authorization: `Bearer ${cookies.user_jwt}` },
+          body: JSON.stringify({
+            name: playlistInfo?.name,
+            description: playlistInfo?.description,
+          }),
+        });
+      }
+    } catch (error) {
+      console.error("Erro while trying to submit the edit.", error);
+    }
   };
   // TODO create a way to select random colors (from an array for example)
   // to be the color for this gradient on the header of the playlist
@@ -44,13 +104,20 @@ export const PlaylistPage = () => {
     <>
       <header className="w-100 bg-gradient-to-b from-cyan-950 to-base h-96">
         <section className="flex gap-x-4 items-end mt-24 px-6">
-          <img src={data.cover_src} alt="playlist cover art" className="w-48" />
-          <div>
+          <img
+            src={playlistData?.cover_src}
+            alt="playlist cover art"
+            className="w-48"
+          />
+          <div onClick={() => setShowModal(true)}>
             <p className="text-xs">Playlist</p>
-            <h3 className="sm:text-lg md:text-2xl xl:text-5xl font-display font-bold mt-3 mb-6">
-              {data.name}
+            <h3 className="sm:text-lg md:text-2xl xl:text-5xl font-display font-bold mt-3 mb-2">
+              {playlistData?.name}
             </h3>
-            <p className="text-xs font-bold">{data.author}</p>
+            <p className="text-sm text-white mb-6">
+              {playlistData?.description}
+            </p>
+            <p className="text-xs font-bold">{playlistData?.author}</p>
           </div>
         </section>
       </header>
@@ -65,11 +132,7 @@ export const PlaylistPage = () => {
             onClick={handleLikePlaylist}
             className="hover:scale-105 transition-all delay-75"
           >
-            <Heart
-              fill="#1ed760"
-              weight={likedPlaylist ? "fill" : "regular"}
-              size={32}
-            />
+            <Heart fill="#1ed760" weight={"regular"} size={32} />
           </button>
         </section>
         <table className="table-auto border-collapse bg-transparent w-full">
@@ -85,10 +148,14 @@ export const PlaylistPage = () => {
             </tr>
           </thead>
           <tbody>
-            {state === "loading" ? (
-              <h2>Loading...</h2>
+            {isLoading || !playlistData?.songs?.length ? (
+              <tr>
+                <td>
+                  <h2>Loading...</h2>
+                </td>
+              </tr>
             ) : (
-              data.songs.map((song, index) => {
+              playlistData.songs?.map((song, index) => {
                 return (
                   <tr
                     className="group/item hover:bg-highlight transition cursor-pointer"
@@ -109,12 +176,14 @@ export const PlaylistPage = () => {
                       <SongItem
                         artist={song.artist}
                         name={song.name}
-                        imgSrc={data.cover_src}
+                        imgSrc={playlistData.cover_src}
                         variant="playlist"
                       />
                     </td>
-                    <td className="text-sm p-4 text-left text-white">
-                      {song.album}
+                    <td className="text-sm p-4 text-left text-white hover:underline">
+                      <Link to={`/album/${song.album_id}`}>
+                        {song.album_name}
+                      </Link>
                     </td>
                     <td className="text-sm p-4 text-left text-white">
                       9 de jun. de 2022
@@ -129,52 +198,21 @@ export const PlaylistPage = () => {
           </tbody>
         </table>
       </main>
+      {showModal && (
+        <Modal
+          handleClose={() => setShowModal(false)}
+          title="Editar Playlist Information"
+        >
+          <PlaylistModalContent
+            handleChange={handleChange}
+            handleSaveEdit={handleSaveEdit}
+            defaultValues={{
+              name: playlistData?.name,
+              description: playlistData?.description,
+            }}
+          />
+        </Modal>
+      )}
     </>
   );
-};
-
-export const playlistLoader = async ({ params }) => {
-  const { id } = params;
-
-  const res = new Promise((resolve, reject) => {
-    resolve({
-      cover_src:
-        "https://i.scdn.co/image/ab6761610000f1788278b782cbb5a3963db88ada",
-      name: "Kenny Beats Boiler Room Barcelona",
-      author: "lucasbeneti",
-      liked: true,
-      songs: [
-        {
-          name: "LUMBERJACK",
-          artist: "Tyler, The Creator",
-          album: "Call Me If You Get Lost",
-          date_added: Date.now(),
-          duration: 138,
-        },
-        {
-          name: "LUMBERJACK",
-          artist: "Tyler, The Creator",
-          album: "Call Me If You Get Lost",
-          date_added: Date.now(),
-          duration: 138,
-        },
-        {
-          name: "LUMBERJACK",
-          artist: "Tyler, The Creator",
-          album: "Call Me If You Get Lost",
-          date_added: Date.now(),
-          duration: 138,
-        },
-        {
-          name: "LUMBERJACK",
-          artist: "Tyler, The Creator",
-          album: "Call Me If You Get Lost",
-          date_added: Date.now(),
-          duration: 138,
-        },
-      ],
-    });
-  });
-
-  return await res;
 };

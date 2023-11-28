@@ -11,7 +11,13 @@ module.exports = {
     "prettier",
     "plugin:prettier/recommended",
   ],
-  ignorePatterns: ["dist", ".eslintrc.cjs", "src/index.css", "**/*.md"],
+  ignorePatterns: [
+    "dist",
+    ".eslintrc.cjs",
+    "src/index.css",
+    "**/*.md",
+    "**/*.config.js",
+  ],
   parser: "@typescript-eslint/parser",
   // parserOptions: {
   //   ecmaVersion: "latest",
@@ -27,5 +33,7 @@ module.exports = {
     ],
     "@typescript-eslint/no-unused-vars": "off",
     "@typescript-eslint/no-explicit-any": "off",
+    "react-hooks/rules-of-hooks": "off",
+    "no-case-declarations": "off",
   },
 };

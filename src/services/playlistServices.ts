@@ -1,55 +1,64 @@
+import { useCookies } from "react-cookie";
+import { useQuery } from "@tanstack/react-query";
+
 export type Playlist = {
+  id: number;
+  playlist_id: number;
+  cover_src?: string;
   name: string;
-  cover_src: string;
-  author: string;
-  liked?: boolean;
-  songs: {
-    name: string;
-    artist: string;
-    album: string;
-    date_added: Date;
-    duration: number;
-  }[];
+  description?: string;
+  author_username: string;
+  type?: string;
 };
 
-export const getUserPlaylists = async (
-  userId: string | number,
-): Promise<Playlist[] | []> => {
-  console.log("should return user with id", userId, "its playlists");
-  return new Promise((resolve) => {
-    resolve([
-      {
-        name: "Kenny Beats Boiler Room Barcelona",
-        cover_src:
-          "https://i.scdn.co/image/ab6761610000f1788278b782cbb5a3963db88ada",
-        author: "lucasbeneti",
-        liked: true,
-        songs: [
-          {
-            name: "LUMBERJACK",
-            artist: "Tyler, The Creator",
-            album: "Call Me If You Get Lost",
-            date_added: new Date(),
-            duration: 138,
-          },
-          {
-            name: "LUMBERJACK",
-            artist: "Tyler, The Creator",
-            album: "Call Me If You Get Lost",
-            date_added: new Date(),
-            duration: 138,
-          },
-          {
-            name: "LUMBERJACK",
-            artist: "Tyler, The Creator",
-            album: "Call Me If You Get Lost",
-            date_added: new Date(),
-            duration: 138,
-          },
-        ],
-      },
-    ]);
+export const getUserPlaylists = async () => {
+  const [cookies] = useCookies(["user_jwt"]);
+
+  console.log("Looking for playlists");
+  if (!cookies.user_jwt) {
+    return console.error("Token not provided.");
+  }
+  const headers = { Authorization: `Bearer ${cookies.user_jwt}` };
+  const { data, isError, isLoading } = useQuery({
+    queryKey: ["user_playlists"],
+    queryFn: async () => {
+      const response = await fetch("http://localhost:3000/playlist/user", {
+        method: "GET",
+        headers,
+      });
+
+      return (await response.json()) as object;
+    },
   });
+  return { data, isError, isLoading };
+};
+
+export const getPlaylistFullInfo = async (
+  token: string | null | undefined,
+  playlistId: string,
+) => {
+  const playlistInfoResponse = await fetch(
+    `http://localhost:3000/playlist/${playlistId}`,
+    {
+      headers: { Authorization: `Bearer ${token}` },
+    },
+  );
+  const { playlistInfo } = await playlistInfoResponse.json();
+
+  const playlistSongsResponse = await fetch(
+    `http://localhost:3000/playlist/songs/${playlistId}`,
+    {
+      headers: { Authorization: `Bearer ${token}` },
+    },
+  );
+
+  const { songs } = await playlistSongsResponse.json();
+  const playlistFullInfo = {
+    ...playlistInfo,
+    songs,
+  };
+
+  return playlistFullInfo;
 };
 
 export const addSongToPlaylist = (song_id: number, playlist_id: number) => {

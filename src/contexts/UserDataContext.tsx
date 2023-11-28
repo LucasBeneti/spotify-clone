@@ -1,10 +1,24 @@
-import { createContext, useRef, useState, useEffect, useContext } from "react";
-import { useUser } from "@clerk/clerk-react";
-import { getUserPlaylists, Playlist } from "../services/playlistServices";
+import { createContext, useEffect, useContext, useReducer } from "react";
+import { useUser, useAuth } from "@clerk/clerk-react";
+import { useCookies } from "react-cookie";
+import { userReducer, initialUserState } from "./UserDataReducer";
+import { getCookieExpDate } from "../utils";
+
+export type Playlist = {
+  playlist_id: number;
+  cover_src?: string;
+  name: string;
+  id: number;
+  author_username?: string;
+  author?: string;
+  type?: string;
+};
 
 type UserDataContext = {
-  playlists?: Promise<Playlist[] | undefined> | undefined;
-  username: string;
+  playlists?: Playlist[] | undefined;
+  username?: string;
+  userToken?: string;
+  getUserToken?: () => Promise<string | null>;
 };
 
 export const UserDataContext = createContext<UserDataContext>({ username: "" });
@@ -13,25 +27,63 @@ interface UserDataContextProps {
 }
 
 export const UserDataContextProvider = ({ children }: UserDataContextProps) => {
-  const { user } = useUser();
-  const username = user?.username ? user.username : "random123";
+  const [cookies, setCookies] = useCookies(["user_jwt"]);
+  const { user } = useUser(); // username nao esta definido quando renderiza o componente (tenho que entender melhor isso)
+  const { getToken } = useAuth();
+  const [state, dispatch] = useReducer(userReducer, initialUserState);
 
-  const playlists = async () => {
+  const getUserToken = async () => {
     try {
-      const usersPlaylist = await getUserPlaylists(username);
-      return usersPlaylist;
+      return await getToken({ template: "spotify-clone-template" });
+    } catch (error) {
+      console.error(error);
+      return null;
+    }
+  };
+
+  const setUserToken = async () => {
+    try {
+      let token;
+      if (!cookies.user_jwt) {
+        token = await getUserToken();
+        setCookies("user_jwt", token, {
+          path: "/",
+          expires: getCookieExpDate(new Date(), 1),
+        });
+      } else {
+        token = cookies.user_jwt;
+      }
+      dispatch({ type: "SET_TOKEN", data: token });
     } catch (error) {
       console.error(error);
     }
   };
+
+  useEffect(() => {
+    setUserToken();
+  }, []);
+
   return (
     <UserDataContext.Provider
       value={{
-        playlists,
-        username,
+        playlists: state.playlists,
+        username: state.userinfo.username,
+        userToken: state.userinfo.token,
+        getUserToken,
       }}
     >
       {children}
     </UserDataContext.Provider>
   );
+};
+
+export const useUserDataContext = () => {
+  const context = useContext(UserDataContext);
+  if (!context) {
+    throw new Error(
+      "useUserDataContext must be used within UserDataContextProvider.",
+    );
+  }
+
+  return context;
 };

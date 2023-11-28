@@ -31,18 +31,18 @@ export const DefaultLayout = () => {
                   className="flex flex-1 w-full absolute top-0 justify-between pr-4 pl-4 pt-4"
                   style={{ zIndex: 100 }}
                 >
-                  <div className="flex gap-x-2">
+                  <div className="flex gap-x-2 items-center">
                     <button
-                      className="rounded-full bg-black p-2"
+                      className="rounded-full bg-black p-1 h-10 w-10 flex justify-center items-center"
                       onClick={navigateBack}
                     >
-                      <CaretLeft size={24} />
+                      <CaretLeft size={22} />
                     </button>
                     <button
-                      className="rounded-full bg-black p-2"
+                      className="rounded-full bg-black p-1 h-10 w-10 flex justify-center items-center"
                       onClick={navigateForward}
                     >
-                      <CaretRight size={24} />
+                      <CaretRight size={20} />
                     </button>
                     {showSearchInput && <SearchInput />}
                   </div>
@@ -51,7 +51,7 @@ export const DefaultLayout = () => {
                     <button className="rounded-full bg-black p-2">
                       <Bell size={24} />
                     </button>
-                    <button className="bg-black">
+                    <button className="bg-black rounded-full">
                       <img
                         src={user?.imageUrl}
                         alt={`${user?.username} profile image`}
