@@ -4,6 +4,8 @@ import { MagnifyingGlass, X } from "@phosphor-icons/react";
 
 import { debounce } from "../utils";
 
+// TODO implement the data fetch and the store handling the data from the server.
+// The idea to have the data in a store, is to be accessible to everyone.
 export const SearchInput = () => {
   const [inputFocus, setInputFocus] = useState(false);
   const formRef = useRef<HTMLFormElement>(null);
@@ -34,7 +36,7 @@ export const SearchInput = () => {
           type="text"
           name="q"
           onChange={debounce(handleSearchInput, 400)}
-          className="h-10 w-56 py-2 pl-4 bg-transparent outline-none"
+          className="h-10 w-56 py-2 pl-1 bg-transparent outline-none"
           placeholder="O que você quer ouvir?"
           ref={inputRef}
           onFocus={() => setInputFocus(true)}

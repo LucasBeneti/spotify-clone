@@ -111,27 +111,7 @@ export const Search = () => {
     artist: "",
     songs: [],
   });
-  // useNavigation hook will give us loading state while routing
-  // useEffect(() => {
-  // if (searchResult) {
-  //   // TODO try to type the result coming from the LoaderData hook
-  //   const { artist, songs } = searchResult;
-  //   setResult({
-  //     climate,
-  //     name,
-  //     gravity,
-  //     rotationPeriod,
-  //     population,
-  //   });
-  //   console.log("Planet data", {
-  //     climate,
-  //     name,
-  //     gravity,
-  //     rotationPeriod,
-  //     population,
-  //   });
-  // }
-  // }, [searchResult]);
+
   const { artist } = testSearchData;
   // TODO depending on the filter selected, should render a different UI with the result of the filtered search
   const searchFilters = ["All", "Artists", "Songs", "Albums"];
