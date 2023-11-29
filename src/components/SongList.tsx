@@ -3,30 +3,34 @@ import { SongItem } from "./reusable/SongItem";
 type SongListProps = {
   songs: {
     name: string;
-    albumCover: string;
+    albumCoverArt: string;
     explicit?: boolean;
     liked?: boolean;
+    authorName: string;
+    albumName: string;
   }[];
-  artist: string;
+  artist?: string;
 };
 
 export const SongList = ({ songs, artist }: SongListProps) => {
   console.log(songs);
   return (
     <ul className="flex flex-1 flex-col gap-y-2">
-      {songs.map(({ name, albumCover, explicit, liked }, index) => {
-        return (
-          <SongItem
-            imgSrc={albumCover}
-            name={name}
-            artist={artist}
-            explicit={explicit}
-            liked={liked}
-            variant="search"
-            key={`${name}_${index}`}
-          />
-        );
-      })}
+      {songs.map(
+        ({ name, albumCoverArt, explicit, liked, authorName }, index) => {
+          return (
+            <SongItem
+              imgSrc={albumCoverArt}
+              name={name}
+              artist={artist ? artist : authorName}
+              explicit={explicit}
+              liked={liked}
+              variant="search"
+              key={`${name}_${index}`}
+            />
+          );
+        },
+      )}
     </ul>
   );
 };

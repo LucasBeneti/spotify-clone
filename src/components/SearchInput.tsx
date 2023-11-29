@@ -3,6 +3,7 @@ import { Form } from "react-router-dom";
 import { MagnifyingGlass, X } from "@phosphor-icons/react";
 
 import { debounce } from "../utils";
+import { useSearchStore } from "../store/searchStore";
 
 // TODO implement the data fetch and the store handling the data from the server.
 // The idea to have the data in a store, is to be accessible to everyone.
@@ -11,14 +12,14 @@ export const SearchInput = () => {
   const formRef = useRef<HTMLFormElement>(null);
   const inputRef = useRef(null);
 
+  const setSearchTerm = useSearchStore((state) => state.setSearchTerm);
   const handleSearchInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
     if (!e.target.value) {
       return;
     }
-    formRef.current?.dispatchEvent(
-      new Event("submit", { bubbles: true, cancelable: true }),
-    );
+
+    setSearchTerm(e.target.value);
   };
   function clearSearchInput() {
     inputRef.current.value = "";

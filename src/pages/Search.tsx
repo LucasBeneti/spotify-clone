@@ -4,6 +4,8 @@ import { FilterItem } from "../components/FilterItem";
 import { ArtistCard } from "../components/ArtistCard";
 import { SongList } from "../components/SongList";
 import { VerticalCard } from "../components/VerticalCard";
+import { useSearchStore } from "../store/searchStore";
+import { useQuery } from "@tanstack/react-query";
 
 type SearchResult = {
   artist: string;
@@ -107,14 +109,32 @@ export const Search = () => {
   const { state } = useNavigation();
   const [selectedFilter, setSelectedFilter] = useState("All");
   // TODO revisit this data showing/setting to understand better how this should work
-  const [result, setResult] = useState<SearchResult>({
-    artist: "",
-    songs: [],
-  });
 
   const { artist } = testSearchData;
   // TODO depending on the filter selected, should render a different UI with the result of the filtered search
   const searchFilters = ["All", "Artists", "Songs", "Albums"];
+  const searchTerm = useSearchStore((state) => state.searchTerm);
+  const { data } = useQuery({
+    queryKey: ["search", searchTerm],
+    queryFn: async () => {
+      const searchRes = await fetch(
+        `http://localhost:3000/search/${searchTerm}`,
+      );
+
+      return await searchRes.json();
+    },
+    retry: false,
+  });
+
+  const songResult = data
+    ? data.songsResult?.map((song) => ({
+        name: song.name,
+        albumCoverArt: song.album_cover_art,
+        authorName: song.author_name,
+        albumName: song.album_name,
+      }))
+    : [];
+
   return (
     <section className="mt-20 mx-6 flex flex-col">
       {state === "loading" && <h2>Loading...</h2>}
@@ -138,7 +158,7 @@ export const Search = () => {
         <section className="mt-4 flex flex-col gap-y-2 w-full">
           <h3 className="text-2xl font-display font-bold mb-4">Songs</h3>
           <section className="flex">
-            <SongList songs={artist.songs} artist={artist.name} />
+            <SongList songs={songResult} />
           </section>
         </section>
       </main>
