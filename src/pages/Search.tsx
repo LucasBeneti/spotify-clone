@@ -131,6 +131,13 @@ export const Search = () => {
       }))
     : null;
 
+  const artistsResult = data
+    ? data.artists.map((artist) => ({
+        name: artist.name,
+        id: artist.id,
+      }))
+    : null;
+
   return (
     <section className="mt-20 mx-6 flex flex-col">
       {isLoading && <h2>Loading...</h2>}
@@ -169,17 +176,15 @@ export const Search = () => {
         ) : null}
       </main>
       <section className="flex flex-1 flex-col mt-4">
-        <h3 className="text-2xl font-display font-bold mb-4">
-          With {artist.name}
-        </h3>
+        <h3 className="text-2xl font-display font-bold mb-4">Artists</h3>
         <div className="">
           <section className="flex gap-x-6 scroll-smooth overflow-x-auto">
-            {artist.playlists.map((playlist, index) => (
+            {artistsResult.map((artist) => (
               <VerticalCard
-                title={playlist.name}
-                subtitle={playlist.owner}
-                coverSrc={playlist.coverSrc}
-                key={`${playlist}_${index}`}
+                title={artist.name}
+                subtitle="Artist"
+                coverSrc={artist.coverSrc}
+                key={`${artist.id}`}
               />
             ))}
           </section>
