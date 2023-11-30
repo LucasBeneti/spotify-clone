@@ -1,16 +1,10 @@
-import { useEffect, useState } from "react";
-import { useLoaderData, useNavigation } from "react-router-dom";
+import { useState } from "react";
 import { FilterItem } from "../components/FilterItem";
-import { ArtistCard } from "../components/ArtistCard";
 import { SongList } from "../components/SongList";
 import { VerticalCard } from "../components/VerticalCard";
 import { useSearchStore } from "../store/searchStore";
 import { useQuery } from "@tanstack/react-query";
-
-type SearchResult = {
-  artist: string;
-  songs: { name: string; album: string }[];
-};
+import { BestResultCard } from "../components/BestResultCard";
 
 const testSearchData = {
   artist: {
@@ -106,38 +100,40 @@ const testSearchData = {
 
 export const Search = () => {
   // const searchResult = useLoaderData();
-  const { state } = useNavigation();
   const [selectedFilter, setSelectedFilter] = useState("All");
   // TODO revisit this data showing/setting to understand better how this should work
 
   const { artist } = testSearchData;
   // TODO depending on the filter selected, should render a different UI with the result of the filtered search
   const searchFilters = ["All", "Artists", "Songs", "Albums"];
-  const searchTerm = useSearchStore((state) => state.searchTerm);
-  const { data } = useQuery({
+  const searchTerm = useSearchStore((state) => state.searchTerm); // TODO what if we get the state from the URL?
+
+  const { data, isLoading } = useQuery({
     queryKey: ["search", searchTerm],
     queryFn: async () => {
       const searchRes = await fetch(
         `http://localhost:3000/search/${searchTerm}`,
       );
+      const parsed = await searchRes.json();
+      console.log(parsed);
 
-      return await searchRes.json();
+      return parsed;
     },
     retry: false,
   });
 
   const songResult = data
-    ? data.songsResult?.map((song) => ({
+    ? data.songs?.map((song) => ({
         name: song.name,
         albumCoverArt: song.album_cover_art,
         authorName: song.author_name,
         albumName: song.album_name,
       }))
-    : [];
+    : null;
 
   return (
     <section className="mt-20 mx-6 flex flex-col">
-      {state === "loading" && <h2>Loading...</h2>}
+      {isLoading && <h2>Loading...</h2>}
       <section className="flex gap-x-4">
         {searchFilters.map((filter, index) => (
           <FilterItem
@@ -149,18 +145,28 @@ export const Search = () => {
         ))}
       </section>
       <main className="flex gap-x-6 flex-col lg:flex-row">
-        <section className="mt-4 flex flex-col gap-y-2">
-          <h3 className="text-2xl font-display font-bold mb-4">Best result</h3>
-          <section className="flex">
-            <ArtistCard name={artist.name} imgSrc={artist.imgSrc} />
+        {songResult && (
+          <section className="mt-4 flex flex-col gap-y-2">
+            <h3 className="text-2xl font-display font-bold mb-4">
+              Best result
+            </h3>
+            <section className="flex">
+              <BestResultCard
+                name={songResult[0].name}
+                imgSrc={songResult[0].albumCoverArt}
+                authorName={songResult[0].authorName}
+              />
+            </section>
           </section>
-        </section>
-        <section className="mt-4 flex flex-col gap-y-2 w-full">
-          <h3 className="text-2xl font-display font-bold mb-4">Songs</h3>
-          <section className="flex">
-            <SongList songs={songResult} />
+        )}
+        {songResult ? (
+          <section className="mt-4 flex flex-col gap-y-2 w-full">
+            <h3 className="text-2xl font-display font-bold mb-4">Songs</h3>
+            <section className="flex">
+              <SongList songs={songResult} />
+            </section>
           </section>
-        </section>
+        ) : null}
       </main>
       <section className="flex flex-1 flex-col mt-4">
         <h3 className="text-2xl font-display font-bold mb-4">
