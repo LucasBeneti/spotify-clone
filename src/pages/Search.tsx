@@ -1,128 +1,50 @@
 import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { FilterItem } from "../components/FilterItem";
 import { SongList } from "../components/SongList";
 import { VerticalCard } from "../components/VerticalCard";
-import { useSearchStore } from "../store/searchStore";
-import { useQuery } from "@tanstack/react-query";
 import { BestResultCard } from "../components/BestResultCard";
-
-const testSearchData = {
-  artist: {
-    name: "Tyler, The Creator",
-    imgSrc: "https://i.scdn.co/image/ab6761610000f1788278b782cbb5a3963db88ada",
-    songs: [
-      {
-        name: "See You Again (feat. Kali Uchis)",
-        albumCover:
-          "https://i.scdn.co/image/ab6761610000f1788278b782cbb5a3963db88ada",
-      },
-      {
-        name: "EARTHQUAKE",
-        albumCover:
-          "https://i.scdn.co/image/ab6761610000f1788278b782cbb5a3963db88ada",
-        explicit: true,
-      },
-      {
-        name: "NEW MAGIC WAND",
-        albumCover:
-          "https://i.scdn.co/image/ab6761610000f1788278b782cbb5a3963db88ada",
-      },
-      {
-        name: "GONE, GONE/ THANK YOU",
-        albumCover:
-          "https://i.scdn.co/image/ab6761610000f1788278b782cbb5a3963db88ada",
-      },
-    ],
-    playlists: [
-      {
-        name: "This is Tyler, the Creator",
-        coverSrc:
-          "https://i.scdn.co/image/ab6761610000f1788278b782cbb5a3963db88ada",
-        owner: "Spotify",
-      },
-      {
-        name: "This is Tyler, the Creator",
-        coverSrc:
-          "https://i.scdn.co/image/ab6761610000f1788278b782cbb5a3963db88ada",
-        owner: "Spotify",
-      },
-      {
-        name: "This is Tyler, the Creator",
-        coverSrc:
-          "https://i.scdn.co/image/ab6761610000f1788278b782cbb5a3963db88ada",
-        owner: "Spotify",
-      },
-      {
-        name: "This is Tyler, the Creator",
-        coverSrc:
-          "https://i.scdn.co/image/ab6761610000f1788278b782cbb5a3963db88ada",
-        owner: "Spotify",
-      },
-      {
-        name: "This is Tyler, the Creator",
-        coverSrc:
-          "https://i.scdn.co/image/ab6761610000f1788278b782cbb5a3963db88ada",
-        owner: "Spotify",
-      },
-      {
-        name: "This is Tyler, the Creator",
-        coverSrc:
-          "https://i.scdn.co/image/ab6761610000f1788278b782cbb5a3963db88ada",
-        owner: "Spotify",
-      },
-      {
-        name: "This is Tyler, the Creator",
-        coverSrc:
-          "https://i.scdn.co/image/ab6761610000f1788278b782cbb5a3963db88ada",
-        owner: "Spotify",
-      },
-      {
-        name: "This is Tyler, the Creator",
-        coverSrc:
-          "https://i.scdn.co/image/ab6761610000f1788278b782cbb5a3963db88ada",
-        owner: "Spotify",
-      },
-      {
-        name: "This is Tyler, the Creator",
-        coverSrc:
-          "https://i.scdn.co/image/ab6761610000f1788278b782cbb5a3963db88ada",
-        owner: "Spotify",
-      },
-      {
-        name: "This is Tyler, the Creator",
-        coverSrc:
-          "https://i.scdn.co/image/ab6761610000f1788278b782cbb5a3963db88ada",
-        owner: "Spotify",
-      },
-    ],
-  },
-};
+import { useSearchParams } from "react-router-dom";
 
 export const Search = () => {
-  // const searchResult = useLoaderData();
-  const [selectedFilter, setSelectedFilter] = useState("All");
-  // TODO revisit this data showing/setting to understand better how this should work
+  const [selectedFilter, setSelectedFilter] = useState("all");
 
-  const { artist } = testSearchData;
-  // TODO depending on the filter selected, should render a different UI with the result of the filtered search
-  const searchFilters = ["All", "Artists", "Songs", "Albums"];
-  const searchTerm = useSearchStore((state) => state.searchTerm); // TODO what if we get the state from the URL?
+  const searchFilters = ["all", "artists", "songs", "albums"];
+
+  const [searchParams, setSearchParams] = useSearchParams();
+  const searchTerm = searchParams.get("q");
+  const searchFilter = searchParams.get("search_filter");
+
+  const handleSelectFilter = (f: string) => {
+    if (f === "all" || !searchTerm) {
+      searchParams.delete("search_filter");
+      // searchParams.delete("q"); // TODO fix this logic to erase search term
+      setSearchParams(searchParams);
+    } else {
+      setSearchParams({ q: searchTerm, search_filter: f });
+    }
+    setSelectedFilter(f);
+  };
 
   const { data, isLoading } = useQuery({
-    queryKey: ["search", searchTerm],
+    queryKey: ["search", searchTerm, searchFilter],
     queryFn: async () => {
-      const searchRes = await fetch(
-        `http://localhost:3000/search/${searchTerm}`,
-      );
+      const isFilteredQuery = searchFilter !== "all" && searchFilter;
+      const requestURL = isFilteredQuery
+        ? `http://localhost:3000/search/${searchTerm}/${searchFilter.toLowerCase()}`
+        : `http://localhost:3000/search/${searchTerm}`;
+      const searchRes = await fetch(requestURL);
       const parsed = await searchRes.json();
-      console.log(parsed);
+      if (isFilteredQuery) {
+        return { [searchFilter]: parsed.filteredData };
+      }
 
       return parsed;
     },
     retry: false,
   });
 
-  const songResult = data
+  const songResult = data?.songs
     ? data.songs?.map((song) => ({
         name: song.name,
         albumCoverArt: song.album_cover_art,
@@ -131,7 +53,7 @@ export const Search = () => {
       }))
     : null;
 
-  const artistsResult = data
+  const artistsResult = data?.artists
     ? data.artists.map((artist) => ({
         name: artist.name,
         id: artist.id,
@@ -144,15 +66,15 @@ export const Search = () => {
       <section className="flex gap-x-4">
         {searchFilters.map((filter, index) => (
           <FilterItem
-            onClickHandle={() => setSelectedFilter(filter)}
+            onClickHandle={() => handleSelectFilter(filter)}
             text={filter}
             selected={filter === selectedFilter}
             key={`${filter}_${index}`}
           />
         ))}
       </section>
-      <main className="flex gap-x-6 flex-col lg:flex-row">
-        {songResult && (
+      {songResult && (
+        <main className="flex gap-x-6 flex-col lg:flex-row">
           <section className="mt-4 flex flex-col gap-y-2">
             <h3 className="text-2xl font-display font-bold mb-4">
               Best result
@@ -165,31 +87,32 @@ export const Search = () => {
               />
             </section>
           </section>
-        )}
-        {songResult ? (
           <section className="mt-4 flex flex-col gap-y-2 w-full">
             <h3 className="text-2xl font-display font-bold mb-4">Songs</h3>
             <section className="flex">
               <SongList songs={songResult} />
             </section>
           </section>
-        ) : null}
-      </main>
-      <section className="flex flex-1 flex-col mt-4">
-        <h3 className="text-2xl font-display font-bold mb-4">Artists</h3>
-        <div className="">
-          <section className="flex gap-x-6 scroll-smooth overflow-x-auto">
-            {artistsResult.map((artist) => (
-              <VerticalCard
-                title={artist.name}
-                subtitle="Artist"
-                coverSrc={artist.coverSrc}
-                key={`${artist.id}`}
-              />
-            ))}
-          </section>
-        </div>
-      </section>
+        </main>
+      )}
+      {artistsResult && (
+        <section className="flex flex-1 flex-col mt-4">
+          <h3 className="text-2xl font-display font-bold mb-4">Artists</h3>
+          <div className="">
+            <section className="flex gap-x-6 scroll-smooth overflow-x-auto">
+              {artistsResult &&
+                artistsResult.map((artist) => (
+                  <VerticalCard
+                    title={artist.name}
+                    subtitle="Artist"
+                    coverSrc={artist.coverSrc}
+                    key={`${artist.id}`}
+                  />
+                ))}
+            </section>
+          </div>
+        </section>
+      )}
     </section>
   );
 };
