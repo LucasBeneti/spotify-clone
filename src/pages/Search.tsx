@@ -4,7 +4,7 @@ import { FilterItem } from "../components/FilterItem";
 import { SongList } from "../components/SongList";
 import { VerticalCard } from "../components/VerticalCard";
 import { BestResultCard } from "../components/BestResultCard";
-import { useSearchParams } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 
 export const Search = () => {
   const [selectedFilter, setSelectedFilter] = useState("all");
@@ -55,8 +55,9 @@ export const Search = () => {
 
   const artistsResult = data?.artists
     ? data.artists.map((artist) => ({
-        name: artist.name,
         id: artist.id,
+        name: artist.name,
+        profileImage: artist.profile_image,
       }))
     : null;
 
@@ -102,12 +103,14 @@ export const Search = () => {
             <section className="flex gap-x-6 scroll-smooth overflow-x-auto">
               {artistsResult &&
                 artistsResult.map((artist) => (
-                  <VerticalCard
-                    title={artist.name}
-                    subtitle="Artist"
-                    coverSrc={artist.coverSrc}
-                    key={`${artist.id}`}
-                  />
+                  <Link to={`/artist/${artist.id}`}>
+                    <VerticalCard
+                      title={artist.name}
+                      subtitle="Artist"
+                      coverSrc={artist.profileImage}
+                      key={artist.id}
+                    />
+                  </Link>
                 ))}
             </section>
           </div>
