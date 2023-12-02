@@ -12,7 +12,8 @@ import { PlaylistModalContent } from "../components/PlaytlistModalContent";
 
 type SongData = {
   name: string;
-  artist: string;
+  artist_name: string;
+  author_id: string;
   album: string;
   album_name?: string;
   album_id?: string;
@@ -174,7 +175,7 @@ export const PlaylistPage = () => {
                     </td>
                     <td className="text-sm p-4 text-left text-white">
                       <SongItem
-                        artist={song.artist}
+                        artist={{ name: song.artist_name, id: song.author_id }}
                         name={song.name}
                         imgSrc={playlistData.cover_src}
                         variant="playlist"

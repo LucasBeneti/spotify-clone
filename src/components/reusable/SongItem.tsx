@@ -5,7 +5,10 @@ import { Heart } from "@phosphor-icons/react";
 type SongItemProps = {
   imgSrc: string;
   name: string;
-  artist: string;
+  artist: {
+    id: string;
+    name: string;
+  };
   explicit?: boolean;
   liked?: boolean;
   variant?: string;
@@ -40,9 +43,9 @@ export const SongItem = ({
               </span>
             )}
             {isPlaylistVariant || isSearchVariant ? (
-              <Link to={`/artist/${artist}`}>
+              <Link to={`/artist/${artist.id}`}>
                 <p className="text-subdued text-sm hover:underline hover:text-white">
-                  {artist}
+                  {artist.name}
                 </p>
               </Link>
             ) : null}
