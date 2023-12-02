@@ -10,7 +10,7 @@ export const FilterItem = ({
 }: FilterItemProps) => {
   return (
     <span
-      className={`px-2 py-1 rounded-full text-sm hover:cursor-pointer ${
+      className={`px-2 py-1 rounded-full text-sm hover:cursor-pointer capitalize ${
         selected ? "bg-white  text-black" : "bg-highlight"
       }`}
       onClick={onClickHandle}
