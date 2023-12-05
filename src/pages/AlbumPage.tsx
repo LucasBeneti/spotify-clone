@@ -10,11 +10,11 @@ import { useQuery } from "@tanstack/react-query";
 
 type SongData = {
   name: string;
-  artist: string;
-  album: string;
+  artist?: string;
+  album?: string;
   album_name?: string;
   album_id?: string;
-  date_added: Date;
+  date_added?: Date;
   duration: number;
 };
 
@@ -41,6 +41,7 @@ type AlbumFullInfo = {
     name: string;
     position_on_album: number;
     source_link: string;
+    duration: number;
   }[];
 };
 

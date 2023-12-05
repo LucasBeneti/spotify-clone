@@ -1,66 +1,17 @@
-import { useRef } from "react";
-import { useParams } from "react-router-dom";
+import { useRef, useState } from "react";
+import { Link, useParams } from "react-router-dom";
 import { Play } from "@phosphor-icons/react";
 import { useQuery } from "@tanstack/react-query";
 import { VerticalCard } from "../components/VerticalCard";
 import { getSongDurationInMinutes } from "../utils";
 import { BigPlayButton } from "../components/reusable/BigPlayButton";
 import { useCookies } from "react-cookie";
-const songs = [
-  {
-    name: "LUMBERJACK",
-    artist: "Tyler, The Creator",
-    album: "Call Me If You Get Lost",
-    date_added: Date.now(),
-    duration: 138,
-  },
-  {
-    name: "LUMBERJACK",
-    artist: "Tyler, The Creator",
-    album: "Call Me If You Get Lost",
-    date_added: Date.now(),
-    duration: 138,
-  },
-  {
-    name: "LUMBERJACK",
-    artist: "Tyler, The Creator",
-    album: "Call Me If You Get Lost",
-    date_added: Date.now(),
-    duration: 138,
-  },
-  {
-    name: "LUMBERJACK",
-    artist: "Tyler, The Creator",
-    album: "Call Me If You Get Lost",
-    date_added: Date.now(),
-    duration: 138,
-  },
-];
-
-const albums = [
-  {
-    name: "Flower Boy",
-    coverSrc:
-      "https://i.scdn.co/image/ab6761610000f1788278b782cbb5a3963db88ada",
-    launch_year: "2017",
-  },
-  {
-    name: "Igor",
-    coverSrc:
-      "https://i.scdn.co/image/ab6761610000f1788278b782cbb5a3963db88ada",
-    launch_year: "2019",
-  },
-  {
-    name: "Call Me If You Get Lost",
-    coverSrc:
-      "https://i.scdn.co/image/ab6761610000f1788278b782cbb5a3963db88ada",
-    launch_year: "2021",
-  },
-];
 
 export const ArtistDetailsPage = () => {
   const { artistId } = useParams();
   const [cookies] = useCookies(["user_jwt"]);
+
+  const [showMoreSongs, setShowMoreSongs] = useState(false);
 
   const { data } = useQuery({
     queryKey: ["artist_data", artistId],
@@ -81,6 +32,7 @@ export const ArtistDetailsPage = () => {
 
   const artistInfo = data?.artistInfo ? data.artistInfo : {};
   const artistAlbums = data?.albums;
+  const mostPlayedSongs = data?.mostPlayedSongs ? data?.mostPlayedSongs : null;
 
   console.log("artist data", data);
 
@@ -95,7 +47,9 @@ export const ArtistDetailsPage = () => {
   const handlePlayThis = (song: any) => {
     console.log("play song", song);
   };
+
   const artistCoverImage = useRef();
+
   const handleImgError = () => {
     artistCoverImage.current.src =
       "https://images.unsplash.com/photo-1549834125-82d3c48159a3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8YmFuZHxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=800&q=60";
@@ -134,50 +88,64 @@ export const ArtistDetailsPage = () => {
             </h3>
             <table className="table-auto border-collapse bg-transparent w-full">
               <tbody>
-                {songs.map((song, index) => {
-                  return (
-                    <tr
-                      className="group/item hover:bg-highlight transition cursor-pointer"
-                      onClick={() => handlePlayThis(song)}
-                      key={`${song}_${index}`}
-                    >
-                      <td className="text-sm p-4 text-white text-center flex justify-center">
-                        <span className="block group-hover/item:hidden px-2">
-                          {index + 1}
-                        </span>
-                        <span className="hidden group-hover/item:block">
-                          <Play size={14} weight="fill" fill="white" />
-                        </span>
-                      </td>
-                      <td className="text-sm p-4 text-left text-white">
-                        {song.name}
-                      </td>
-                      <td className="text-sm p-4 text-left text-white">
-                        {song.album}
-                      </td>
-                      <td className="text-sm p-4 text-left text-white">
-                        9 de jun. de 2022
-                      </td>
-                      <td className="p-4 text-left text-white">
-                        {getSongDurationInMinutes(song.duration)}
-                      </td>
-                    </tr>
-                  );
-                })}
+                {mostPlayedSongs &&
+                  mostPlayedSongs.map((song, index: number) => {
+                    const renderCondition = showMoreSongs
+                      ? index <= 9
+                      : index <= 4;
+                    if (renderCondition) {
+                      return (
+                        <tr
+                          className="group/item hover:bg-highlight transition cursor-pointer"
+                          onClick={() => handlePlayThis(song)}
+                          key={`${song}_${index}`}
+                        >
+                          <td className="text-sm p-4 text-white text-center flex justify-center">
+                            <span className="block group-hover/item:hidden px-2">
+                              {index + 1}
+                            </span>
+                            <span className="hidden group-hover/item:block">
+                              <Play size={14} weight="fill" fill="white" />
+                            </span>
+                          </td>
+                          <td className="text-sm p-4 text-left text-white">
+                            {song.name}
+                          </td>
+                          <td className="text-sm p-4 text-left text-white">
+                            {song.album}
+                          </td>
+                          <td className="text-sm p-4 text-left text-white">
+                            9 de jun. de 2022
+                          </td>
+                          <td className="p-4 text-left text-white">
+                            {getSongDurationInMinutes(song.duration)}
+                          </td>
+                        </tr>
+                      );
+                    }
+                  })}
               </tbody>
             </table>
+            <button
+              onClick={() => setShowMoreSongs(!showMoreSongs)}
+              className="bg-transparent text-subdued hover:text-white font-sm font-sans font-bold my-4"
+            >
+              {showMoreSongs ? "Mostrar menos" : "Ver mais"}
+            </button>
           </section>
           <section>
             <h3 className="text-xl font-display font-bold mb-4">Discography</h3>
             <section className="flex gap-x-6 scroll-smooth overflow-x-auto">
               {artistAlbums &&
                 artistAlbums.map((album) => (
-                  <VerticalCard
-                    title={album.name}
-                    subtitle={album.launch_year}
-                    coverSrc={album.cover_art}
-                    key={album.id}
-                  />
+                  <Link to={`/album/${album.id}`}>
+                    <VerticalCard
+                      title={album.name}
+                      subtitle={album.launch_year}
+                      coverSrc={album.cover_art}
+                      key={album.id}
+                    />
+                  </Link>
                 ))}
             </section>
           </section>
