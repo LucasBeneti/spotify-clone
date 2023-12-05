@@ -89,7 +89,7 @@ export const ArtistDetailsPage = () => {
             <table className="table-auto border-collapse bg-transparent w-full">
               <tbody>
                 {mostPlayedSongs &&
-                  mostPlayedSongs.map((song, index) => {
+                  mostPlayedSongs.map((song, index: number) => {
                     const renderCondition = showMoreSongs
                       ? index <= 9
                       : index <= 4;
