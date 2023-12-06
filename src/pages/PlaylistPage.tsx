@@ -9,17 +9,9 @@ import { useCookies } from "react-cookie";
 import { useQuery } from "@tanstack/react-query";
 import { Modal } from "../components/Modal";
 import { PlaylistModalContent } from "../components/PlaytlistModalContent";
+import { useCustomAudioContext } from "../contexts/CustomAudioContext";
 
-type SongData = {
-  name: string;
-  artist_name: string;
-  author_id: string;
-  album: string;
-  album_name?: string;
-  album_id?: string;
-  date_added: Date;
-  duration: number;
-};
+import type { Song } from "../contexts/AudioPlayerReducer";
 
 // TODO duplicate?
 type PlaylistData = {
@@ -28,7 +20,7 @@ type PlaylistData = {
   description: string;
   author: string;
   liked: boolean;
-  songs: SongData[];
+  songs: Song[];
 };
 
 type PlaylistInfoDTO = {
@@ -41,6 +33,8 @@ export const PlaylistPage = () => {
   const { id } = useParams();
   // const [likedPlaylist, setLikedPlaylist] = useState(playlistData?.liked);
   const [cookies] = useCookies(["user_jwt"]);
+  const { playSongNow } = useCustomAudioContext();
+
   // TODO implement the error handling for this
   const { data: playlistData, isLoading } = useQuery<PlaylistData | null>({
     queryKey: ["playlist_data", id],
@@ -56,8 +50,9 @@ export const PlaylistPage = () => {
   });
 
   // TODO create the function that will actually play the song, given some information
-  const handlePlayThis = (song: SongData) => {
+  const handlePlayThis = (song: Song) => {
     console.log("Now playing...", song);
+    playSongNow(song);
     // here we would call the function from the context to play the song
   };
 
@@ -190,7 +185,7 @@ export const PlaylistPage = () => {
                       9 de jun. de 2022
                     </td>
                     <td className="p-4 text-left text-white">
-                      {getSongDurationInMinutes(song.duration)}
+                      {getSongDurationInMinutes(song?.duration)}
                     </td>
                   </tr>
                 );

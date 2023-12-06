@@ -5,7 +5,7 @@ import { Heart } from "@phosphor-icons/react";
 type SongItemProps = {
   imgSrc: string;
   name: string;
-  artist: string;
+  artist: { id: number | string; name: string };
   explicit?: boolean;
   liked?: boolean;
   variant?: string;

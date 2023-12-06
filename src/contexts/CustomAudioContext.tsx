@@ -15,28 +15,28 @@ import {
 const testTracks = [
   {
     name: "Tokyo Lo-fi 1",
-    author_name: "Unknown",
+    artist_name: "Unknown",
     color: "purple",
     source_link:
       "https://utfs.io/f/8d860e35-4ae3-4d7a-a98e-2a5db3692b21-no9q48.mp3",
   },
   {
     name: "Tokyo Lo-fi 2",
-    author_name: "Unknown",
+    artist_name: "Unknown",
     color: "purple",
     source_link:
       "https://utfs.io/f/8d860e35-4ae3-4d7a-a98e-2a5db3692b21-no9q48.mp3",
   },
   {
     name: "Tokyo Lo-fi 3",
-    author_name: "Unknown",
+    artist_name: "Unknown",
     color: "purple",
     source_link:
       "https://utfs.io/f/8d860e35-4ae3-4d7a-a98e-2a5db3692b21-no9q48.mp3",
   },
   {
     name: "Tokyo Lo-fi 4",
-    author_name: "Unknown",
+    artist_name: "Unknown",
     color: "purple",
     source_link:
       "https://utfs.io/f/8d860e35-4ae3-4d7a-a98e-2a5db3692b21-no9q48.mp3",
@@ -49,9 +49,11 @@ type CustomAudioContextProps = {
   isPlaying: boolean;
   trackProgress: number;
   toggleIsPlaying: () => void;
+  addTrackToQueue: (s: Song) => void;
+  playSongNow: (s: Song) => void;
   toPreviousTrack: () => void;
   toNextTrack: () => void;
-  currPlaying?: { name: string; author_name: string };
+  currentlyPlaying?: Song | null;
   onScrub: (n: number[]) => void;
   onScrubEnd: () => void;
   volume: number[];
@@ -70,6 +72,7 @@ export const AudioContextProvider = ({
   children,
 }: AudioContextProviderProps) => {
   const initialAudioPlayerState: PlayerState = {
+    currentlyPlaying: null,
     isPlaying: false,
     tracks: [],
     trackIndex: -1,
@@ -81,15 +84,7 @@ export const AudioContextProvider = ({
     initialAudioPlayerState,
   );
 
-  // const [tracks, setTrack] = useState(testTracks); // TODO used for adding/removing tracks to the queue
-  // const [trackIndex, setTrackIndex] = useState(0);
-  // const [trackProgress, setTrackProgress] = useState(0);
-  // const [isPlaying, setIsPlaying] = useState(false);
-  // const [volume, setVolume] = useState<number[]>([0]);
-
-  // const { source_link, name, author_name } = state.tracks[state.trackIndex];
-  const currPlaying = state.tracks[state.trackIndex];
-  const audioRef = useRef(new Audio(currPlaying?.source_link));
+  const audioRef = useRef(new Audio(state?.currentlyPlaying?.source_link));
 
   const intervalRef = useRef();
   const isReady = useRef(false);
@@ -99,6 +94,24 @@ export const AudioContextProvider = ({
   const toggleIsPlaying = () => {
     dispatch({ type: "SET_IS_PLAYING", data: !state.isPlaying });
     // setIsPlaying(!isPlaying);
+  };
+
+  const addTrackToQueue = (song: Song) => {
+    const currTracks = state.tracks;
+    currTracks.push(song);
+    dispatch({ type: "SET_TRACKS", data: currTracks });
+  };
+
+  // TODO check why we're not reacting to the play now feature. Probably should create a method
+  // to check if we should change the current audioRef src and some other things like the track index
+  // and maybe also the progress (this could be done in a separate function, to reset all this states)
+  const playSongNow = (song: Song) => {
+    const currTracks = state.tracks;
+    currTracks.unshift(song);
+    dispatch({ type: "SET_TRACKS", data: currTracks });
+    dispatch({ type: "SET_CURRENTLY_PLAYING", data: song });
+    dispatch({ type: "SET_IS_PLAYING", data: true });
+    dispatch({ type: "SET_TRACK_INDEX", data: 0 });
   };
 
   const toPreviousTrack = () => {
@@ -196,7 +209,7 @@ export const AudioContextProvider = ({
   useEffect(() => {
     audioRef.current.pause();
 
-    audioRef.current = new Audio(currPlaying?.source_link);
+    audioRef.current = new Audio(state?.currentlyPlaying?.source_link);
     dispatch({
       type: "SET_TRACK_PROGRESS",
       data: audioRef.current.currentTime,
@@ -224,7 +237,9 @@ export const AudioContextProvider = ({
         toNextTrack,
         toPreviousTrack,
         toggleIsPlaying,
-        currPlaying,
+        addTrackToQueue,
+        playSongNow,
+        currentlyPlaying: state.currentlyPlaying,
         onScrub,
         onScrubEnd,
         volume: state.volume,

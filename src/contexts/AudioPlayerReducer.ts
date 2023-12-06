@@ -1,16 +1,18 @@
 export type Song = {
   id: number;
   name: string;
-  album_id: number;
-  album_name: string;
+  album_id?: number;
+  album_name?: string;
   author_id: string;
-  author_name: string;
-  position_on_album: string;
+  artist_name: string; // artist_name
+  position_on_album?: string;
   source_link: string;
-  times_played: number;
+  times_played?: number;
+  duration?: number;
 };
 
 export type PlayerState = {
+  currentlyPlaying: Song | null;
   tracks: Song[];
   trackIndex: number;
   trackProgress: number;
@@ -23,13 +25,15 @@ type AudioPlayerReducerActionsType =
   | "SET_TRACK_INDEX"
   | "SET_TRACK_PROGRESS"
   | "SET_IS_PLAYING"
-  | "SET_VOLUME";
+  | "SET_VOLUME"
+  | "SET_CURRENTLY_PLAYING";
 
 type AutioPlayerReducerAction = {
   data: any;
   type: AudioPlayerReducerActionsType;
 };
 
+const SET_CURRENTLY_PLAYING = "SET_CURRENTLY_PLAYING";
 const SET_TRACKS = "SET_TRACKS";
 const SET_TRACK_INDEX = "SET_TRACK_INDEX";
 const SET_TRACK_PROGRESS = "SET_TRACK_PROGRESS";
@@ -41,6 +45,11 @@ export const audioPlayerReducer = (
   action: AutioPlayerReducerAction,
 ): PlayerState => {
   switch (action.type) {
+    case SET_CURRENTLY_PLAYING:
+      return {
+        ...state,
+        currentlyPlaying: action.data,
+      };
     case SET_TRACKS:
       return {
         ...state,
