@@ -45,6 +45,7 @@ const testTracks = [
 
 type CustomAudioContextProps = {
   tracks: Song[];
+  audioElementRef: React.MutableRefObject<HTMLAudioElement>;
   duration: number;
   isPlaying: boolean;
   trackProgress: number;
@@ -77,7 +78,7 @@ export const AudioContextProvider = ({
     tracks: [],
     trackIndex: -1,
     volume: [-1],
-    trackProgress: -1,
+    trackProgress: 0,
   };
   const [state, dispatch] = useReducer(
     audioPlayerReducer,
@@ -93,7 +94,6 @@ export const AudioContextProvider = ({
 
   const toggleIsPlaying = () => {
     dispatch({ type: "SET_IS_PLAYING", data: !state.isPlaying });
-    // setIsPlaying(!isPlaying);
   };
 
   const addTrackToQueue = (song: Song) => {
@@ -109,9 +109,29 @@ export const AudioContextProvider = ({
     const currTracks = state.tracks;
     currTracks.unshift(song);
     dispatch({ type: "SET_TRACKS", data: currTracks });
-    dispatch({ type: "SET_CURRENTLY_PLAYING", data: song });
-    dispatch({ type: "SET_IS_PLAYING", data: true });
     dispatch({ type: "SET_TRACK_INDEX", data: 0 });
+    dispatch({ type: "SET_CURRENTLY_PLAYING", data: song });
+    audioRef.current.pause();
+    audioRef.current = new Audio(song?.source_link);
+    // audioRef.current.src = song?.source_link; // mudando a source pro mais atual (em teoria)
+    // setar o progress pro inicio
+    dispatch({ type: "SET_TRACK_PROGRESS", data: 0 });
+    // await resetAudioPlaying(); // reseta o o audio ref
+    dispatch({ type: "SET_IS_PLAYING", data: true });
+    // startTimer();
+  };
+
+  const resetAudioPlaying = async () => {
+    console.log(
+      "reset audio ref - currently playing: ",
+      state.currentlyPlaying,
+    );
+    audioRef.current.src = state.currentlyPlaying!.source_link; // mudando a source pro mais atual (em teoria)
+    // setar o progress pro inicio
+    dispatch({ type: "SET_TRACK_PROGRESS", data: 0 });
+    // checar o isPLaying pra ver se continua no play ou não\
+    // dispatch({ type: "SET_IS_PLAYING", data: true });
+    // dependendo do resultado do isPLaying, damos o start ou não
   };
 
   const toPreviousTrack = () => {
@@ -134,9 +154,12 @@ export const AudioContextProvider = ({
     }
   };
 
+  // TODO check a way to pause the timer also
+  // does not make sense to have it running while the audio is paused
   const startTimer = () => {
     clearInterval(intervalRef.current);
     intervalRef.current = setInterval(() => {
+      console.log("starttimer running");
       if (audioRef.current.ended) {
         toNextTrack();
       } else {
@@ -156,20 +179,17 @@ export const AudioContextProvider = ({
       type: "SET_TRACK_PROGRESS",
       data: audioRef.current.currentTime,
     });
-    // setTrackProgress(audioRef.current.currentTime);
   };
 
   const onScrubEnd = () => {
     if (!state.isPlaying) {
       dispatch({ type: "SET_IS_PLAYING", data: true });
-      // setIsPlaying(true);
     }
     startTimer();
   };
 
   const handleVolumeChange = (value: number[]) => {
     dispatch({ type: "SET_VOLUME", data: value });
-    // setVolume(value);
     audioRef.current.volume = value[0] > 1 ? value[0] / 100 : value[0];
   };
 
@@ -206,31 +226,34 @@ export const AudioContextProvider = ({
     };
   }, []);
 
-  useEffect(() => {
-    audioRef.current.pause();
+  // TODO revisit this useeffect and check if there's anything to improve around it
+  // useEffect(() => {
+  //   console.log("third useeffect");
+  //   // audioRef.current.pause();
 
-    audioRef.current = new Audio(state?.currentlyPlaying?.source_link);
-    dispatch({
-      type: "SET_TRACK_PROGRESS",
-      data: audioRef.current.currentTime,
-    });
-    // setTrackProgress(audioRef.current.currentTime);
-
-    if (isReady.current) {
-      audioRef.current.volume = 0.2; // TODO refactor to serve a better logic for UX
-      audioRef.current.play();
-      dispatch({ type: "SET_IS_PLAYING", data: true });
-      // setIsPlaying(true);
-      startTimer();
-    } else {
-      isReady.current = true;
-    }
-  }, [state.trackIndex]);
+  //   // audioRef.current = new Audio(state.currentlyPlaying?.source_link);
+  //   dispatch({
+  //     type: "SET_TRACK_PROGRESS",
+  //     data: audioRef.current.currentTime,
+  //   });
+  //   // setTrackProgress(audioRef.current.currentTime);
+  //   if (isReady.current) {
+  //     console.log("sempre chamado");
+  //     audioRef.current.volume = 0.2; // TODO refactor to serve a better logic for UX
+  //     audioRef.current.play();
+  //     dispatch({ type: "SET_IS_PLAYING", data: true });
+  //     // setIsPlaying(true);
+  //     startTimer();
+  //   } else {
+  //     isReady.current = true;
+  //   }
+  // }, [state.trackIndex, state.currentlyPlaying?.id]);
 
   return (
     <CustomAudioContext.Provider
       value={{
         tracks: state.tracks,
+        audioElementRef: audioRef,
         duration,
         isPlaying: state.isPlaying,
         trackProgress: state.trackProgress,

@@ -35,6 +35,7 @@ export const AudioPlayer = () => {
 const AudioControls = () => {
   const { isPlaying, toNextTrack, toPreviousTrack, toggleIsPlaying } =
     useCustomAudioContext();
+
   return (
     <div className="flex gap-x-6 justify-center">
       <button className="p-2" onClick={toPreviousTrack}>

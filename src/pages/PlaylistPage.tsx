@@ -155,7 +155,6 @@ export const PlaylistPage = () => {
                 return (
                   <tr
                     className="group/item hover:bg-highlight transition cursor-pointer"
-                    onClick={() => handlePlayThis(song)}
                     key={`${song}_${index}`}
                   >
                     <td className="text-sm p-4 text-white ">
@@ -163,7 +162,10 @@ export const PlaylistPage = () => {
                         <span className="block group-hover/item:hidden px-2">
                           {index + 1}
                         </span>
-                        <span className="hidden group-hover/item:block">
+                        <span
+                          onClick={() => handlePlayThis(song)}
+                          className="hidden group-hover/item:block"
+                        >
                           <Play size={14} weight="fill" fill="white" />
                         </span>
                       </span>
