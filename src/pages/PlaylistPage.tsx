@@ -33,7 +33,7 @@ export const PlaylistPage = () => {
   const { id } = useParams();
   // const [likedPlaylist, setLikedPlaylist] = useState(playlistData?.liked);
   const [cookies] = useCookies(["user_jwt"]);
-  const { playSongNow } = useCustomAudioContext();
+  const { playSongNow, addTrackToQueue } = useCustomAudioContext();
 
   // TODO implement the error handling for this
   const { data: playlistData, isLoading } = useQuery<PlaylistData | null>({
@@ -183,7 +183,10 @@ export const PlaylistPage = () => {
                         {song.album_name}
                       </Link>
                     </td>
-                    <td className="text-sm p-4 text-left text-white">
+                    <td
+                      className="text-sm p-4 text-left text-white"
+                      onClick={() => addTrackToQueue(song)}
+                    >
                       9 de jun. de 2022
                     </td>
                     <td className="p-4 text-left text-white">
