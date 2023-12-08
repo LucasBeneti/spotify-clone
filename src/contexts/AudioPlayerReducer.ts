@@ -5,6 +5,7 @@ export type Song = {
   album_name?: string;
   author_id: string;
   artist_name: string; // artist_name
+  cover_art?: string;
   position_on_album?: string;
   source_link: string;
   times_played?: number;

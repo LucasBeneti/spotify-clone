@@ -7,6 +7,7 @@ import { getPlaylistFullInfo } from "../services/playlistServices";
 import { getAlbumSongs, getAlbumFullInfo } from "../services/albumServices";
 import { useCookies } from "react-cookie";
 import { useQuery } from "@tanstack/react-query";
+import { Song } from "../contexts/AudioPlayerReducer";
 
 type SongData = {
   name: string;
@@ -33,16 +34,7 @@ type AlbumFullInfo = {
   cover_art: string;
   launch_date: string;
   name: string;
-  songs: {
-    artist_name: string;
-    author_id: number;
-    cover_art: string;
-    id: number;
-    name: string;
-    position_on_album: number;
-    source_link: string;
-    duration: number;
-  }[];
+  songs: Song[];
 };
 
 export const AlbumPage = () => {
@@ -159,12 +151,7 @@ export const AlbumPage = () => {
                           </span>
                         </td>
                         <td className="text-sm p-4 text-left text-white">
-                          <SongItem
-                            artist={song.artist_name}
-                            name={song.name}
-                            imgSrc={song.cover_art}
-                            variant="playlist"
-                          />
+                          <SongItem song={song} variant="playlist" />
                         </td>
                         <td className="p-4 text-left text-white">
                           {getSongDurationInMinutes(song.duration)}

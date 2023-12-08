@@ -171,22 +171,14 @@ export const PlaylistPage = () => {
                       </span>
                     </td>
                     <td className="text-sm p-4 text-left text-white">
-                      <SongItem
-                        artist={{ name: song.artist_name, id: song.author_id }}
-                        name={song.name}
-                        imgSrc={playlistData.cover_src}
-                        variant="playlist"
-                      />
+                      <SongItem song={song} variant="playlist" />
                     </td>
                     <td className="text-sm p-4 text-left text-white hover:underline">
                       <Link to={`/album/${song.album_id}`}>
                         {song.album_name}
                       </Link>
                     </td>
-                    <td
-                      className="text-sm p-4 text-left text-white"
-                      onClick={() => addTrackToQueue(song)}
-                    >
+                    <td className="text-sm p-4 text-left text-white">
                       9 de jun. de 2022
                     </td>
                     <td className="p-4 text-left text-white">
