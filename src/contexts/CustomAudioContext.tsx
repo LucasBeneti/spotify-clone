@@ -56,7 +56,6 @@ type CustomAudioContextProps = {
   toNextTrack: () => void;
   currentlyPlaying?: Song | null;
   onScrub: (n: number[]) => void;
-  onScrubEnd: () => void;
   volume: number[];
   handleVolumeChange: (n: number[]) => void;
   toggleAudioMute: () => void;
@@ -153,13 +152,11 @@ export const AudioContextProvider = ({
 
     const nextSong = state.tracks[newTrackIndex];
     setNewSongToAudioRef(nextSong);
-    console.log("BACK");
   };
 
   const startTimer = () => {
     clearInterval(intervalRef.current);
     intervalRef.current = setInterval(() => {
-      console.log("starttimer running");
       if (audioRef.current.ended) {
         toNextTrack();
       } else {
@@ -167,9 +164,12 @@ export const AudioContextProvider = ({
           type: "SET_TRACK_PROGRESS",
           data: audioRef.current.currentTime,
         });
-        // setTrackProgress(audioRef.current.currentTime);
       }
     }, 1000);
+  };
+
+  const stopTimer = () => {
+    clearInterval(intervalRef.current);
   };
 
   const onScrub = (value: number[]) => {
@@ -179,13 +179,14 @@ export const AudioContextProvider = ({
       type: "SET_TRACK_PROGRESS",
       data: audioRef.current.currentTime,
     });
-  };
 
-  const onScrubEnd = () => {
-    if (!state.isPlaying) {
+    if (state.isPlaying) {
       dispatch({ type: "SET_IS_PLAYING", data: true });
+      startTimer();
+    } else {
+      dispatch({ type: "SET_IS_PLAYING", data: false });
+      stopTimer();
     }
-    startTimer();
   };
 
   const handleVolumeChange = (value: number[]) => {
@@ -212,6 +213,7 @@ export const AudioContextProvider = ({
       startTimer();
     } else {
       audioRef.current.pause();
+      stopTimer();
     }
   }, [state.isPlaying]);
 
@@ -240,7 +242,6 @@ export const AudioContextProvider = ({
         playSongNow,
         currentlyPlaying: state.currentlyPlaying,
         onScrub,
-        onScrubEnd,
         volume: state.volume,
         handleVolumeChange,
         toggleAudioMute,

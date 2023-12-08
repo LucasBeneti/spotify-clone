@@ -16,7 +16,6 @@ export const AudioPlayer = () => {
           step={1}
           min={0}
           max={duration}
-          onPointerUp={onScrubEnd}
           className="relative flex items-center w-full h-5"
         >
           <Slider.Track className="bg-subdued relative flex-1 rounded-full h-1">
