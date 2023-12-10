@@ -4,6 +4,8 @@ import * as ContextMenu from "@radix-ui/react-context-menu";
 import { Heart, Queue, Playlist, CaretRight } from "@phosphor-icons/react";
 import { useCustomAudioContext } from "../../contexts/CustomAudioContext";
 import { Song } from "../../contexts/AudioPlayerReducer";
+import { useUserDataContext } from "../../contexts/UserDataContext";
+import { addSongToPlaylist } from "../../services/playlistServices";
 
 type SongItemProps = {
   song: Song;
@@ -19,7 +21,7 @@ export const SongItem = ({
   variant = "default",
 }: SongItemProps) => {
   const { addTrackToQueue } = useCustomAudioContext();
-
+  const { playlists, userToken } = useUserDataContext();
   const [isLiked, setIsLiked] = useState(liked);
   const isPlaylistVariant = variant === "playlist";
   const isSearchVariant = variant === "search";
@@ -82,22 +84,27 @@ export const SongItem = ({
                 className="flex flex-col gap-y-2 rounded-md bg-highlight"
                 sideOffset={2}
               >
-                <ContextMenu.Item className="flex gap-x-2 hover:bg-elevated px-4 py-2 hover:cursor-pointer text-sm text-white">
-                  <Playlist size={16} weight="fill" />
-                  Alguyma playlist
-                </ContextMenu.Item>
-                <ContextMenu.Item className="flex gap-x-2 hover:bg-elevated px-4 py-2 hover:cursor-pointer text-sm text-white">
-                  <Playlist size={16} weight="fill" />
-                  Alguyma playlist
-                </ContextMenu.Item>
-                <ContextMenu.Item className="flex gap-x-2 hover:bg-elevated px-4 py-2 hover:cursor-pointer text-sm text-white">
-                  <Playlist size={16} weight="fill" />
-                  Alguyma playlist
-                </ContextMenu.Item>
-                <ContextMenu.Separator className="ContextMenuSeparator" />
-                <ContextMenu.Item className="flex gap-x-2 hover:bg-elevated px-4 py-2 hover:cursor-pointer text-sm text-white">
-                  Developer Tools
-                </ContextMenu.Item>
+                {playlists ? (
+                  playlists.map((playlist) => (
+                    <ContextMenu.Item
+                      className="flex gap-x-2 hover:bg-elevated px-4 py-2 hover:cursor-pointer text-sm text-white"
+                      onClick={() =>
+                        addSongToPlaylist(song.id, playlist.id, userToken)
+                      }
+                      key={playlist.name + playlist.id}
+                    >
+                      <Playlist size={16} weight="fill" />
+                      {playlist.name}
+                    </ContextMenu.Item>
+                  ))
+                ) : (
+                  <ContextMenu.Item
+                    className="flex gap-x-2 hover:bg-elevated px-4 py-2 hover:cursor-pointer text-sm text-white"
+                    disabled
+                  >
+                    No playlists found
+                  </ContextMenu.Item>
+                )}
               </ContextMenu.SubContent>
             </ContextMenu.Portal>
           </ContextMenu.Sub>

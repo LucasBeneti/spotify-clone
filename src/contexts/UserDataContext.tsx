@@ -1,18 +1,11 @@
 import { createContext, useEffect, useContext, useReducer } from "react";
 import { useUser, useAuth } from "@clerk/clerk-react";
+import { useQuery } from "@tanstack/react-query";
 import { useCookies } from "react-cookie";
 import { userReducer, initialUserState } from "./UserDataReducer";
 import { getCookieExpDate } from "../utils";
-
-export type Playlist = {
-  playlist_id: number;
-  cover_src?: string;
-  name: string;
-  id: number;
-  author_username?: string;
-  author?: string;
-  type?: string;
-};
+import { Playlist } from "../services/playlistServices";
+import { getUserPlaylists } from "../services/playlistServices";
 
 type UserDataContext = {
   playlists?: Playlist[] | undefined;
@@ -28,7 +21,6 @@ interface UserDataContextProps {
 
 export const UserDataContextProvider = ({ children }: UserDataContextProps) => {
   const [cookies, setCookies] = useCookies(["user_jwt"]);
-  const { user } = useUser(); // username nao esta definido quando renderiza o componente (tenho que entender melhor isso)
   const { getToken } = useAuth();
   const [state, dispatch] = useReducer(userReducer, initialUserState);
 
@@ -40,6 +32,21 @@ export const UserDataContextProvider = ({ children }: UserDataContextProps) => {
       return null;
     }
   };
+
+  const { data: userPlaylistsData, isFetched } = useQuery({
+    queryKey: ["user_playlists"],
+    queryFn: async () => {
+      const { userPlaylists } = await getUserPlaylists(cookies.user_jwt);
+      console.log("userPlaylists", userPlaylists);
+      const typedPlaylists = userPlaylists.map((playlistInfo: Playlist) => {
+        return { ...playlistInfo, type: "playlist" };
+      });
+      dispatch({ type: "SET_PLAYLISTS", data: typedPlaylists });
+      return typedPlaylists;
+    },
+    refetchOnWindowFocus: true,
+    refetchOnMount: true,
+  });
 
   const setUserToken = async () => {
     try {
@@ -62,6 +69,11 @@ export const UserDataContextProvider = ({ children }: UserDataContextProps) => {
   useEffect(() => {
     setUserToken();
   }, []);
+
+  useEffect(() => {
+    dispatch({ type: "SET_PLAYLISTS", data: userPlaylistsData });
+    console.log("userPlaylistsData", userPlaylistsData);
+  }, [isFetched]);
 
   return (
     <UserDataContext.Provider

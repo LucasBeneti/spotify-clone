@@ -5,6 +5,7 @@ import type { Playlist } from "../contexts/UserDataContext";
 type UserBasicInfo = {
   username: string;
   token: string;
+  playlists: Playlist;
 };
 
 type UserState = {
