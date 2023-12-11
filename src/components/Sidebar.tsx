@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import { useCookies } from "react-cookie";
 import * as ScrollArea from "@radix-ui/react-scroll-area";
@@ -15,6 +14,8 @@ import { Modal } from "./Modal";
 import { PlaylistModalContent } from "./PlaytlistModalContent";
 import { useUserDataContext } from "../contexts/UserDataContext";
 import { type Playlist as PlaylistInfo } from "../services/playlistServices";
+
+const SERVER_URL = !import.meta.env.VITE_SERVER_URL;
 
 export const Sidebar = () => {
   const [selected, setSelected] = useState<"home" | "search">("home");
@@ -120,17 +121,14 @@ const CreateNewPlaylistModal = ({
           ...playlistInfo,
         });
 
-        const createPlaylistRes = await fetch(
-          `http://localhost:3000/playlist/create`,
-          {
-            method: "POST",
-            headers: { Authorization: `Bearer ${cookies.user_jwt}` },
-            body: JSON.stringify({
-              name: playlistInfo?.name,
-              description: playlistInfo?.description,
-            }),
-          },
-        );
+        const createPlaylistRes = await fetch(`${SERVER_URL}/playlist/create`, {
+          method: "POST",
+          headers: { Authorization: `Bearer ${cookies.user_jwt}` },
+          body: JSON.stringify({
+            name: playlistInfo?.name,
+            description: playlistInfo?.description,
+          }),
+        });
 
         return createPlaylistRes;
       }

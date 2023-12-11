@@ -1,9 +1,8 @@
 import { Clock, Play, Heart } from "@phosphor-icons/react";
-import { useParams, Link } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { getSongDurationInMinutes } from "../utils";
 import { SongItem } from "../components/reusable/SongItem";
 import { BigPlayButton } from "../components/reusable/BigPlayButton";
-import { getPlaylistFullInfo } from "../services/playlistServices";
 import { getAlbumSongs, getAlbumFullInfo } from "../services/albumServices";
 import { useCookies } from "react-cookie";
 import { useQuery } from "@tanstack/react-query";
@@ -17,15 +16,6 @@ type SongData = {
   album_id?: string;
   date_added?: Date;
   duration: number;
-};
-
-// TODO duplicate?
-type PlaylistData = {
-  cover_src: string;
-  name: string;
-  author: string;
-  liked: boolean;
-  songs: SongData[];
 };
 
 type AlbumFullInfo = {
@@ -83,8 +73,8 @@ export const AlbumPage = () => {
   // TODO fix the album vertical overflow
   return (
     <>
-      <div className="overflow-y-auto">
-        <header className="w-100 bg-gradient-to-b from-cyan-950 to-base ">
+      <div className="overflow-y-auto bg-gradient-to-b from-cyan-950 to-base">
+        <header className="w-100">
           <section className="flex gap-x-4 items-end mt-24 px-6">
             <img
               src={albumSongData?.cover_art}

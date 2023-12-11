@@ -1,3 +1,5 @@
+const SERVER_URL = !import.meta.env.VITE_SERVER_URL;
+
 export type Playlist = {
   id: number;
   playlist_id?: number;
@@ -14,7 +16,7 @@ export const getUserPlaylists = async (token: string) => {
   }
 
   const headers = { Authorization: `Bearer ${token}` };
-  const response = await fetch("http://localhost:3000/playlist/user", {
+  const response = await fetch(`${SERVER_URL}/playlist/user`, {
     method: "GET",
     headers,
   });
@@ -26,7 +28,7 @@ export const getPlaylistFullInfo = async (
   playlistId: string,
 ) => {
   const playlistInfoResponse = await fetch(
-    `http://localhost:3000/playlist/${playlistId}`,
+    `${SERVER_URL}/playlist/${playlistId}`,
     {
       headers: { Authorization: `Bearer ${token}` },
     },
@@ -34,7 +36,7 @@ export const getPlaylistFullInfo = async (
   const { playlistInfo } = await playlistInfoResponse.json();
 
   const playlistSongsResponse = await fetch(
-    `http://localhost:3000/playlist/songs/${playlistId}`,
+    `${SERVER_URL}/playlist/songs/${playlistId}`,
     {
       headers: { Authorization: `Bearer ${token}` },
     },
@@ -55,7 +57,7 @@ export const addSongToPlaylist = async (
   token: string | undefined,
 ) => {
   const response = await fetch(
-    `http://localhost:3000/playlist/add/song/${playlist_id}`,
+    `${SERVER_URL}/playlist/add/song/${playlist_id}`,
 
     {
       method: "POST",

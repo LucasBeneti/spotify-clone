@@ -6,6 +6,8 @@ import { VerticalCard } from "../components/VerticalCard";
 import { BestResultCard } from "../components/BestResultCard";
 import { Link, useSearchParams } from "react-router-dom";
 
+const SERVER_URL = !import.meta.env.VITE_SERVER_URL;
+
 export const Search = () => {
   const [selectedFilter, setSelectedFilter] = useState("all");
 
@@ -31,8 +33,8 @@ export const Search = () => {
     queryFn: async () => {
       const isFilteredQuery = searchFilter !== "all" && searchFilter;
       const requestURL = isFilteredQuery
-        ? `http://localhost:3000/search/${searchTerm}/${searchFilter.toLowerCase()}`
-        : `http://localhost:3000/search/${searchTerm}`;
+        ? `${SERVER_URL}/search/${searchTerm}/${searchFilter.toLowerCase()}`
+        : `${SERVER_URL}/search/${searchTerm}`;
       const searchRes = await fetch(requestURL);
       const parsed = await searchRes.json();
       if (isFilteredQuery) {

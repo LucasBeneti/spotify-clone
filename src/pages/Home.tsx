@@ -4,6 +4,8 @@ import { useSession } from "@clerk/clerk-react";
 import { RecentPlayedCard } from "../components/RecentPlayedCard";
 import { VerticalCard } from "../components/VerticalCard";
 
+const SERVER_URL = !import.meta.env.VITE_SERVER_URL;
+
 export const Home = () => {
   const { session } = useSession();
 
@@ -18,7 +20,7 @@ export const Home = () => {
       });
       console.log("sessionToken", sessionToken);
       console.log("session.id", session?.id);
-      const response = await fetch("http://localhost:3000/user/", {
+      const response = await fetch(`${SERVER_URL}/user/`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${sessionToken}`,
@@ -37,15 +39,12 @@ export const Home = () => {
       const sessionToken = await session?.getToken({
         template: "spotify-clone-template",
       });
-      const response = await fetch(
-        `http://localhost:3000/user/song/like/${song_id}`,
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${sessionToken}`,
-          },
+      const response = await fetch(`${SERVER_URL}/user/song/like/${song_id}`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${sessionToken}`,
         },
-      );
+      });
 
       return await response.json();
     } catch (error) {
@@ -59,7 +58,7 @@ export const Home = () => {
         template: "spotify-clone-template",
       });
       const response = await fetch(
-        `http://localhost:3000/user/song/dislike/${song_id}`,
+        `${SERVER_URL}/user/song/dislike/${song_id}`,
         {
           method: "DELETE",
           headers: {

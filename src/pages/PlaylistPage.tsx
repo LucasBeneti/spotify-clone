@@ -13,6 +13,8 @@ import { useCustomAudioContext } from "../contexts/CustomAudioContext";
 
 import type { Song } from "../contexts/AudioPlayerReducer";
 
+const SERVER_URL = !import.meta.env.VITE_SERVER_URL;
+
 // TODO duplicate?
 type PlaylistData = {
   cover_src: string;
@@ -81,7 +83,7 @@ export const PlaylistPage = () => {
           playlist_id: id,
         });
 
-        return await fetch(`http://localhost:3000/playlist/${id}`, {
+        return await fetch(`${SERVER_URL}/playlist/${id}`, {
           method: "PUT",
           headers: { Authorization: `Bearer ${cookies.user_jwt}` },
           body: JSON.stringify({

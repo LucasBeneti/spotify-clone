@@ -7,6 +7,8 @@ import { getSongDurationInMinutes } from "../utils";
 import { BigPlayButton } from "../components/reusable/BigPlayButton";
 import { useCookies } from "react-cookie";
 
+const SERVER_URL = !import.meta.env.VITE_SERVER_URL;
+
 export const ArtistDetailsPage = () => {
   const { artistId } = useParams();
   const [cookies] = useCookies(["user_jwt"]);
@@ -17,14 +19,11 @@ export const ArtistDetailsPage = () => {
     queryKey: ["artist_data", artistId],
     queryFn: async () => {
       const userToken = cookies.user_jwt;
-      const artistData = await fetch(
-        `http://localhost:3000/artist/${artistId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${userToken}`,
-          },
+      const artistData = await fetch(`${SERVER_URL}/artist/${artistId}`, {
+        headers: {
+          Authorization: `Bearer ${userToken}`,
         },
-      );
+      });
 
       return await artistData.json();
     },
