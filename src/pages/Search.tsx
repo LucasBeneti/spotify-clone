@@ -44,14 +44,7 @@ export const Search = () => {
     retry: false,
   });
 
-  const songResult = data?.songs
-    ? data.songs?.map((song) => ({
-        name: song.name,
-        albumCoverArt: song.album_cover_art,
-        authorName: song.author_name,
-        albumName: song.album_name,
-      }))
-    : null;
+  const songResult = data?.songs;
 
   const artistsResult = data?.artists
     ? data.artists.map((artist) => ({
@@ -83,8 +76,8 @@ export const Search = () => {
             <section className="flex">
               <BestResultCard
                 name={songResult[0].name}
-                imgSrc={songResult[0].albumCoverArt}
-                authorName={songResult[0].authorName}
+                imgSrc={songResult[0]?.cover_art}
+                authorName={songResult[0].author_name}
               />
             </section>
           </section>

@@ -29,7 +29,10 @@ export const SongItem = ({
   return (
     <ContextMenu.Root>
       <ContextMenu.Trigger>
-        <li className="flex hover:bg-highlight justify-between transition-all">
+        <li
+          className="flex hover:bg-highlight justify-between transition-all"
+          key={song.id}
+        >
           <span className="flex gap-x-2 items-center">
             <img
               src={song?.cover_art}

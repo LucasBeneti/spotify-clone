@@ -9,28 +9,14 @@ type SongListProps = {
     authorName: string;
     albumName: string;
   }[];
-  artist?: string;
 };
 
-export const SongList = ({ songs, artist }: SongListProps) => {
-  console.log(songs);
+export const SongList = ({ songs }: SongListProps) => {
   return (
     <ul className="flex flex-1 flex-col gap-y-2">
-      {songs.map(
-        ({ name, albumCoverArt, explicit, liked, authorName }, index) => {
-          return (
-            <SongItem
-              imgSrc={albumCoverArt}
-              name={name}
-              artist={artist ? artist : authorName}
-              explicit={explicit}
-              liked={liked}
-              variant="search"
-              key={`${name}_${index}`}
-            />
-          );
-        },
-      )}
+      {songs.map((song) => {
+        return <SongItem song={song} variant="search" />;
+      })}
     </ul>
   );
 };

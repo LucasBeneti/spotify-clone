@@ -15,7 +15,7 @@ export const Footer = () => {
         <CurrentlyPlaying
           title={currentlyPlaying?.name}
           artist={currentlyPlaying?.artist_name}
-          artistId={currentlyPlaying?.id}
+          artistId={currentlyPlaying?.author_id}
         />
       </section>
       <section className="justify-self-center w-96">
