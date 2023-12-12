@@ -1,14 +1,8 @@
+import { Song } from "../contexts/AudioPlayerReducer";
 import { SongItem } from "./reusable/SongItem";
 
 type SongListProps = {
-  songs: {
-    name: string;
-    albumCoverArt: string;
-    explicit?: boolean;
-    liked?: boolean;
-    authorName: string;
-    albumName: string;
-  }[];
+  songs: Song[];
 };
 
 export const SongList = ({ songs }: SongListProps) => {

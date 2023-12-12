@@ -86,8 +86,7 @@ export const AudioContextProvider = ({
 
   const audioRef = useRef(new Audio(state?.currentlyPlaying?.source_link));
 
-  const intervalRef = useRef();
-  const isReady = useRef(false);
+  const intervalRef = useRef<ReturnType<typeof setTimeout>>();
 
   const { duration } = audioRef.current;
 
@@ -156,7 +155,7 @@ export const AudioContextProvider = ({
 
   const startTimer = () => {
     clearInterval(intervalRef.current);
-    intervalRef.current = setInterval(() => {
+    const timeout: ReturnType<typeof setTimeout> = setInterval(() => {
       if (audioRef.current.ended) {
         toNextTrack();
       } else {
@@ -166,6 +165,7 @@ export const AudioContextProvider = ({
         });
       }
     }, 1000);
+    intervalRef.current = timeout;
   };
 
   const stopTimer = () => {

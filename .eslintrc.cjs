@@ -17,6 +17,7 @@ module.exports = {
     "src/index.css",
     "**/*.md",
     "**/*.config.js",
+    "Dockerfile",
   ],
   parser: "@typescript-eslint/parser",
   // parserOptions: {

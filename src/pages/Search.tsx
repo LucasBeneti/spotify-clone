@@ -6,7 +6,13 @@ import { VerticalCard } from "../components/VerticalCard";
 import { BestResultCard } from "../components/BestResultCard";
 import { Link, useSearchParams } from "react-router-dom";
 
-const SERVER_URL = !import.meta.env.VITE_SERVER_URL;
+const SERVER_URL = import.meta.env.VITE_SERVER_URL;
+
+type ArtistAttr = {
+  id: string | number;
+  name: string;
+  profile_image: string;
+};
 
 export const Search = () => {
   const [selectedFilter, setSelectedFilter] = useState("all");
@@ -49,7 +55,7 @@ export const Search = () => {
   const songResult = data?.songs;
 
   const artistsResult = data?.artists
-    ? data.artists.map((artist) => ({
+    ? data.artists.map((artist: ArtistAttr) => ({
         id: artist.id,
         name: artist.name,
         profileImage: artist.profile_image,
@@ -97,12 +103,12 @@ export const Search = () => {
           <div className="">
             <section className="flex gap-x-6 scroll-smooth overflow-x-auto">
               {artistsResult &&
-                artistsResult.map((artist) => (
+                artistsResult.map((artist: ArtistAttr) => (
                   <Link to={`/artist/${artist.id}`}>
                     <VerticalCard
                       title={artist.name}
                       subtitle="Artist"
-                      coverSrc={artist.profileImage}
+                      coverSrc={artist.profile_image}
                       key={artist.id}
                     />
                   </Link>

@@ -15,7 +15,7 @@ import { PlaylistModalContent } from "./PlaytlistModalContent";
 import { useUserDataContext } from "../contexts/UserDataContext";
 import { type Playlist as PlaylistInfo } from "../services/playlistServices";
 
-const SERVER_URL = !import.meta.env.VITE_SERVER_URL;
+const SERVER_URL = import.meta.env.VITE_SERVER_URL;
 
 export const Sidebar = () => {
   const [selected, setSelected] = useState<"home" | "search">("home");

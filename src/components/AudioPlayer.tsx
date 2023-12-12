@@ -3,8 +3,7 @@ import { Play, Pause, SkipBack, SkipForward } from "@phosphor-icons/react";
 import { useCustomAudioContext } from "../contexts/CustomAudioContext";
 
 export const AudioPlayer = () => {
-  const { duration, trackProgress, onScrub, onScrubEnd } =
-    useCustomAudioContext();
+  const { duration, trackProgress, onScrub } = useCustomAudioContext();
 
   return (
     <div className="flex flex-col">

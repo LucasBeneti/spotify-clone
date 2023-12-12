@@ -1,5 +1,5 @@
 import { createContext, useEffect, useContext, useReducer } from "react";
-import { useUser, useAuth } from "@clerk/clerk-react";
+import { useAuth } from "@clerk/clerk-react";
 import { useQuery } from "@tanstack/react-query";
 import { useCookies } from "react-cookie";
 import { userReducer, initialUserState } from "./UserDataReducer";

@@ -13,7 +13,7 @@ import { useCustomAudioContext } from "../contexts/CustomAudioContext";
 
 import type { Song } from "../contexts/AudioPlayerReducer";
 
-const SERVER_URL = !import.meta.env.VITE_SERVER_URL;
+const SERVER_URL = import.meta.env.VITE_SERVER_URL;
 
 // TODO duplicate?
 type PlaylistData = {
@@ -35,7 +35,7 @@ export const PlaylistPage = () => {
   const { id } = useParams();
   // const [likedPlaylist, setLikedPlaylist] = useState(playlistData?.liked);
   const [cookies] = useCookies(["user_jwt"]);
-  const { playSongNow, addTrackToQueue } = useCustomAudioContext();
+  const { playSongNow } = useCustomAudioContext();
 
   // TODO implement the error handling for this
   const { data: playlistData, isLoading } = useQuery<PlaylistData | null>({

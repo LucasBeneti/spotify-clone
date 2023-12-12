@@ -1,4 +1,4 @@
-const SERVER_URL = !import.meta.env.VITE_SERVER_URL;
+const SERVER_URL = import.meta.env.VITE_SERVER_URL;
 // TODO GET user playlists (only main info)
 export const getUserPlaylistList = async (userToken: string) => {
   const headers = {

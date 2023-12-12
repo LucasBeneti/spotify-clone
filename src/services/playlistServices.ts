@@ -1,4 +1,4 @@
-const SERVER_URL = !import.meta.env.VITE_SERVER_URL;
+const SERVER_URL = import.meta.env.VITE_SERVER_URL;
 
 export type Playlist = {
   id: number;

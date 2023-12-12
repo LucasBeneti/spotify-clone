@@ -1,10 +1,5 @@
 import { debounce } from "./debounce";
-import { handleToggleLikeSong, getSongDurationInMinutes } from "./songs";
+import { getSongDurationInMinutes } from "./songs";
 import { getCookieExpDate } from "./date";
 
-export {
-  debounce,
-  handleToggleLikeSong,
-  getSongDurationInMinutes,
-  getCookieExpDate,
-};
+export { debounce, getSongDurationInMinutes, getCookieExpDate };

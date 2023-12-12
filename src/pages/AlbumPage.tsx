@@ -8,16 +8,6 @@ import { useCookies } from "react-cookie";
 import { useQuery } from "@tanstack/react-query";
 import { Song } from "../contexts/AudioPlayerReducer";
 
-type SongData = {
-  name: string;
-  artist?: string;
-  album?: string;
-  album_name?: string;
-  album_id?: string;
-  date_added?: Date;
-  duration: number;
-};
-
 type AlbumFullInfo = {
   author_id: number;
   author_name: string;
@@ -56,7 +46,7 @@ export const AlbumPage = () => {
   // const albumCover = albumData[0]?.cover_art;
 
   // TODO create the function that will actually play the song, given some information
-  const handlePlayThis = (song: SongData) => {
+  const handlePlayThis = (song: Song) => {
     console.log("Now playing...", song);
     // here we would call the function from the context to play the song
   };

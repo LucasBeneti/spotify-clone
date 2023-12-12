@@ -1,77 +1,77 @@
 import { NavLink } from "react-router-dom";
 import * as ScrollArea from "@radix-ui/react-scroll-area";
-import { useSession } from "@clerk/clerk-react";
+// import { useSession } from "@clerk/clerk-react";
 import { RecentPlayedCard } from "../components/RecentPlayedCard";
 import { VerticalCard } from "../components/VerticalCard";
 
-const SERVER_URL = !import.meta.env.VITE_SERVER_URL;
+// const SERVER_URL = import.meta.env.VITE_SERVER_URL;
 
 export const Home = () => {
-  const { session } = useSession();
+  // const { session } = useSession();
 
   // this function should be called right after the login
   // actually, with the user logged in, the session content can
   // be fetched at any time
   // probably will have to changee this use here
-  async function getUserTokenOnLogin() {
-    try {
-      const sessionToken = await session?.getToken({
-        template: "spotify-clone-template",
-      });
-      console.log("sessionToken", sessionToken);
-      console.log("session.id", session?.id);
-      const response = await fetch(`${SERVER_URL}/user/`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${sessionToken}`,
-        },
-        body: JSON.stringify({ username: user?.username }),
-      });
-      const data = await response.json();
-      console.log("playlistData", data);
-    } catch (error) {
-      console.log(error);
-    }
-  }
+  // async function getUserTokenOnLogin() {
+  //   try {
+  //     const sessionToken = await session?.getToken({
+  //       template: "spotify-clone-template",
+  //     });
+  //     console.log("sessionToken", sessionToken);
+  //     console.log("session.id", session?.id);
+  //     const response = await fetch(`${SERVER_URL}/user/`, {
+  //       method: "POST",
+  //       headers: {
+  //         Authorization: `Bearer ${sessionToken}`,
+  //       },
+  //       body: JSON.stringify({ username: user?.username }),
+  //     });
+  //     const data = await response.json();
+  //     console.log("playlistData", data);
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // }
 
-  async function likeSong(song_id: number) {
-    try {
-      const sessionToken = await session?.getToken({
-        template: "spotify-clone-template",
-      });
-      const response = await fetch(`${SERVER_URL}/user/song/like/${song_id}`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${sessionToken}`,
-        },
-      });
+  // async function likeSong(song_id: number) {
+  //   try {
+  //     const sessionToken = await session?.getToken({
+  //       template: "spotify-clone-template",
+  //     });
+  //     const response = await fetch(`${SERVER_URL}/user/song/like/${song_id}`, {
+  //       method: "POST",
+  //       headers: {
+  //         Authorization: `Bearer ${sessionToken}`,
+  //       },
+  //     });
 
-      return await response.json();
-    } catch (error) {
-      console.log(error);
-    }
-  }
+  //     return await response.json();
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // }
 
-  async function dislikeSong(song_id: number) {
-    try {
-      const sessionToken = await session?.getToken({
-        template: "spotify-clone-template",
-      });
-      const response = await fetch(
-        `${SERVER_URL}/user/song/dislike/${song_id}`,
-        {
-          method: "DELETE",
-          headers: {
-            Authorization: `Bearer ${sessionToken}`,
-          },
-        },
-      );
+  // async function dislikeSong(song_id: number) {
+  //   try {
+  //     const sessionToken = await session?.getToken({
+  //       template: "spotify-clone-template",
+  //     });
+  //     const response = await fetch(
+  //       `${SERVER_URL}/user/song/dislike/${song_id}`,
+  //       {
+  //         method: "DELETE",
+  //         headers: {
+  //           Authorization: `Bearer ${sessionToken}`,
+  //         },
+  //       },
+  //     );
 
-      return await response.json();
-    } catch (error) {
-      console.log(error);
-    }
-  }
+  //     return await response.json();
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // }
 
   const testPodcasts = [
     {

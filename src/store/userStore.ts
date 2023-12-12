@@ -1,11 +1,11 @@
-import { create, StateCreator } from "zustand";
+import { create } from "zustand";
 
-import type { Playlist } from "../contexts/UserDataContext";
+import type { Playlist } from "../services/playlistServices";
 
 type UserBasicInfo = {
   username: string;
   token: string;
-  playlists: Playlist;
+  playlists?: Playlist;
 };
 
 type UserState = {

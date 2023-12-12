@@ -12,6 +12,13 @@ export type Song = {
   duration?: number;
 };
 
+export type Album = {
+  id: string | number;
+  name: string;
+  launch_year: string;
+  cover_art: string;
+};
+
 export type PlayerState = {
   currentlyPlaying: Song | null;
   tracks: Song[];
