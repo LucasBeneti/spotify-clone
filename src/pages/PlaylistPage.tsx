@@ -9,17 +9,11 @@ import { useCookies } from "react-cookie";
 import { useQuery } from "@tanstack/react-query";
 import { Modal } from "../components/Modal";
 import { PlaylistModalContent } from "../components/PlaytlistModalContent";
+import { useCustomAudioContext } from "../contexts/CustomAudioContext";
 
-type SongData = {
-  name: string;
-  artist_name: string;
-  author_id: string;
-  album: string;
-  album_name?: string;
-  album_id?: string;
-  date_added: Date;
-  duration: number;
-};
+import type { Song } from "../contexts/AudioPlayerReducer";
+
+const SERVER_URL = import.meta.env.VITE_SERVER_URL;
 
 // TODO duplicate?
 type PlaylistData = {
@@ -28,7 +22,7 @@ type PlaylistData = {
   description: string;
   author: string;
   liked: boolean;
-  songs: SongData[];
+  songs: Song[];
 };
 
 type PlaylistInfoDTO = {
@@ -41,6 +35,8 @@ export const PlaylistPage = () => {
   const { id } = useParams();
   // const [likedPlaylist, setLikedPlaylist] = useState(playlistData?.liked);
   const [cookies] = useCookies(["user_jwt"]);
+  const { playSongNow } = useCustomAudioContext();
+
   // TODO implement the error handling for this
   const { data: playlistData, isLoading } = useQuery<PlaylistData | null>({
     queryKey: ["playlist_data", id],
@@ -56,8 +52,9 @@ export const PlaylistPage = () => {
   });
 
   // TODO create the function that will actually play the song, given some information
-  const handlePlayThis = (song: SongData) => {
+  const handlePlayThis = (song: Song) => {
     console.log("Now playing...", song);
+    playSongNow(song);
     // here we would call the function from the context to play the song
   };
 
@@ -86,7 +83,7 @@ export const PlaylistPage = () => {
           playlist_id: id,
         });
 
-        return await fetch(`http://localhost:3000/playlist/${id}`, {
+        return await fetch(`${SERVER_URL}/playlist/${id}`, {
           method: "PUT",
           headers: { Authorization: `Bearer ${cookies.user_jwt}` },
           body: JSON.stringify({
@@ -160,7 +157,6 @@ export const PlaylistPage = () => {
                 return (
                   <tr
                     className="group/item hover:bg-highlight transition cursor-pointer"
-                    onClick={() => handlePlayThis(song)}
                     key={`${song}_${index}`}
                   >
                     <td className="text-sm p-4 text-white ">
@@ -168,18 +164,16 @@ export const PlaylistPage = () => {
                         <span className="block group-hover/item:hidden px-2">
                           {index + 1}
                         </span>
-                        <span className="hidden group-hover/item:block">
+                        <span
+                          onClick={() => handlePlayThis(song)}
+                          className="hidden group-hover/item:block"
+                        >
                           <Play size={14} weight="fill" fill="white" />
                         </span>
                       </span>
                     </td>
                     <td className="text-sm p-4 text-left text-white">
-                      <SongItem
-                        artist={{ name: song.artist_name, id: song.author_id }}
-                        name={song.name}
-                        imgSrc={playlistData.cover_src}
-                        variant="playlist"
-                      />
+                      <SongItem song={song} variant="playlist" />
                     </td>
                     <td className="text-sm p-4 text-left text-white hover:underline">
                       <Link to={`/album/${song.album_id}`}>
@@ -190,7 +184,7 @@ export const PlaylistPage = () => {
                       9 de jun. de 2022
                     </td>
                     <td className="p-4 text-left text-white">
-                      {getSongDurationInMinutes(song.duration)}
+                      {getSongDurationInMinutes(song?.duration)}
                     </td>
                   </tr>
                 );

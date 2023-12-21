@@ -1,9 +1,10 @@
+const SERVER_URL = import.meta.env.VITE_SERVER_URL;
 // TODO GET user playlists (only main info)
 export const getUserPlaylistList = async (userToken: string) => {
   const headers = {
     Authorization: `Bearer ${userToken}`,
   };
-  const playlists = await fetch("http://localhost:3000/playlists", { headers });
+  const playlists = await fetch(`${SERVER_URL}/playlists`, { headers });
 
   return playlists;
 };

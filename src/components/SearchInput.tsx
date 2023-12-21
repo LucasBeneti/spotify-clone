@@ -8,7 +8,7 @@ export const SearchInput = () => {
   const [inputFocus, setInputFocus] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
   const formRef = useRef<HTMLFormElement>(null);
-  const inputRef = useRef(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const handleSearchInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
@@ -20,7 +20,9 @@ export const SearchInput = () => {
     setSearchParams({ q: e.target.value });
   };
   function clearSearchInput() {
-    inputRef.current.value = "";
+    if (inputRef.current) {
+      inputRef.current.value = "";
+    }
     searchParams.delete("q");
     setSearchParams(searchParams);
   }

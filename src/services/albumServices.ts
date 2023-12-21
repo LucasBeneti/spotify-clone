@@ -1,13 +1,12 @@
+const SERVER_URL = import.meta.env.VITE_SERVER_URL;
+
 export const getAlbumFullInfo = async (token: string, album_id: string) => {
   try {
-    const albumBasicInfo = await fetch(
-      `http://localhost:3000/albums/${album_id}`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+    const albumBasicInfo = await fetch(`${SERVER_URL}/albums/${album_id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
       },
-    );
+    });
     const { album } = await albumBasicInfo.json();
     return album;
 
@@ -20,7 +19,7 @@ export const getAlbumFullInfo = async (token: string, album_id: string) => {
 export const getAlbumSongs = async (token: string, album_id: string) => {
   try {
     const albumResponse = await fetch(
-      `http://localhost:3000/albums/songs/${album_id}`,
+      `${SERVER_URL}/albums/songs/${album_id}`,
       {
         headers: {
           Authorization: `Bearer ${token}`,

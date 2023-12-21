@@ -1,31 +1,12 @@
 import { Clock, Play, Heart } from "@phosphor-icons/react";
-import { useParams, Link } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { getSongDurationInMinutes } from "../utils";
 import { SongItem } from "../components/reusable/SongItem";
 import { BigPlayButton } from "../components/reusable/BigPlayButton";
-import { getPlaylistFullInfo } from "../services/playlistServices";
 import { getAlbumSongs, getAlbumFullInfo } from "../services/albumServices";
 import { useCookies } from "react-cookie";
 import { useQuery } from "@tanstack/react-query";
-
-type SongData = {
-  name: string;
-  artist?: string;
-  album?: string;
-  album_name?: string;
-  album_id?: string;
-  date_added?: Date;
-  duration: number;
-};
-
-// TODO duplicate?
-type PlaylistData = {
-  cover_src: string;
-  name: string;
-  author: string;
-  liked: boolean;
-  songs: SongData[];
-};
+import { Song } from "../contexts/AudioPlayerReducer";
 
 type AlbumFullInfo = {
   author_id: number;
@@ -33,16 +14,7 @@ type AlbumFullInfo = {
   cover_art: string;
   launch_date: string;
   name: string;
-  songs: {
-    artist_name: string;
-    author_id: number;
-    cover_art: string;
-    id: number;
-    name: string;
-    position_on_album: number;
-    source_link: string;
-    duration: number;
-  }[];
+  songs: Song[];
 };
 
 export const AlbumPage = () => {
@@ -74,7 +46,7 @@ export const AlbumPage = () => {
   // const albumCover = albumData[0]?.cover_art;
 
   // TODO create the function that will actually play the song, given some information
-  const handlePlayThis = (song: SongData) => {
+  const handlePlayThis = (song: Song) => {
     console.log("Now playing...", song);
     // here we would call the function from the context to play the song
   };
@@ -91,8 +63,8 @@ export const AlbumPage = () => {
   // TODO fix the album vertical overflow
   return (
     <>
-      <div className="overflow-y-auto">
-        <header className="w-100 bg-gradient-to-b from-cyan-950 to-base ">
+      <div className="overflow-y-auto bg-gradient-to-b from-cyan-950 to-base">
+        <header className="w-100">
           <section className="flex gap-x-4 items-end mt-24 px-6">
             <img
               src={albumSongData?.cover_art}
@@ -159,12 +131,7 @@ export const AlbumPage = () => {
                           </span>
                         </td>
                         <td className="text-sm p-4 text-left text-white">
-                          <SongItem
-                            artist={song.artist_name}
-                            name={song.name}
-                            imgSrc={song.cover_art}
-                            variant="playlist"
-                          />
+                          <SongItem song={song} variant="playlist" />
                         </td>
                         <td className="p-4 text-left text-white">
                           {getSongDurationInMinutes(song.duration)}

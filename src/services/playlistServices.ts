@@ -1,9 +1,8 @@
-import { useCookies } from "react-cookie";
-import { useQuery } from "@tanstack/react-query";
+const SERVER_URL = import.meta.env.VITE_SERVER_URL;
 
 export type Playlist = {
   id: number;
-  playlist_id: number;
+  playlist_id?: number;
   cover_src?: string;
   name: string;
   description?: string;
@@ -11,26 +10,17 @@ export type Playlist = {
   type?: string;
 };
 
-export const getUserPlaylists = async () => {
-  const [cookies] = useCookies(["user_jwt"]);
-
-  console.log("Looking for playlists");
-  if (!cookies.user_jwt) {
-    return console.error("Token not provided.");
+export const getUserPlaylists = async (token: string) => {
+  if (!token) {
+    return { error: "No token provided." };
   }
-  const headers = { Authorization: `Bearer ${cookies.user_jwt}` };
-  const { data, isError, isLoading } = useQuery({
-    queryKey: ["user_playlists"],
-    queryFn: async () => {
-      const response = await fetch("http://localhost:3000/playlist/user", {
-        method: "GET",
-        headers,
-      });
 
-      return (await response.json()) as object;
-    },
+  const headers = { Authorization: `Bearer ${token}` };
+  const response = await fetch(`${SERVER_URL}/playlist/user`, {
+    method: "GET",
+    headers,
   });
-  return { data, isError, isLoading };
+  return await response.json();
 };
 
 export const getPlaylistFullInfo = async (
@@ -38,7 +28,7 @@ export const getPlaylistFullInfo = async (
   playlistId: string,
 ) => {
   const playlistInfoResponse = await fetch(
-    `http://localhost:3000/playlist/${playlistId}`,
+    `${SERVER_URL}/playlist/${playlistId}`,
     {
       headers: { Authorization: `Bearer ${token}` },
     },
@@ -46,7 +36,7 @@ export const getPlaylistFullInfo = async (
   const { playlistInfo } = await playlistInfoResponse.json();
 
   const playlistSongsResponse = await fetch(
-    `http://localhost:3000/playlist/songs/${playlistId}`,
+    `${SERVER_URL}/playlist/songs/${playlistId}`,
     {
       headers: { Authorization: `Bearer ${token}` },
     },
@@ -61,7 +51,22 @@ export const getPlaylistFullInfo = async (
   return playlistFullInfo;
 };
 
-export const addSongToPlaylist = (song_id: number, playlist_id: number) => {
+export const addSongToPlaylist = async (
+  song_id: number,
+  playlist_id: number,
+  token: string | undefined,
+) => {
+  const response = await fetch(
+    `${SERVER_URL}/playlist/add/song/${playlist_id}`,
+
+    {
+      method: "POST",
+      headers: { Authorization: `Bearer ${token}` },
+      body: JSON.stringify({ song_id: song_id }),
+    },
+  );
+
+  return response;
   console.log("should add song of id", song_id, " to playlist", playlist_id);
 };
 

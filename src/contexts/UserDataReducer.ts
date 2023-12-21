@@ -9,6 +9,7 @@ type PlaylistsState = Playlist[] | [];
 type UserStateType = {
   userinfo: UserBasicInfo;
   playlists: PlaylistsState;
+  isPlaylistsLoading: boolean;
 };
 
 export const initialUserState: UserStateType = {
@@ -17,6 +18,7 @@ export const initialUserState: UserStateType = {
     token: "",
   },
   playlists: [],
+  isPlaylistsLoading: true,
 };
 
 type UserActionsTypes = {
@@ -50,7 +52,7 @@ export const userReducer = (state: UserStateType, action: UserActionsTypes) => {
 
       return {
         ...state,
-        playlists: [...state.playlists, action.data],
+        playlists: action.data,
       };
   }
 };

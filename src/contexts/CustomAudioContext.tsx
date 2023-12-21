@@ -1,55 +1,61 @@
-import { createContext, useRef, useState, useEffect, useContext } from "react";
+import {
+  createContext,
+  useRef,
+  useEffect,
+  useContext,
+  useReducer,
+} from "react";
+
+import {
+  audioPlayerReducer,
+  PlayerState,
+  Song,
+} from "../contexts/AudioPlayerReducer";
 
 const testTracks = [
   {
-    title: "Tokyo Lo-fi 1",
-    artist: "Unknown",
+    name: "Tokyo Lo-fi 1",
+    artist_name: "Unknown",
     color: "purple",
-    audioSrc:
+    source_link:
       "https://utfs.io/f/8d860e35-4ae3-4d7a-a98e-2a5db3692b21-no9q48.mp3",
   },
   {
-    title: "Tokyo Lo-fi 2",
-    artist: "Unknown",
+    name: "Tokyo Lo-fi 2",
+    artist_name: "Unknown",
     color: "purple",
-    audioSrc:
+    source_link:
       "https://utfs.io/f/8d860e35-4ae3-4d7a-a98e-2a5db3692b21-no9q48.mp3",
   },
   {
-    title: "Tokyo Lo-fi 3",
-    artist: "Unknown",
+    name: "Tokyo Lo-fi 3",
+    artist_name: "Unknown",
     color: "purple",
-    audioSrc:
+    source_link:
       "https://utfs.io/f/8d860e35-4ae3-4d7a-a98e-2a5db3692b21-no9q48.mp3",
   },
   {
-    title: "Tokyo Lo-fi 4",
-    artist: "Unknown",
+    name: "Tokyo Lo-fi 4",
+    artist_name: "Unknown",
     color: "purple",
-    audioSrc:
+    source_link:
       "https://utfs.io/f/8d860e35-4ae3-4d7a-a98e-2a5db3692b21-no9q48.mp3",
   },
 ];
 
-type Track = {
-  title: string;
-  artist: string;
-  color: string;
-  img?: string;
-  audioSrc: string;
-};
-
 type CustomAudioContextProps = {
-  tracks: Track[];
+  tracks: Song[];
+  audioElementRef: React.MutableRefObject<HTMLAudioElement>;
   duration: number;
   isPlaying: boolean;
   trackProgress: number;
   toggleIsPlaying: () => void;
+  addTrackToQueue: (s: Song) => void;
+  playSongNow: (s: Song) => void;
   toPreviousTrack: () => void;
   toNextTrack: () => void;
-  currPlaying?: { title: string; artist: string };
+  currentlyPlaying?: Song | null;
   onScrub: (n: number[]) => void;
-  onScrubEnd: () => void;
   volume: number[];
   handleVolumeChange: (n: number[]) => void;
   toggleAudioMute: () => void;
@@ -65,94 +71,154 @@ interface AudioContextProviderProps {
 export const AudioContextProvider = ({
   children,
 }: AudioContextProviderProps) => {
-  const [tracks, setTrack] = useState(testTracks); // TODO used for adding/removing tracks to the queue
-  const [trackIndex, setTrackIndex] = useState(0);
-  const [trackProgress, setTrackProgress] = useState(0);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [volume, setVolume] = useState<number[]>([0]);
+  const initialAudioPlayerState: PlayerState = {
+    currentlyPlaying: null,
+    isPlaying: false,
+    tracks: [],
+    trackIndex: -1,
+    volume: [-1],
+    trackProgress: 0,
+  };
+  const [state, dispatch] = useReducer(
+    audioPlayerReducer,
+    initialAudioPlayerState,
+  );
 
-  const { audioSrc, title, artist } = tracks[trackIndex];
-  const currPlaying = { title, artist };
-  const audioRef = useRef(new Audio(audioSrc));
+  const audioRef = useRef(new Audio(state?.currentlyPlaying?.source_link));
 
-  const intervalRef = useRef();
-  const isReady = useRef(false);
+  const intervalRef = useRef<ReturnType<typeof setTimeout>>();
 
   const { duration } = audioRef.current;
 
   const toggleIsPlaying = () => {
-    setIsPlaying(!isPlaying);
+    dispatch({ type: "SET_IS_PLAYING", data: !state.isPlaying });
   };
 
-  const toPreviousTrack = () => {
-    if (trackIndex - 1 < 0) {
-      setTrackIndex(tracks.length - 1);
-    } else {
-      setTrackIndex(trackIndex - 1);
+  const addTrackToQueue = (song: Song) => {
+    const currTracks = state.tracks;
+    currTracks.push(song);
+    dispatch({ type: "SET_TRACKS", data: currTracks });
+    console.log("song queue: ", currTracks);
+  };
+
+  const playSongNow = (song: Song) => {
+    const currTracks = state.tracks;
+    currTracks.unshift(song);
+    dispatch({ type: "SET_TRACKS", data: currTracks });
+    dispatch({ type: "SET_TRACK_INDEX", data: 0 });
+    dispatch({ type: "SET_CURRENTLY_PLAYING", data: song });
+
+    dispatch({ type: "SET_TRACK_PROGRESS", data: 0 });
+    dispatch({ type: "SET_IS_PLAYING", data: true });
+    setNewSongToAudioRef(song);
+  };
+
+  const setNewSongToAudioRef = (song: Song) => {
+    audioRef.current.pause();
+    audioRef.current = new Audio(song.source_link);
+
+    if (state.isPlaying) {
+      audioRef.current.play();
+      startTimer();
+      dispatch({ type: "SET_IS_PLAYING", data: true });
     }
+
+    dispatch({ type: "SET_CURRENTLY_PLAYING", data: song });
   };
 
   const toNextTrack = () => {
-    if (trackIndex < tracks.length - 1) {
-      setTrackIndex(trackIndex + 1);
+    let newTrackIndex = 0;
+    if (state.trackIndex < state.tracks.length - 1) {
+      newTrackIndex = state.trackIndex + 1;
+      dispatch({ type: "SET_TRACK_INDEX", data: state.trackIndex + 1 });
     } else {
-      setTrackIndex(0);
+      dispatch({ type: "SET_TRACK_INDEX", data: 0 });
     }
+
+    const nextSong = state.tracks[newTrackIndex];
+    setNewSongToAudioRef(nextSong);
+  };
+
+  const toPreviousTrack = () => {
+    let newTrackIndex = 0;
+    if (state.trackIndex - 1 < 0) {
+      newTrackIndex = state.tracks.length - 1;
+      dispatch({ type: "SET_TRACK_INDEX", data: state.tracks.length - 1 });
+    } else {
+      newTrackIndex = state.trackIndex - 1;
+      dispatch({ type: "SET_TRACK_INDEX", data: state.trackIndex - 1 });
+    }
+
+    const nextSong = state.tracks[newTrackIndex];
+    setNewSongToAudioRef(nextSong);
   };
 
   const startTimer = () => {
     clearInterval(intervalRef.current);
-    intervalRef.current = setInterval(() => {
+    const timeout: ReturnType<typeof setTimeout> = setInterval(() => {
       if (audioRef.current.ended) {
         toNextTrack();
       } else {
-        setTrackProgress(audioRef.current.currentTime);
+        dispatch({
+          type: "SET_TRACK_PROGRESS",
+          data: audioRef.current.currentTime,
+        });
       }
     }, 1000);
+    intervalRef.current = timeout;
+  };
+
+  const stopTimer = () => {
+    clearInterval(intervalRef.current);
   };
 
   const onScrub = (value: number[]) => {
     clearInterval(intervalRef.current);
     audioRef.current.currentTime = Number(value[0]);
-    setTrackProgress(audioRef.current.currentTime);
-  };
+    dispatch({
+      type: "SET_TRACK_PROGRESS",
+      data: audioRef.current.currentTime,
+    });
 
-  const onScrubEnd = () => {
-    if (!isPlaying) {
-      setIsPlaying(true);
+    if (state.isPlaying) {
+      dispatch({ type: "SET_IS_PLAYING", data: true });
+      startTimer();
+    } else {
+      dispatch({ type: "SET_IS_PLAYING", data: false });
+      stopTimer();
     }
-    startTimer();
   };
 
   const handleVolumeChange = (value: number[]) => {
-    setVolume(value);
+    dispatch({ type: "SET_VOLUME", data: value });
     audioRef.current.volume = value[0] > 1 ? value[0] / 100 : value[0];
   };
 
   const toggleAudioMute = () => {
     if (audioRef.current.volume === 0) {
-      audioRef.current.volume = volume[0] / 100;
+      audioRef.current.volume = state.volume[0] / 100;
       // TODO need to figure out how to set the volume to previous value
       // to the value that it was right before muting
       /* One idea is to save the volume on localStorage when muting, this way we can 
-            recover it further on */
+          recover it further on */
     } else {
       audioRef.current.volume = 0;
-      setVolume([0]);
+      dispatch({ type: "SET_VOLUME", data: [0] });
     }
   };
 
   useEffect(() => {
-    if (isPlaying) {
+    if (state.isPlaying) {
       audioRef.current.play();
       startTimer();
     } else {
       audioRef.current.pause();
+      stopTimer();
     }
-  }, [isPlaying]);
+  }, [state.isPlaying]);
 
   useEffect(() => {
-    setTrack(testTracks);
+    dispatch({ type: "SET_TRACKS", data: testTracks });
     const currAudioRef = audioRef.current;
     const currIntervalRef = intervalRef.current;
     return () => {
@@ -161,36 +227,22 @@ export const AudioContextProvider = ({
     };
   }, []);
 
-  useEffect(() => {
-    audioRef.current.pause();
-
-    audioRef.current = new Audio(audioSrc);
-    setTrackProgress(audioRef.current.currentTime);
-
-    if (isReady.current) {
-      audioRef.current.volume = 0.2; // TODO refactor to serve a better logic for UX
-      audioRef.current.play();
-      setIsPlaying(true);
-      startTimer();
-    } else {
-      isReady.current = true;
-    }
-  }, [trackIndex, audioSrc]);
-
   return (
     <CustomAudioContext.Provider
       value={{
-        tracks,
+        tracks: state.tracks,
+        audioElementRef: audioRef,
         duration,
-        isPlaying,
-        trackProgress,
+        isPlaying: state.isPlaying,
+        trackProgress: state.trackProgress,
         toNextTrack,
         toPreviousTrack,
         toggleIsPlaying,
-        currPlaying,
+        addTrackToQueue,
+        playSongNow,
+        currentlyPlaying: state.currentlyPlaying,
         onScrub,
-        onScrubEnd,
-        volume,
+        volume: state.volume,
         handleVolumeChange,
         toggleAudioMute,
       }}

@@ -7,14 +7,15 @@ import { useCustomAudioContext } from "../contexts/CustomAudioContext";
 import { SpeakerButton } from "./SpeakerButton";
 
 export const Footer = () => {
-  const { volume, handleVolumeChange, currPlaying } = useCustomAudioContext();
-
+  const { volume, handleVolumeChange, currentlyPlaying } =
+    useCustomAudioContext();
   return (
     <footer className="grid grid-cols-3 items-center h-20 bg-black w-screen fixed bottom-0">
       <section className="justify-self-start pl-4">
         <CurrentlyPlaying
-          title={currPlaying?.title}
-          artist={currPlaying?.artist}
+          title={currentlyPlaying?.name}
+          artist={currentlyPlaying?.artist_name}
+          artistId={currentlyPlaying?.author_id}
         />
       </section>
       <section className="justify-self-center w-96">
@@ -52,9 +53,14 @@ type CurrentlyPlayingProps = {
   title?: string;
   artist?: string;
   album?: string;
+  artistId?: string | number;
 };
 
-const CurrentlyPlaying = ({ title, artist }: CurrentlyPlayingProps) => {
+const CurrentlyPlaying = ({
+  title,
+  artist,
+  artistId,
+}: CurrentlyPlayingProps) => {
   return (
     <div className="flex gap-x-4 items-center">
       <img
@@ -70,7 +76,7 @@ const CurrentlyPlaying = ({ title, artist }: CurrentlyPlayingProps) => {
           {title ? title : ""}
         </a>
         <Link
-          to={`/artist/${artist}`}
+          to={`/artist/${artistId}`}
           className="text-xs block text-subdued hover:underline hover cursor-pointer"
         >
           {artist ? artist : ""}

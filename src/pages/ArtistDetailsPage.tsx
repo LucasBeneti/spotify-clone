@@ -6,6 +6,9 @@ import { VerticalCard } from "../components/VerticalCard";
 import { getSongDurationInMinutes } from "../utils";
 import { BigPlayButton } from "../components/reusable/BigPlayButton";
 import { useCookies } from "react-cookie";
+import { Song, Album } from "../contexts/AudioPlayerReducer";
+
+const SERVER_URL = import.meta.env.VITE_SERVER_URL;
 
 export const ArtistDetailsPage = () => {
   const { artistId } = useParams();
@@ -17,14 +20,11 @@ export const ArtistDetailsPage = () => {
     queryKey: ["artist_data", artistId],
     queryFn: async () => {
       const userToken = cookies.user_jwt;
-      const artistData = await fetch(
-        `http://localhost:3000/artist/${artistId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${userToken}`,
-          },
+      const artistData = await fetch(`${SERVER_URL}/artist/${artistId}`, {
+        headers: {
+          Authorization: `Bearer ${userToken}`,
         },
-      );
+      });
 
       return await artistData.json();
     },
@@ -48,11 +48,13 @@ export const ArtistDetailsPage = () => {
     console.log("play song", song);
   };
 
-  const artistCoverImage = useRef();
+  const artistCoverImage = useRef<HTMLImageElement>(null);
 
   const handleImgError = () => {
-    artistCoverImage.current.src =
-      "https://images.unsplash.com/photo-1549834125-82d3c48159a3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8YmFuZHxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=800&q=60";
+    if (artistCoverImage.current) {
+      artistCoverImage.current.src =
+        "https://images.unsplash.com/photo-1549834125-82d3c48159a3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8YmFuZHxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=800&q=60";
+    }
   };
 
   return (
@@ -89,7 +91,7 @@ export const ArtistDetailsPage = () => {
             <table className="table-auto border-collapse bg-transparent w-full">
               <tbody>
                 {mostPlayedSongs &&
-                  mostPlayedSongs.map((song, index: number) => {
+                  mostPlayedSongs.map((song: Song, index: number) => {
                     const renderCondition = showMoreSongs
                       ? index <= 9
                       : index <= 4;
@@ -112,7 +114,7 @@ export const ArtistDetailsPage = () => {
                             {song.name}
                           </td>
                           <td className="text-sm p-4 text-left text-white">
-                            {song.album}
+                            {song.album_name}
                           </td>
                           <td className="text-sm p-4 text-left text-white">
                             9 de jun. de 2022
@@ -137,7 +139,7 @@ export const ArtistDetailsPage = () => {
             <h3 className="text-xl font-display font-bold mb-4">Discography</h3>
             <section className="flex gap-x-6 scroll-smooth overflow-x-auto">
               {artistAlbums &&
-                artistAlbums.map((album) => (
+                artistAlbums.map((album: Album) => (
                   <Link to={`/album/${album.id}`}>
                     <VerticalCard
                       title={album.name}

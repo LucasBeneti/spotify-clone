@@ -6,6 +6,14 @@ import { VerticalCard } from "../components/VerticalCard";
 import { BestResultCard } from "../components/BestResultCard";
 import { Link, useSearchParams } from "react-router-dom";
 
+const SERVER_URL = import.meta.env.VITE_SERVER_URL;
+
+type ArtistAttr = {
+  id: string | number;
+  name: string;
+  profile_image: string;
+};
+
 export const Search = () => {
   const [selectedFilter, setSelectedFilter] = useState("all");
 
@@ -31,8 +39,8 @@ export const Search = () => {
     queryFn: async () => {
       const isFilteredQuery = searchFilter !== "all" && searchFilter;
       const requestURL = isFilteredQuery
-        ? `http://localhost:3000/search/${searchTerm}/${searchFilter.toLowerCase()}`
-        : `http://localhost:3000/search/${searchTerm}`;
+        ? `${SERVER_URL}/search/${searchTerm}/${searchFilter.toLowerCase()}`
+        : `${SERVER_URL}/search/${searchTerm}`;
       const searchRes = await fetch(requestURL);
       const parsed = await searchRes.json();
       if (isFilteredQuery) {
@@ -44,17 +52,10 @@ export const Search = () => {
     retry: false,
   });
 
-  const songResult = data?.songs
-    ? data.songs?.map((song) => ({
-        name: song.name,
-        albumCoverArt: song.album_cover_art,
-        authorName: song.author_name,
-        albumName: song.album_name,
-      }))
-    : null;
+  const songResult = data?.songs;
 
   const artistsResult = data?.artists
-    ? data.artists.map((artist) => ({
+    ? data.artists.map((artist: ArtistAttr) => ({
         id: artist.id,
         name: artist.name,
         profileImage: artist.profile_image,
@@ -83,8 +84,8 @@ export const Search = () => {
             <section className="flex">
               <BestResultCard
                 name={songResult[0].name}
-                imgSrc={songResult[0].albumCoverArt}
-                authorName={songResult[0].authorName}
+                imgSrc={songResult[0]?.cover_art}
+                authorName={songResult[0].author_name}
               />
             </section>
           </section>
@@ -102,12 +103,12 @@ export const Search = () => {
           <div className="">
             <section className="flex gap-x-6 scroll-smooth overflow-x-auto">
               {artistsResult &&
-                artistsResult.map((artist) => (
+                artistsResult.map((artist: ArtistAttr) => (
                   <Link to={`/artist/${artist.id}`}>
                     <VerticalCard
                       title={artist.name}
                       subtitle="Artist"
-                      coverSrc={artist.profileImage}
+                      coverSrc={artist.profile_image}
                       key={artist.id}
                     />
                   </Link>

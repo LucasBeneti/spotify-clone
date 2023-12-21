@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import { useCookies } from "react-cookie";
 import * as ScrollArea from "@radix-ui/react-scroll-area";
@@ -10,36 +9,19 @@ import {
   Plus,
   ArrowRight,
 } from "@phosphor-icons/react";
-import { useUserDataContext } from "../contexts/UserDataContext";
 import { PlaylistItem } from "./PlaylistItem";
 import { Modal } from "./Modal";
 import { PlaylistModalContent } from "./PlaytlistModalContent";
+import { useUserDataContext } from "../contexts/UserDataContext";
+import { type Playlist as PlaylistInfo } from "../services/playlistServices";
+
+const SERVER_URL = import.meta.env.VITE_SERVER_URL;
 
 export const Sidebar = () => {
-  const [cookies] = useCookies(["user_jwt"]);
   const [selected, setSelected] = useState<"home" | "search">("home");
-  const { userToken } = useUserDataContext();
   const [showModal, setShowModal] = useState(false);
 
-  const { data: userPlaylistsData, isLoading } = useQuery({
-    queryKey: ["user_playlists"],
-    queryFn: async () => {
-      console.log("userToken", userToken);
-      const token = cookies.user_jwt;
-      const response = await fetch("http://localhost:3000/playlist/user", {
-        method: "GET",
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      const { userPlaylists } = await response.json();
-      console.log("userPlaylists", userPlaylists);
-      const typedPlaylists = userPlaylists.map((playlistInfo) => {
-        return { ...playlistInfo, type: "playlist" };
-      });
-      return typedPlaylists;
-    },
-    refetchOnWindowFocus: false,
-    refetchOnMount: true,
-  });
+  const { playlists } = useUserDataContext();
 
   return (
     <>
@@ -83,10 +65,10 @@ export const Sidebar = () => {
           <nav className="flex">
             <ScrollArea.Root className="w-full">
               <ScrollArea.Viewport className="flex flex-1 flex-col gap-y-4 h-[calc(100vh-14rem)]">
-                {isLoading ? (
+                {!playlists ? (
                   <h2>Loading...</h2>
                 ) : (
-                  userPlaylistsData?.map((el) => {
+                  playlists?.map((el: PlaylistInfo) => {
                     return (
                       <Link to={`/playlist/${el.id}`} key={el.name + el.id}>
                         <PlaylistItem
@@ -139,17 +121,14 @@ const CreateNewPlaylistModal = ({
           ...playlistInfo,
         });
 
-        const createPlaylistRes = await fetch(
-          `http://localhost:3000/playlist/create`,
-          {
-            method: "POST",
-            headers: { Authorization: `Bearer ${cookies.user_jwt}` },
-            body: JSON.stringify({
-              name: playlistInfo?.name,
-              description: playlistInfo?.description,
-            }),
-          },
-        );
+        const createPlaylistRes = await fetch(`${SERVER_URL}/playlist/create`, {
+          method: "POST",
+          headers: { Authorization: `Bearer ${cookies.user_jwt}` },
+          body: JSON.stringify({
+            name: playlistInfo?.name,
+            description: playlistInfo?.description,
+          }),
+        });
 
         return createPlaylistRes;
       }

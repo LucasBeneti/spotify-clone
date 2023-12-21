@@ -19,6 +19,7 @@ export const DefaultLayout = () => {
   const navigateBack = () => navigate(-1);
   const navigateForward = () => navigate(1);
   const showSearchInput = pathname === "/search";
+
   return (
     <>
       <SignedIn>

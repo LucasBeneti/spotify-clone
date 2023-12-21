@@ -3,8 +3,7 @@ import { Play, Pause, SkipBack, SkipForward } from "@phosphor-icons/react";
 import { useCustomAudioContext } from "../contexts/CustomAudioContext";
 
 export const AudioPlayer = () => {
-  const { duration, trackProgress, onScrub, onScrubEnd } =
-    useCustomAudioContext();
+  const { duration, trackProgress, onScrub } = useCustomAudioContext();
 
   return (
     <div className="flex flex-col">
@@ -16,7 +15,6 @@ export const AudioPlayer = () => {
           step={1}
           min={0}
           max={duration}
-          onPointerUp={onScrubEnd}
           className="relative flex items-center w-full h-5"
         >
           <Slider.Track className="bg-subdued relative flex-1 rounded-full h-1">
@@ -35,6 +33,7 @@ export const AudioPlayer = () => {
 const AudioControls = () => {
   const { isPlaying, toNextTrack, toPreviousTrack, toggleIsPlaying } =
     useCustomAudioContext();
+
   return (
     <div className="flex gap-x-6 justify-center">
       <button className="p-2" onClick={toPreviousTrack}>
