@@ -2,6 +2,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { CaretRight, CaretLeft, Bell } from "@phosphor-icons/react";
 import { useUser } from "@clerk/clerk-react";
 import { SearchInput } from "./SearchInput";
+import { UserAvatar } from "./UserAvatar";
 
 export const MainHeader = () => {
   const { pathname } = useLocation();
@@ -37,14 +38,7 @@ export const MainHeader = () => {
         <button className="rounded-full bg-black p-2">
           <Bell size={24} />
         </button>
-        <button className="bg-black rounded-full">
-          <img
-            src={user?.imageUrl}
-            alt={`${user?.username} profile image`}
-            title={`${user?.username}`}
-            className="rounded-full h-6"
-          />
-        </button>
+        <UserAvatar username={user?.username} />
       </div>
     </header>
   );
