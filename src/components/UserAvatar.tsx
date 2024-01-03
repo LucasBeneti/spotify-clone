@@ -1,16 +1,27 @@
+import { useClerk } from "@clerk/clerk-react";
+import { useNavigate } from "react-router-dom";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import Avatar from "boring-avatars";
-import { ChevronRightIcon, CheckIcon } from "@radix-ui/react-icons";
+
 type UserAvatarProps = {
   imageUrl?: string | null | undefined;
   username?: string | null | undefined;
 };
 
 export const UserAvatar = ({ imageUrl, username }: UserAvatarProps) => {
+  const { signOut } = useClerk();
+  const navigate = useNavigate();
+  const handleLogOut = () => {
+    signOut(() => navigate("/"));
+  };
+
+  // TODO need to implement the profile page and navigation
+  // TODO need to implement the settings page and its navigation
+
   return (
     <DropdownMenu.Root>
       <DropdownMenu.Trigger>
-        <button className="bg-black rounded-full">
+        <span className="bg-black rounded-full">
           {imageUrl ? (
             <img
               src={imageUrl}
@@ -26,76 +37,36 @@ export const UserAvatar = ({ imageUrl, username }: UserAvatarProps) => {
               colors={["#92A1C6", "#146A7C", "#F0AB3D", "#C271B4", "#C20D90"]}
             />
           )}
-        </button>
+        </span>
       </DropdownMenu.Trigger>
 
       <DropdownMenu.Portal>
-        <DropdownMenu.Content className="DropdownMenuContent" sideOffset={5}>
-          <DropdownMenu.Item className="DropdownMenuItem">
-            New Tab <div className="RightSlot">⌘+T</div>
-          </DropdownMenu.Item>
-          <DropdownMenu.Item className="DropdownMenuItem">
-            New Window <div className="RightSlot">⌘+N</div>
-          </DropdownMenu.Item>
-          <DropdownMenu.Item className="DropdownMenuItem" disabled>
-            New Private Window <div className="RightSlot">⇧+⌘+N</div>
-          </DropdownMenu.Item>
-          <DropdownMenu.Sub>
-            <DropdownMenu.SubTrigger className="DropdownMenuSubTrigger">
-              More Tools
-              <div className="RightSlot">
-                <ChevronRightIcon />
-              </div>
-            </DropdownMenu.SubTrigger>
-            <DropdownMenu.Portal>
-              <DropdownMenu.SubContent
-                className="DropdownMenuSubContent"
-                sideOffset={2}
-                alignOffset={-5}
-              >
-                <DropdownMenu.Item className="DropdownMenuItem">
-                  Save Page As… <div className="RightSlot">⌘+S</div>
-                </DropdownMenu.Item>
-                <DropdownMenu.Item className="DropdownMenuItem">
-                  Create Shortcut…
-                </DropdownMenu.Item>
-                <DropdownMenu.Item className="DropdownMenuItem">
-                  Name Window…
-                </DropdownMenu.Item>
-                <DropdownMenu.Separator className="DropdownMenu.Separator" />
-                <DropdownMenu.Item className="DropdownMenuItem">
-                  Developer Tools
-                </DropdownMenu.Item>
-              </DropdownMenu.SubContent>
-            </DropdownMenu.Portal>
-          </DropdownMenu.Sub>
-
-          <DropdownMenu.Separator className="DropdownMenuSeparator" />
-
-          <DropdownMenu.CheckboxItem
-            className="DropdownMenuCheckboxItem"
-            checked={true}
-            onCheckedChange={() => {
-              console.log("checked");
-            }}
+        <DropdownMenu.Content
+          className="bg-highlight text-white min-w-[14em] rounded-md flex flex-col gap-y-2 overflow-hidden p-1 -translate-x-5"
+          sideOffset={25}
+          side={"bottom"}
+          alignOffset={13}
+        >
+          <DropdownMenu.Item
+            className="text-sm px-4 py-2 rounded-sm hover:bg-elevated transition-all hover:cursor-pointer"
+            disabled
           >
-            <DropdownMenu.ItemIndicator className="DropdownMenuItemIndicator">
-              <CheckIcon />
-            </DropdownMenu.ItemIndicator>
-            Show Bookmarks <div className="RightSlot">⌘+B</div>
-          </DropdownMenu.CheckboxItem>
-          <DropdownMenu.CheckboxItem
-            className="DropdownMenuCheckboxItem"
-            checked={true}
-            onCheckedChange={() => {
-              console.log("checked");
-            }}
+            Profile
+          </DropdownMenu.Item>
+          <DropdownMenu.Item
+            className="text-sm px-4 py-2 rounded-sm hover:bg-elevated transition-all hover:cursor-pointer"
+            disabled
           >
-            <DropdownMenu.ItemIndicator className="DropdownMenuItemIndicator">
-              <CheckIcon />
-            </DropdownMenu.ItemIndicator>
-            Show Full URLs
-          </DropdownMenu.CheckboxItem>
+            Settings
+          </DropdownMenu.Item>
+          <DropdownMenu.Separator className="h-[1px] rounded-sm bg-elevated mx-2" />
+          <DropdownMenu.Item
+            onClick={handleLogOut}
+            className="text-sm px-4 py-2 rounded-sm hover:bg-elevated transition-all hover:cursor-pointer"
+            disabled
+          >
+            Log out
+          </DropdownMenu.Item>
         </DropdownMenu.Content>
       </DropdownMenu.Portal>
     </DropdownMenu.Root>

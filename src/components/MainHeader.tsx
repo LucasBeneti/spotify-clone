@@ -1,5 +1,9 @@
 import { useNavigate, useLocation } from "react-router-dom";
-import { CaretRight, CaretLeft, Bell } from "@phosphor-icons/react";
+import {
+  ChevronRightIcon,
+  ChevronLeftIcon,
+  BellIcon,
+} from "@radix-ui/react-icons";
 import { useUser } from "@clerk/clerk-react";
 import { SearchInput } from "./SearchInput";
 import { UserAvatar } from "./UserAvatar";
@@ -23,20 +27,20 @@ export const MainHeader = () => {
           className="rounded-full bg-black p-1 h-10 w-10 flex justify-center items-center"
           onClick={navigateBack}
         >
-          <CaretLeft size={22} />
+          <ChevronLeftIcon className="scale-150" />
         </button>
         <button
           className="rounded-full bg-black p-1 h-10 w-10 flex justify-center items-center"
           onClick={navigateForward}
         >
-          <CaretRight size={20} />
+          <ChevronRightIcon className="scale-150" />
         </button>
         {showSearchInput && <SearchInput />}
       </div>
 
       <div className="flex items-center gap-x-4">
         <button className="rounded-full bg-black p-2">
-          <Bell size={24} />
+          <BellIcon className="transform-150" />
         </button>
         <UserAvatar username={user?.username} />
       </div>
