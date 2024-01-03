@@ -6,6 +6,7 @@ import { userReducer, initialUserState } from "./UserDataReducer";
 import { getCookieExpDate } from "../utils";
 import { Playlist } from "../services/playlistServices";
 import { getUserPlaylists } from "../services/playlistServices";
+import { getUserInfo } from "../services/userServices";
 
 type UserDataContext = {
   playlists?: Playlist[] | undefined;
@@ -61,6 +62,9 @@ export const UserDataContextProvider = ({ children }: UserDataContextProps) => {
         token = cookies.user_jwt;
       }
       dispatch({ type: "SET_TOKEN", data: token });
+
+      // run the first check
+      await getUserInfo(token); // TODO this won't stay here, just debug purpose
     } catch (error) {
       console.error(error);
     }
