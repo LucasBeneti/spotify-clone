@@ -1,12 +1,12 @@
 import { createContext, useEffect, useContext, useReducer } from "react";
-import { useAuth } from "@clerk/clerk-react";
+import { useAuth, useUser } from "@clerk/clerk-react";
 import { useQuery } from "@tanstack/react-query";
 import { useCookies } from "react-cookie";
 import { userReducer, initialUserState } from "./UserDataReducer";
 import { getCookieExpDate } from "../utils";
 import { Playlist } from "../services/playlistServices";
 import { getUserPlaylists } from "../services/playlistServices";
-import { getUserInfo } from "../services/userServices";
+import { checkUserExistence } from "../services/userServices";
 
 type UserDataContext = {
   playlists?: Playlist[] | undefined;
@@ -23,6 +23,7 @@ interface UserDataContextProps {
 export const UserDataContextProvider = ({ children }: UserDataContextProps) => {
   const [cookies, setCookies] = useCookies(["user_jwt"]);
   const { getToken } = useAuth();
+  const { user, isSignedIn } = useUser();
   const [state, dispatch] = useReducer(userReducer, initialUserState);
 
   const getUserToken = async () => {
@@ -63,16 +64,19 @@ export const UserDataContextProvider = ({ children }: UserDataContextProps) => {
       }
       dispatch({ type: "SET_TOKEN", data: token });
 
-      // run the first check
-      await getUserInfo(token); // TODO this won't stay here, just debug purpose
+      await checkUserExistence(token, user?.username);
     } catch (error) {
       console.error(error);
     }
   };
 
   useEffect(() => {
+    if (isSignedIn) {
+      dispatch({ type: "SET_USERNAME", data: user?.username });
+    }
+
     setUserToken();
-  }, []);
+  }, [isSignedIn]);
 
   useEffect(() => {
     dispatch({ type: "SET_PLAYLISTS", data: userPlaylistsData });

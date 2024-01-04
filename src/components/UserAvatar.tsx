@@ -43,9 +43,8 @@ export const UserAvatar = ({ imageUrl, username }: UserAvatarProps) => {
       <DropdownMenu.Portal>
         <DropdownMenu.Content
           className="bg-highlight text-white min-w-[14em] rounded-md flex flex-col gap-y-2 overflow-hidden p-1 -translate-x-5"
-          sideOffset={25}
+          sideOffset={5}
           side={"bottom"}
-          alignOffset={13}
         >
           <DropdownMenu.Item
             className="text-sm px-4 py-2 rounded-sm hover:bg-elevated transition-all hover:cursor-pointer"

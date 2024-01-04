@@ -1,9 +1,25 @@
 const SERVER_URL = import.meta.env.VITE_SERVER_URL;
 
-// TODO implement the a method to handle the first time a user logsin
-// - check if it is already on the backend
-// - if not currently on the database, I should add it
-// - create the liked songs playlist
+export const checkUserExistence = async (
+  userToken: string,
+  username: string,
+) => {
+  const headers = {
+    Authorization: `Bearer ${userToken}`,
+  };
+  const { data } = await fetch(`${SERVER_URL}/user`, { headers });
+  if (!data?.id) {
+    const newUserData = await fetch(`${SERVER_URL}/user`, {
+      headers,
+      method: "POST",
+      body: JSON.stringify({
+        username: username,
+      }),
+    });
+    return newUserData;
+  }
+  return !!data?.id;
+};
 
 // implement a method to fetch user data (useful to verify if the users is new)
 export const getUserInfo = async (userToken: string) => {
