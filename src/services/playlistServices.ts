@@ -6,7 +6,7 @@ export type Playlist = {
   cover_src?: string;
   name: string;
   description?: string;
-  author_username: string;
+  author_username?: string;
   type?: string;
 };
 

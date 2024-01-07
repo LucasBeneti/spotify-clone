@@ -13,6 +13,7 @@ type UserDataContext = {
   username?: string;
   userToken?: string;
   getUserToken?: () => Promise<string | null>;
+  addPlaylistToList?: (p: Playlist | Playlist[]) => void;
 };
 
 export const UserDataContext = createContext<UserDataContext>({ username: "" });
@@ -63,10 +64,30 @@ export const UserDataContextProvider = ({ children }: UserDataContextProps) => {
         token = cookies.user_jwt;
       }
       dispatch({ type: "SET_TOKEN", data: token });
-
-      await checkUserExistence(token, user?.username);
     } catch (error) {
       console.error(error);
+    }
+  };
+
+  const verifyFirstUserLogIn = async () => {
+    const userData = state.userinfo;
+    const user = await checkUserExistence(userData.token, userData.username);
+
+    if (user && !user.exists) {
+      addPlaylistToList(user?.playlists); // make sure the checkUserExistence returns the playlist
+      // maybe this liked songs playlist could be a defualt one, the only thing is that we
+      // have to be sure it has an existing id (to reference when user wants to navgate to it)
+    }
+  };
+
+  const addPlaylistToList = (playlistData: Playlist | Playlist[]) => {
+    if (playlistData instanceof Array) {
+      dispatch({ type: "SET_PLAYLISTS", data: playlistData });
+    } else {
+      dispatch({
+        type: "SET_PLAYLISTS",
+        data: [...state.playlists, playlistData],
+      });
     }
   };
 
@@ -76,10 +97,11 @@ export const UserDataContextProvider = ({ children }: UserDataContextProps) => {
     }
 
     setUserToken();
+    verifyFirstUserLogIn();
   }, [isSignedIn]);
 
   useEffect(() => {
-    dispatch({ type: "SET_PLAYLISTS", data: userPlaylistsData });
+    addPlaylistToList(userPlaylistsData);
     console.log("userPlaylistsData", userPlaylistsData);
   }, [isFetched]);
 
@@ -90,6 +112,7 @@ export const UserDataContextProvider = ({ children }: UserDataContextProps) => {
         username: state.userinfo.username,
         userToken: state.userinfo.token,
         getUserToken,
+        addPlaylistToList,
       }}
     >
       {children}

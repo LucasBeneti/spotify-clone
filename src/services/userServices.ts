@@ -2,13 +2,19 @@ const SERVER_URL = import.meta.env.VITE_SERVER_URL;
 
 export const checkUserExistence = async (
   userToken: string,
-  username: string,
+  username?: string,
 ) => {
+  if (!username) {
+    console.error("No username was provided. Please passed that in.");
+    return;
+  }
+
   const headers = {
     Authorization: `Bearer ${userToken}`,
   };
+
   const { data } = await fetch(`${SERVER_URL}/user`, { headers });
-  if (!data?.id) {
+  if (!data.id) {
     const newUserData = await fetch(`${SERVER_URL}/user`, {
       headers,
       method: "POST",
@@ -16,9 +22,12 @@ export const checkUserExistence = async (
         username: username,
       }),
     });
-    return newUserData;
+    return { ...newUserData, exists: false };
   }
-  return !!data?.id;
+
+  // TODO refactor this return statement to return an object, that will have the attribute
+  // saying if it is the first time the user is login in
+  return { exists: true };
 };
 
 // implement a method to fetch user data (useful to verify if the users is new)
