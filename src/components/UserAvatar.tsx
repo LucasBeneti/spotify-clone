@@ -1,5 +1,6 @@
 import { useClerk } from "@clerk/clerk-react";
 import { useNavigate } from "react-router-dom";
+import { useCookies } from "react-cookie";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import Avatar from "boring-avatars";
 
@@ -10,8 +11,10 @@ type UserAvatarProps = {
 
 export const UserAvatar = ({ imageUrl, username }: UserAvatarProps) => {
   const { signOut } = useClerk();
+  const [, , removeCookie] = useCookies(["user_jwt"]);
   const navigate = useNavigate();
   const handleLogOut = () => {
+    removeCookie("user_jwt", { path: "/" });
     signOut(() => navigate("/"));
   };
 
