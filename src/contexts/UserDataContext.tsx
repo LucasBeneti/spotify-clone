@@ -36,11 +36,12 @@ export const UserDataContextProvider = ({ children }: UserDataContextProps) => {
     }
   };
 
-  const { data: userPlaylistsData, isFetched } = useQuery({
+  const { data: userPlaylists, isFetched } = useQuery({
     queryKey: ["user_playlists"],
     queryFn: async () => {
-      const { userPlaylists } = await getUserPlaylists(cookies.user_jwt);
-      console.log("userPlaylists", userPlaylists);
+      const userToken =
+        cookies.user_jwt || state.userinfo.token || (await getUserToken());
+      const { userPlaylists } = await getUserPlaylists(userToken);
       const typedPlaylists = userPlaylists.map((playlistInfo: Playlist) => {
         return { ...playlistInfo, type: "playlist" };
       });
@@ -69,14 +70,15 @@ export const UserDataContextProvider = ({ children }: UserDataContextProps) => {
     }
   };
 
-  const verifyFirstUserLogIn = async () => {
+  const verifyFirstUserLogIn = async (username: string) => {
+    // TODO solve a bug that involves the username parameter, when it is passed to the checkUserExistence
+    // turns the request not being sent with the token
+    console.log("username value coming from upstream", username);
     const userData = state.userinfo;
     const user = await checkUserExistence(userData.token, userData.username);
 
     if (user && !user.exists) {
-      addPlaylistToList(user?.playlists); // make sure the checkUserExistence returns the playlist
-      // maybe this liked songs playlist could be a defualt one, the only thing is that we
-      // have to be sure it has an existing id (to reference when user wants to navgate to it)
+      addPlaylistToList(user?.playlists);
     }
   };
 
@@ -92,18 +94,18 @@ export const UserDataContextProvider = ({ children }: UserDataContextProps) => {
   };
 
   useEffect(() => {
+    setUserToken();
     if (isSignedIn) {
       dispatch({ type: "SET_USERNAME", data: user?.username });
+
+      verifyFirstUserLogIn(user?.username);
     }
 
-    setUserToken();
-    verifyFirstUserLogIn();
-  }, [isSignedIn]);
-
-  useEffect(() => {
-    addPlaylistToList(userPlaylistsData);
-    console.log("userPlaylistsData", userPlaylistsData);
-  }, [isFetched]);
+    if (isFetched) {
+      addPlaylistToList(userPlaylists);
+      console.log("userPlaylists", userPlaylists);
+    }
+  }, [isSignedIn, isFetched]);
 
   return (
     <UserDataContext.Provider

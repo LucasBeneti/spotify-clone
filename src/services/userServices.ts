@@ -13,7 +13,11 @@ export const checkUserExistence = async (
     Authorization: `Bearer ${userToken}`,
   };
 
-  const { data } = await fetch(`${SERVER_URL}/user`, { headers });
+  const response = await fetch(`${SERVER_URL}/user`, {
+    method: "GET",
+    headers,
+  });
+  const { data } = await response.json();
   if (!data.id) {
     const newUserData = await fetch(`${SERVER_URL}/user`, {
       headers,
