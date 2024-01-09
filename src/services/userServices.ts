@@ -17,15 +17,18 @@ export const checkUserExistence = async (
     method: "GET",
     headers,
   });
+
   const { data } = await response.json();
-  if (!data.id) {
-    const newUserData = await fetch(`${SERVER_URL}/user`, {
+
+  if (!data || !data.id) {
+    const newUserRes = await fetch(`${SERVER_URL}/user`, {
       headers,
       method: "POST",
       body: JSON.stringify({
         username: username,
       }),
     });
+    const { data: newUserData } = await newUserRes.json();
     return { ...newUserData, exists: false };
   }
 

@@ -78,14 +78,17 @@ export const UserDataContextProvider = ({ children }: UserDataContextProps) => {
     const user = await checkUserExistence(userData.token, userData.username);
 
     if (user && !user.exists) {
-      addPlaylistToList(user?.playlists);
+      const { likedSongsPlaylist } = user;
+      addPlaylistToList(likedSongsPlaylist);
     }
   };
 
   const addPlaylistToList = (playlistData: Playlist | Playlist[]) => {
     if (playlistData instanceof Array) {
       dispatch({ type: "SET_PLAYLISTS", data: playlistData });
-    } else {
+    } else if (playlistData?.playlist_id) {
+      playlistData.id = playlistData.playlist_id;
+      playlistData.type = "playist";
       dispatch({
         type: "SET_PLAYLISTS",
         data: [...state.playlists, playlistData],
