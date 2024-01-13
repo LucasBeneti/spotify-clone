@@ -7,6 +7,7 @@ import { getAlbumSongs, getAlbumFullInfo } from "../services/albumServices";
 import { useCookies } from "react-cookie";
 import { useQuery } from "@tanstack/react-query";
 import { Song } from "../contexts/AudioPlayerReducer";
+import { useCustomAudioContext } from "../contexts/CustomAudioContext";
 
 type AlbumFullInfo = {
   author_id: number;
@@ -21,6 +22,7 @@ export const AlbumPage = () => {
   const { id } = useParams();
   // const [likedPlaylist, setLikedPlaylist] = useState(playlistData?.liked);
   const [cookies] = useCookies(["user_jwt"]);
+  const { playSongNow } = useCustomAudioContext();
   // TODO implement the error handling for this
   const { data: albumSongData, isLoading } = useQuery<AlbumFullInfo | null>({
     queryKey: ["album_data", id],
@@ -45,10 +47,9 @@ export const AlbumPage = () => {
 
   // const albumCover = albumData[0]?.cover_art;
 
-  // TODO create the function that will actually play the song, given some information
   const handlePlayThis = (song: Song) => {
     console.log("Now playing...", song);
-    // here we would call the function from the context to play the song
+    playSongNow(song);
   };
 
   const handleLikeAlbum = () => {
@@ -117,7 +118,6 @@ export const AlbumPage = () => {
                     return (
                       <tr
                         className="group/item hover:bg-highlight transition cursor-pointer"
-                        onClick={() => handlePlayThis(song)}
                         key={`${song}_${index}`}
                       >
                         <td className="text-sm p-4 text-white ">
@@ -125,7 +125,10 @@ export const AlbumPage = () => {
                             <span className="block group-hover/item:hidden px-2">
                               {index + 1}
                             </span>
-                            <span className="hidden group-hover/item:block">
+                            <span
+                              onClick={() => handlePlayThis(song)}
+                              className="hidden group-hover/item:block"
+                            >
                               <Play size={14} weight="fill" fill="white" />
                             </span>
                           </span>

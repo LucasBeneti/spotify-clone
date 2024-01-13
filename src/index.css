@@ -11,3 +11,24 @@ body,
 body {
   overflow: hidden;
 }
+
+::-webkit-scrollbar {
+  width: 10px;
+  opacity: 0;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #656565;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #303030;
+  border-radius: 5px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #272727;
+}

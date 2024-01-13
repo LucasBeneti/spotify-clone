@@ -35,7 +35,7 @@ export const UserAvatar = ({ imageUrl, username }: UserAvatarProps) => {
           ) : (
             <Avatar
               size="24px"
-              name="Maria Mitchell"
+              name="John Doe"
               variant="marble"
               colors={["#92A1C6", "#146A7C", "#F0AB3D", "#C271B4", "#C20D90"]}
             />
