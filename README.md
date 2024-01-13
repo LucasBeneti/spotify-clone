@@ -1,15 +1,14 @@
-# React + TypeScript + Vite
+# Spotify Clone
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This is a study/portifolio project where I tried to recreate the UI and basic features of the Spotify app. I could use the Spotify API for a bunch of features, but I decided to implement [my own backend](https://github.com/LucasBeneti/spotify-clone-backend) for it, also for learning purposes.
 
-Currently, two official plugins are available:
+Since we have available a bunch of good tools with generous free tiers, I'm making use of a couple of cool tools, like [Clerk](https://clerk.com/) for authentication and user handling, [Supabase](https://supabase.com/) for the backend hosting and deployed on [Render](https://render.com/) (mainly for the simplicity, although I containirezed all of the applications and created a `docker-compose.yml` to run the whole application).
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+A [deployed version](https://spotify-clone-side-proj.onrender.com/) of this application can be found here (it may take a while to load the page on the first try, but that's just how Render free tier works, just be a little patient).
 
 ## Expanding the ESLint configuration
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+-- I will leave it here for easier future reference. --If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
 
 - Configure the top-level `parserOptions` property like this:
 
