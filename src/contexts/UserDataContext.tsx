@@ -1,17 +1,19 @@
 import { createContext, useEffect, useContext, useReducer } from "react";
-import { useAuth } from "@clerk/clerk-react";
+import { useAuth, useUser } from "@clerk/clerk-react";
 import { useQuery } from "@tanstack/react-query";
 import { useCookies } from "react-cookie";
 import { userReducer, initialUserState } from "./UserDataReducer";
 import { getCookieExpDate } from "../utils";
 import { Playlist } from "../services/playlistServices";
 import { getUserPlaylists } from "../services/playlistServices";
+import { checkUserExistence } from "../services/userServices";
 
 type UserDataContext = {
   playlists?: Playlist[] | undefined;
   username?: string;
   userToken?: string;
   getUserToken?: () => Promise<string | null>;
+  addPlaylistToList?: (p: Playlist | Playlist[]) => void;
 };
 
 export const UserDataContext = createContext<UserDataContext>({ username: "" });
@@ -22,6 +24,7 @@ interface UserDataContextProps {
 export const UserDataContextProvider = ({ children }: UserDataContextProps) => {
   const [cookies, setCookies] = useCookies(["user_jwt"]);
   const { getToken } = useAuth();
+  const { user, isSignedIn } = useUser();
   const [state, dispatch] = useReducer(userReducer, initialUserState);
 
   const getUserToken = async () => {
@@ -33,11 +36,12 @@ export const UserDataContextProvider = ({ children }: UserDataContextProps) => {
     }
   };
 
-  const { data: userPlaylistsData, isFetched } = useQuery({
+  const { data: userPlaylists, isFetched } = useQuery({
     queryKey: ["user_playlists"],
     queryFn: async () => {
-      const { userPlaylists } = await getUserPlaylists(cookies.user_jwt);
-      console.log("userPlaylists", userPlaylists);
+      const userToken =
+        cookies.user_jwt || state.userinfo.token || (await getUserToken());
+      const { userPlaylists } = await getUserPlaylists(userToken);
       const typedPlaylists = userPlaylists.map((playlistInfo: Playlist) => {
         return { ...playlistInfo, type: "playlist" };
       });
@@ -66,14 +70,45 @@ export const UserDataContextProvider = ({ children }: UserDataContextProps) => {
     }
   };
 
-  useEffect(() => {
-    setUserToken();
-  }, []);
+  const verifyFirstUserLogIn = async (username: string) => {
+    // TODO solve a bug that involves the username parameter, when it is passed to the checkUserExistence
+    // turns the request not being sent with the token
+    console.log("username value coming from upstream", username);
+    const userData = state.userinfo;
+    const user = await checkUserExistence(userData.token, userData.username);
+
+    if (user && !user.exists) {
+      const { likedSongsPlaylist } = user;
+      addPlaylistToList(likedSongsPlaylist);
+    }
+  };
+
+  const addPlaylistToList = (playlistData: Playlist | Playlist[]) => {
+    if (playlistData instanceof Array) {
+      dispatch({ type: "SET_PLAYLISTS", data: playlistData });
+    } else if (playlistData?.playlist_id) {
+      playlistData.id = playlistData.playlist_id;
+      playlistData.type = "playist";
+      dispatch({
+        type: "SET_PLAYLISTS",
+        data: [...state.playlists, playlistData],
+      });
+    }
+  };
 
   useEffect(() => {
-    dispatch({ type: "SET_PLAYLISTS", data: userPlaylistsData });
-    console.log("userPlaylistsData", userPlaylistsData);
-  }, [isFetched]);
+    setUserToken();
+    if (isSignedIn) {
+      dispatch({ type: "SET_USERNAME", data: user?.username });
+
+      verifyFirstUserLogIn(user?.username);
+    }
+
+    if (isFetched) {
+      addPlaylistToList(userPlaylists);
+      console.log("userPlaylists", userPlaylists);
+    }
+  }, [isSignedIn, isFetched]);
 
   return (
     <UserDataContext.Provider
@@ -82,6 +117,7 @@ export const UserDataContextProvider = ({ children }: UserDataContextProps) => {
         username: state.userinfo.username,
         userToken: state.userinfo.token,
         getUserToken,
+        addPlaylistToList,
       }}
     >
       {children}

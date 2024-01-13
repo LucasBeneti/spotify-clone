@@ -6,7 +6,7 @@ export type Playlist = {
   cover_src?: string;
   name: string;
   description?: string;
-  author_username: string;
+  author_username?: string;
   type?: string;
 };
 
@@ -67,7 +67,6 @@ export const addSongToPlaylist = async (
   );
 
   return response;
-  console.log("should add song of id", song_id, " to playlist", playlist_id);
 };
 
 export const removeSongFromPlaylist = () => {
