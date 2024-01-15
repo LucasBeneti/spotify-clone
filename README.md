@@ -4,7 +4,7 @@ This is a study/portifolio project where I tried to recreate the UI and basic fe
 
 Since we have available a bunch of good tools with generous free tiers, I'm making use of a couple of cool tools, like [Clerk](https://clerk.com/) for authentication and user handling, [Supabase](https://supabase.com/) for the backend hosting and deployed on [Render](https://render.com/) (mainly for the simplicity, although I containirezed all of the applications and created a `docker-compose.yml` to run the whole application).
 
-A [deployed version](https://spotify-clone-side-proj.onrender.com/) of this application can be found here (it may take a while to load the page on the first try, but that's just how Render free tier works, just be a little patient).
+A deployed version of this application can be found [here](https://spotify-clone-side-proj.onrender.com/) (it may take a while to load the page on the first try, but that's just how Render free tier works, just be a little patient).
 
 ## Expanding the ESLint configuration
 
