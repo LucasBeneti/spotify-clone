@@ -7,6 +7,7 @@ import { getSongDurationInMinutes } from "../utils";
 import { BigPlayButton } from "../components/reusable/BigPlayButton";
 import { useCookies } from "react-cookie";
 import { Song, Album } from "../contexts/AudioPlayerReducer";
+import { SongItem } from "../components/reusable/SongItem";
 
 const SERVER_URL = import.meta.env.VITE_SERVER_URL;
 
@@ -88,7 +89,7 @@ export const ArtistDetailsPage = () => {
             <h3 className="text-xl font-display font-bold mb-4">
               Most popular
             </h3>
-            <table className="table-auto border-collapse bg-transparent w-full">
+            <table className="table-auto border-collapse bg-transparent w-full ">
               <tbody>
                 {mostPlayedSongs &&
                   mostPlayedSongs.map((song: Song, index: number) => {
@@ -102,16 +103,16 @@ export const ArtistDetailsPage = () => {
                           onClick={() => handlePlayThis(song)}
                           key={`${song}_${index}`}
                         >
-                          <td className="text-sm p-4 text-white text-center flex justify-center">
+                          <td className="text-sm p-4 text-white text-center flex justify-center w-32">
                             <span className="block group-hover/item:hidden px-2">
                               {index + 1}
                             </span>
-                            <span className="hidden group-hover/item:block">
+                            <span className="hidden group-hover/item:block px-2">
                               <Play size={14} weight="fill" fill="white" />
                             </span>
                           </td>
                           <td className="text-sm p-4 text-left text-white">
-                            {song.name}
+                            <SongItem song={song} variant="artist-page" />
                           </td>
                           <td className="text-sm p-4 text-left text-white">
                             {song.album_name}

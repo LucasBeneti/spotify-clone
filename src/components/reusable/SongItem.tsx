@@ -25,6 +25,7 @@ export const SongItem = ({
   const [isLiked, setIsLiked] = useState(liked);
   const isPlaylistVariant = variant === "playlist";
   const isSearchVariant = variant === "search";
+  const isArtistPageVariant = variant === "artist-page";
 
   return (
     <ContextMenu.Root>
@@ -37,7 +38,9 @@ export const SongItem = ({
             <img
               src={song?.cover_art}
               alt="An album cover"
-              className={isPlaylistVariant ? "w-8" : "w-12"}
+              className={
+                isPlaylistVariant || isArtistPageVariant ? "w-8" : "w-12"
+              }
             />
             <span className="flex flex-col">
               <p className="text-white text-sm">{song.name}</p>
