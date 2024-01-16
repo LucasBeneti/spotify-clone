@@ -1,7 +1,13 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import * as ContextMenu from "@radix-ui/react-context-menu";
-import { Heart, Queue, Playlist, CaretRight } from "@phosphor-icons/react";
+import {
+  Heart,
+  Queue,
+  Playlist,
+  CaretRight,
+  Play,
+} from "@phosphor-icons/react";
 import { useCustomAudioContext } from "../../contexts/CustomAudioContext";
 import { Song } from "../../contexts/AudioPlayerReducer";
 import { useUserDataContext } from "../../contexts/UserDataContext";
@@ -20,7 +26,7 @@ export const SongItem = ({
   liked = false,
   variant = "default",
 }: SongItemProps) => {
-  const { addTrackToQueue } = useCustomAudioContext();
+  const { addTrackToQueue, playSongNow } = useCustomAudioContext();
   const { playlists, userToken } = useUserDataContext();
   const [isLiked, setIsLiked] = useState(liked);
   const isPlaylistVariant = variant === "playlist";
@@ -31,17 +37,25 @@ export const SongItem = ({
     <ContextMenu.Root>
       <ContextMenu.Trigger>
         <li
-          className="flex hover:bg-highlight justify-between transition-all"
+          className="flex hover:bg-highlight justify-between transition-all group/item"
           key={song.id}
         >
           <span className="flex gap-x-2 items-center">
-            <img
-              src={song?.cover_art}
-              alt="An album cover"
-              className={
-                isPlaylistVariant || isArtistPageVariant ? "w-8" : "w-12"
-              }
-            />
+            <span
+              onClick={() => playSongNow(song)}
+              className="relative flex flex-1 rounded-md"
+            >
+              <span className="hidden group-hover/item:flex absolute bg-elevated bg-opacity-50 w-full h-full items-center justify-center hover:cursor-pointer">
+                <Play size={20} fill="white" weight="fill" />
+              </span>
+              <img
+                src={song?.cover_art}
+                alt="An album cover"
+                className={`rounded-sm ${
+                  isPlaylistVariant || isArtistPageVariant ? "w-8" : "w-12"
+                }`}
+              />
+            </span>
             <span className="flex flex-col">
               <p className="text-white text-sm">{song.name}</p>
               <span className="flex gap-x-1 items-center">
