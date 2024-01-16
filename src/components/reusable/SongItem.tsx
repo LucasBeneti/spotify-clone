@@ -45,9 +45,11 @@ export const SongItem = ({
               onClick={() => playSongNow(song)}
               className="relative flex flex-1 rounded-md"
             >
-              <span className="hidden group-hover/item:flex absolute bg-elevated bg-opacity-50 w-full h-full items-center justify-center hover:cursor-pointer">
-                <Play size={20} fill="white" weight="fill" />
-              </span>
+              {isSearchVariant && (
+                <span className="hidden group-hover/item:flex absolute bg-elevated bg-opacity-50 w-full h-full items-center justify-center hover:cursor-pointer">
+                  <Play size={20} fill="white" weight="fill" />
+                </span>
+              )}
               <img
                 src={song?.cover_art}
                 alt="An album cover"
