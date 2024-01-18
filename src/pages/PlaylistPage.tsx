@@ -7,8 +7,8 @@ import { BigPlayButton } from "../components/reusable/BigPlayButton";
 import { getPlaylistFullInfo } from "../services/playlistServices";
 import { useCookies } from "react-cookie";
 import { useQuery } from "@tanstack/react-query";
-import { Modal } from "../components/Modal";
-import { PlaylistModalContent } from "../components/PlaytlistModalContent";
+import { Modal } from "../components/reusable/Modal";
+import { PlaylistModalContent } from "../components/playlist/PlaytlistModalContent";
 import { useCustomAudioContext } from "../contexts/CustomAudioContext";
 
 import type { Song } from "../contexts/AudioPlayerReducer";

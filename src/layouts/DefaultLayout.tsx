@@ -1,7 +1,7 @@
 import { Outlet } from "react-router-dom";
 import { RedirectToSignIn, SignedIn, SignedOut } from "@clerk/clerk-react";
 import { AudioContextProvider } from "../contexts/CustomAudioContext";
-import { Sidebar } from "../components/Sidebar";
+import { Sidebar } from "../components/layout/Sidebar";
 import { Footer } from "../components/layout/Footer";
 import { MainHeader } from "../components/layout/MainHeader";
 

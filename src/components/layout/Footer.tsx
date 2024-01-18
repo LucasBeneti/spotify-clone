@@ -4,7 +4,7 @@ import { ArrowsOutSimple } from "@phosphor-icons/react";
 import { MicIcon } from "../reusable/CustomIcons";
 import { AudioPlayer } from "../player/AudioPlayer";
 import { useCustomAudioContext } from "../../contexts/CustomAudioContext";
-import { SpeakerButton } from "../SpeakerButton";
+import { SpeakerButton } from "../reusable/SpeakerButton";
 
 export const Footer = () => {
   const { volume, handleVolumeChange, currentlyPlaying } =

@@ -1,5 +1,5 @@
-import { Song } from "../contexts/AudioPlayerReducer";
-import { SongItem } from "./reusable/SongItem";
+import { Song } from "../../contexts/AudioPlayerReducer";
+import { SongItem } from "./SongItem";
 
 type SongListProps = {
   songs: Song[];

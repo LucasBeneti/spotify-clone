@@ -5,7 +5,7 @@ import {
   BellIcon,
 } from "@radix-ui/react-icons";
 import { useUser } from "@clerk/clerk-react";
-import { SearchInput } from "../SearchInput";
+import { SearchInput } from "../search/SearchInput";
 import { UserAvatar } from "../user/UserAvatar";
 
 export const MainHeader = () => {

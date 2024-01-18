@@ -9,11 +9,11 @@ import {
   Plus,
   ArrowRight,
 } from "@phosphor-icons/react";
-import { PlaylistItem } from "./PlaylistItem";
-import { Modal } from "./Modal";
-import { PlaylistModalContent } from "./PlaytlistModalContent";
-import { useUserDataContext } from "../contexts/UserDataContext";
-import { type Playlist as PlaylistInfo } from "../services/playlistServices";
+import { PlaylistItem } from "../playlist/PlaylistItem";
+import { Modal } from "../reusable/Modal";
+import { PlaylistModalContent } from "../playlist/PlaytlistModalContent";
+import { useUserDataContext } from "../../contexts/UserDataContext";
+import { type Playlist as PlaylistInfo } from "../../services/playlistServices";
 
 const SERVER_URL = import.meta.env.VITE_SERVER_URL;
 

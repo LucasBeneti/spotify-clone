@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { FilterItem } from "../components/search/FilterItem";
-import { SongList } from "../components/SongList";
+import { SongList } from "../components/reusable/SongList";
 import { VerticalCard } from "../components/reusable/VerticalCard";
 import { BestResultCard } from "../components/search/BestResultCard";
 import { Link, useSearchParams } from "react-router-dom";
