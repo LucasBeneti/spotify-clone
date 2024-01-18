@@ -1,11 +1,11 @@
 import { useRef } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { VerticalCard } from "../components/VerticalCard";
+import { VerticalCard } from "../components/reusable/VerticalCard";
 import { BigPlayButton } from "../components/reusable/BigPlayButton";
 import { useCookies } from "react-cookie";
 import { Album } from "../contexts/AudioPlayerReducer";
-import { CustomTable } from "../components/CustomTable";
+import { CustomTable } from "../components/reusable/CustomTable";
 
 const SERVER_URL = import.meta.env.VITE_SERVER_URL;
 

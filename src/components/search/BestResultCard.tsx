@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { BigPlayButton } from "./reusable/BigPlayButton";
+import { BigPlayButton } from "../reusable/BigPlayButton";
 type ArtistCardProps = {
   name: string;
   authorName?: string;

@@ -1,10 +1,10 @@
 import * as Slider from "@radix-ui/react-slider";
 import { Link } from "react-router-dom";
 import { ArrowsOutSimple } from "@phosphor-icons/react";
-import { MicIcon } from "../components/CustomIcons";
-import { AudioPlayer } from "./AudioPlayer";
-import { useCustomAudioContext } from "../contexts/CustomAudioContext";
-import { SpeakerButton } from "./SpeakerButton";
+import { MicIcon } from "../reusable/CustomIcons";
+import { AudioPlayer } from "../player/AudioPlayer";
+import { useCustomAudioContext } from "../../contexts/CustomAudioContext";
+import { SpeakerButton } from "../SpeakerButton";
 
 export const Footer = () => {
   const { volume, handleVolumeChange, currentlyPlaying } =

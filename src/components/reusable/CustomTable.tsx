@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { SongItem } from "./reusable/SongItem";
+import { SongItem } from "./SongItem";
 import { Play } from "@phosphor-icons/react";
-import { getSongDurationInMinutes } from "../utils";
-import type { Song } from "../contexts/AudioPlayerReducer";
-import { useCustomAudioContext } from "../contexts/CustomAudioContext";
+import { getSongDurationInMinutes } from "../../utils";
+import type { Song } from "../../contexts/AudioPlayerReducer";
+import { useCustomAudioContext } from "../../contexts/CustomAudioContext";
 
 type CustomTableProps = {
   songs: Song[];

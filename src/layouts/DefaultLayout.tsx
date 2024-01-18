@@ -2,8 +2,8 @@ import { Outlet } from "react-router-dom";
 import { RedirectToSignIn, SignedIn, SignedOut } from "@clerk/clerk-react";
 import { AudioContextProvider } from "../contexts/CustomAudioContext";
 import { Sidebar } from "../components/Sidebar";
-import { Footer } from "../components/Footer";
-import { MainHeader } from "../components/MainHeader";
+import { Footer } from "../components/layout/Footer";
+import { MainHeader } from "../components/layout/MainHeader";
 
 export const DefaultLayout = () => {
   return (
