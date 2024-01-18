@@ -1,7 +1,7 @@
 import { NavLink } from "react-router-dom";
 import * as ScrollArea from "@radix-ui/react-scroll-area";
-import { RecentPlayedCard } from "../components/reusable/RecentPlayedCard";
-import { VerticalCard } from "../components/reusable/VerticalCard";
+import { RecentPlayedCard } from "@components/reusable/RecentPlayedCard";
+import { VerticalCard } from "@components/reusable/VerticalCard";
 
 export const Home = () => {
   const testPodcasts = [

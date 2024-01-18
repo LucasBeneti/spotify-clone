@@ -10,7 +10,7 @@ import {
   audioPlayerReducer,
   PlayerState,
   Song,
-} from "../contexts/AudioPlayerReducer";
+} from "@contexts/AudioPlayerReducer";
 
 const testTracks = [
   {

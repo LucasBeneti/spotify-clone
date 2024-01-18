@@ -1,17 +1,17 @@
 import { useState } from "react";
 import { Clock, Play, Heart } from "@phosphor-icons/react";
 import { useParams, Link } from "react-router-dom";
-import { getSongDurationInMinutes } from "../utils";
-import { SongItem } from "../components/reusable/SongItem";
-import { BigPlayButton } from "../components/reusable/BigPlayButton";
-import { getPlaylistFullInfo } from "../services/playlistServices";
+import { getSongDurationInMinutes } from "@utils/songs";
+import { SongItem } from "@components/reusable/SongItem";
+import { BigPlayButton } from "@components/reusable/BigPlayButton";
+import { getPlaylistFullInfo } from "@services/playlistServices";
 import { useCookies } from "react-cookie";
 import { useQuery } from "@tanstack/react-query";
-import { Modal } from "../components/reusable/Modal";
-import { PlaylistModalContent } from "../components/playlist/PlaytlistModalContent";
-import { useCustomAudioContext } from "../contexts/CustomAudioContext";
+import { Modal } from "@components/reusable/Modal";
+import { PlaylistModalContent } from "@components/playlist/PlaytlistModalContent";
+import { useCustomAudioContext } from "@contexts/CustomAudioContext";
 
-import type { Song } from "../contexts/AudioPlayerReducer";
+import type { Song } from "@contexts/AudioPlayerReducer";
 
 const SERVER_URL = import.meta.env.VITE_SERVER_URL;
 

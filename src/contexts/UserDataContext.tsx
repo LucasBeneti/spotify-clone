@@ -3,10 +3,10 @@ import { useAuth, useUser } from "@clerk/clerk-react";
 import { useQuery } from "@tanstack/react-query";
 import { useCookies } from "react-cookie";
 import { userReducer, initialUserState } from "./UserDataReducer";
-import { getCookieExpDate } from "../utils";
-import { Playlist } from "../services/playlistServices";
-import { getUserPlaylists } from "../services/playlistServices";
-import { checkUserExistence } from "../services/userServices";
+import { getCookieExpDate } from "@utils/date";
+import { Playlist } from "@services/playlistServices";
+import { getUserPlaylists } from "@services/playlistServices";
+import { checkUserExistence } from "@services/userServices";
 
 type UserDataContext = {
   playlists?: Playlist[] | undefined;

@@ -1,4 +1,4 @@
-import type { Playlist } from "../services/playlistServices";
+import type { Playlist } from "@services/playlistServices";
 
 type UserBasicInfo = {
   username: string;

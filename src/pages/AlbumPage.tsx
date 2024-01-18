@@ -1,13 +1,13 @@
 import { Clock, Play, Heart } from "@phosphor-icons/react";
 import { useParams } from "react-router-dom";
-import { getSongDurationInMinutes } from "../utils";
-import { SongItem } from "../components/reusable/SongItem";
-import { BigPlayButton } from "../components/reusable/BigPlayButton";
-import { getAlbumSongs, getAlbumFullInfo } from "../services/albumServices";
+import { getSongDurationInMinutes } from "@utils/songs";
+import { SongItem } from "@components/reusable/SongItem";
+import { BigPlayButton } from "@components/reusable/BigPlayButton";
+import { getAlbumSongs, getAlbumFullInfo } from "@services/albumServices";
 import { useCookies } from "react-cookie";
 import { useQuery } from "@tanstack/react-query";
-import { Song } from "../contexts/AudioPlayerReducer";
-import { useCustomAudioContext } from "../contexts/CustomAudioContext";
+import { Song } from "@contexts/AudioPlayerReducer";
+import { useCustomAudioContext } from "@contexts/CustomAudioContext";
 
 type AlbumFullInfo = {
   author_id: number;
