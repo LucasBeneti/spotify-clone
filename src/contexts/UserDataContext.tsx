@@ -75,7 +75,7 @@ export const UserDataContextProvider = ({ children }: UserDataContextProps) => {
     // turns the request not being sent with the token
     console.log("username value coming from upstream", username);
     const userData = state.userinfo;
-    const user = await checkUserExistence(userData.token, userData.username);
+    const user = await checkUserExistence(userData.token, username);
 
     if (user && !user.exists) {
       const { likedSongsPlaylist } = user;

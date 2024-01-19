@@ -7,7 +7,6 @@ import { useCustomAudioContext } from "../../contexts/CustomAudioContext";
 
 type CustomTableProps = {
   songs: Song[];
-  children?: React.ReactNode;
   enableShowMore?: boolean;
 };
 
