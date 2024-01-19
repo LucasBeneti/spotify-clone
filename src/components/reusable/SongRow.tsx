@@ -8,14 +8,15 @@ type SongRowParams = {
   song: Song;
   idx: number;
   handlePlaySong: (s: Song) => void;
+  key: string;
 };
 
-const SongRow = ({ song, idx, handlePlaySong }: SongRowParams) => {
+const SongRow = ({ song, idx, handlePlaySong, key }: SongRowParams) => {
   console.log("Songrow");
   return (
     <tr
       className="group/item hover:bg-highlight transition cursor-pointer"
-      key={`${song}_${idx}`}
+      key={key}
     >
       <td className="text-sm p-4 text-white w-16">
         <span className="flex justify-center items-center">

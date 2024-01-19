@@ -156,13 +156,12 @@ export const PlaylistPage = () => {
               ) : (
                 playlistData.songs?.map((song, index) => {
                   return (
-                    <>
-                      <SongRow
-                        song={song}
-                        idx={index}
-                        handlePlaySong={playSongNow}
-                      />
-                    </>
+                    <SongRow
+                      song={song}
+                      idx={index}
+                      handlePlaySong={playSongNow}
+                      key={`${song.name}_${index}`}
+                    />
                   );
                 })
               )}

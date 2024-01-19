@@ -52,15 +52,9 @@ export const Search = () => {
     retry: false,
   });
 
-  const songResult = data?.songs;
+  const songResult = data?.songs || null;
 
-  const artistsResult = data?.artists
-    ? data.artists.map((artist: ArtistAttr) => ({
-        id: artist.id,
-        name: artist.name,
-        profileImage: artist.profile_image,
-      }))
-    : null;
+  const artistsResult = data?.artists || null;
 
   return (
     <section className="mt-20 mx-6 flex flex-col">
@@ -102,17 +96,18 @@ export const Search = () => {
           <h3 className="text-2xl font-display font-bold mb-4">Artists</h3>
           <div className="">
             <section className="flex gap-x-6 scroll-smooth overflow-x-auto">
-              {artistsResult &&
-                artistsResult.map((artist: ArtistAttr) => (
-                  <Link to={`/artist/${artist.id}`}>
-                    <VerticalCard
-                      title={artist.name}
-                      subtitle="Artist"
-                      coverSrc={artist.profile_image}
-                      key={artist.id}
-                    />
-                  </Link>
-                ))}
+              {artistsResult.map((artist: ArtistAttr, index: number) => (
+                <Link
+                  to={`/artist/${artist.id}`}
+                  key={`${artist.name}_${index}`}
+                >
+                  <VerticalCard
+                    title={artist.name}
+                    subtitle="Artist"
+                    coverSrc={artist.profile_image}
+                  />
+                </Link>
+              ))}
             </section>
           </div>
         </section>
