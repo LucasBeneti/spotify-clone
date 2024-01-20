@@ -5,6 +5,7 @@ import { SongList } from "@components/reusable/SongList";
 import { VerticalCard } from "@components/reusable/VerticalCard";
 import { BestResultCard } from "@components/search/BestResultCard";
 import { Link, useSearchParams } from "react-router-dom";
+import { useCustomAudioContext } from "@contexts/CustomAudioContext";
 
 const SERVER_URL = import.meta.env.VITE_SERVER_URL;
 
@@ -20,6 +21,7 @@ export const Search = () => {
   const searchFilters = ["all", "artists", "songs", "albums"];
 
   const [searchParams, setSearchParams] = useSearchParams();
+  const { playSongNow } = useCustomAudioContext();
   const searchTerm = searchParams.get("q");
   const searchFilter = searchParams.get("search_filter");
 
@@ -77,9 +79,8 @@ export const Search = () => {
             </h3>
             <section className="flex">
               <BestResultCard
-                name={songResult[0].name}
-                imgSrc={songResult[0]?.cover_art}
-                authorName={songResult[0].author_name}
+                song={songResult[0]}
+                handlePlaySong={playSongNow}
               />
             </section>
           </section>
