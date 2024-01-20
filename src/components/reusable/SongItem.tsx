@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { Link } from "react-router-dom";
 import * as ContextMenu from "@radix-ui/react-context-menu";
 import {
@@ -8,10 +8,11 @@ import {
   CaretRight,
   Play,
 } from "@phosphor-icons/react";
-import { useCustomAudioContext } from "../../contexts/CustomAudioContext";
-import { Song } from "../../contexts/AudioPlayerReducer";
-import { useUserDataContext } from "../../contexts/UserDataContext";
-import { addSongToPlaylist } from "../../services/playlistServices";
+import { useCustomAudioContext } from "@contexts/CustomAudioContext";
+import { Song } from "@contexts/AudioPlayerReducer";
+import { useUserDataContext } from "@contexts/UserDataContext";
+import { addSongToPlaylist } from "@services/playlistServices";
+import { likeSong, dislikeSong } from "@services/songServices";
 
 type SongItemProps = {
   song: Song;
@@ -32,6 +33,22 @@ export const SongItem = ({
   const isPlaylistVariant = variant === "playlist";
   const isSearchVariant = variant === "search";
   const isArtistPageVariant = variant === "artist-page";
+
+  const handleToggleLike = useCallback(
+    (s: Song) => {
+      console.log("toggle like", isLiked);
+      if (userToken) {
+        if (isLiked) {
+          dislikeSong(song.id, userToken);
+        } else {
+          likeSong(song.id, userToken);
+        }
+
+        setIsLiked(!isLiked);
+      }
+    },
+    [isLiked],
+  );
 
   return (
     <ContextMenu.Root>
@@ -78,7 +95,7 @@ export const SongItem = ({
           </span>
           {isSearchVariant ? (
             <span className="flex items-center px-2">
-              <button onClick={() => setIsLiked(!isLiked)}>
+              <button onClick={() => handleToggleLike(song)}>
                 <Heart
                   fill="#1ed760"
                   size={24}

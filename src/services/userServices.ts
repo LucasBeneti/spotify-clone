@@ -32,12 +32,9 @@ export const checkUserExistence = async (
     return { ...newUserData, exists: false };
   }
 
-  // TODO refactor this return statement to return an object, that will have the attribute
-  // saying if it is the first time the user is login in
   return { exists: true };
 };
 
-// implement a method to fetch user data (useful to verify if the users is new)
 export const getUserInfo = async (userToken: string) => {
   const headers = {
     Authorization: `Bearer ${userToken}`,
@@ -48,7 +45,6 @@ export const getUserInfo = async (userToken: string) => {
   return;
 };
 
-// TODO GET user playlists (only main info)
 export const getUserPlaylistList = async (userToken: string) => {
   const headers = {
     Authorization: `Bearer ${userToken}`,
