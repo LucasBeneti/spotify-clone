@@ -6,7 +6,7 @@ import { getPlaylistFullInfo } from "@services/playlistServices";
 import { useCookies } from "react-cookie";
 import { useQuery } from "@tanstack/react-query";
 import { Modal } from "@components/reusable/Modal";
-import { PlaylistModalContent } from "@components/playlist/PlaytlistModalContent";
+import { PlaylistModalContent } from "@components/playlist/PlaylistModalContent";
 import { useCustomAudioContext } from "@contexts/CustomAudioContext";
 
 import type { Song } from "@contexts/AudioPlayerReducer";

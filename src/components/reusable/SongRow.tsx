@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { getSongDurationInMinutes } from "@utils/songs";
 import { SongItem } from "@components/reusable/SongItem";
 import type { Song } from "@contexts/AudioPlayerReducer";
+
 type SongRowParams = {
   song: Song;
   idx: number;
@@ -12,7 +13,6 @@ type SongRowParams = {
 };
 
 const SongRow = ({ song, idx, handlePlaySong, key }: SongRowParams) => {
-  console.log("Songrow");
   return (
     <tr
       className="group/item hover:bg-highlight transition cursor-pointer"

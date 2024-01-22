@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { useCookies } from "react-cookie";
+import { useNavigate } from "react-router-dom";
 import { Modal } from "@components/reusable/Modal";
 
-import { PlaylistModalContent } from "./PlaytlistModalContent";
+import { PlaylistModalContent } from "./PlaylistModalContent";
 
 const SERVER_URL = import.meta.env.VITE_SERVER_URL;
 
@@ -12,6 +13,8 @@ export const CreateNewPlaylistModal = ({
   handleClose: () => void;
 }) => {
   const [cookies] = useCookies(["user_jwt"]);
+  const navigate = useNavigate();
+
   const [playlistInfo, setPlaylistData] = useState<{
     name?: string;
     description?: string;
@@ -26,25 +29,29 @@ export const CreateNewPlaylistModal = ({
   };
 
   const handleSaveEdit = async () => {
-    try {
-      if (playlistInfo?.name) {
-        console.log("sending new playlist data", {
-          ...playlistInfo,
-        });
+    if (playlistInfo?.name) {
+      console.log("sending new playlist data", {
+        ...playlistInfo,
+      });
 
-        const createPlaylistRes = await fetch(`${SERVER_URL}/playlist/create`, {
-          method: "POST",
-          headers: { Authorization: `Bearer ${cookies.user_jwt}` },
-          body: JSON.stringify({
-            name: playlistInfo?.name,
-            description: playlistInfo?.description,
-          }),
+      await fetch(`${SERVER_URL}/playlist/create`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${cookies.user_jwt}` },
+        body: JSON.stringify({
+          name: playlistInfo?.name,
+          description: playlistInfo?.description,
+        }),
+      })
+        .then(async (response) => {
+          const { createdResponse } = await response.json();
+          // navigation is working now, just need to add the playlist to the sidebar
+          // something like an updatePlaylist method to fetch newly created playlists
+          navigate(`/playlist/${createdResponse.playlist_id}`);
+          handleClose();
+        })
+        .catch((error) => {
+          console.error("Erro while trying to submit the edit.", error);
         });
-
-        return createPlaylistRes;
-      }
-    } catch (error) {
-      console.error("Erro while trying to submit the edit.", error);
     }
   };
   return (
