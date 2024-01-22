@@ -34,21 +34,17 @@ export const SongItem = ({
   const isSearchVariant = variant === "search";
   const isArtistPageVariant = variant === "artist-page";
 
-  const handleToggleLike = useCallback(
-    (s: Song) => {
-      console.log("toggle like", isLiked);
-      if (userToken) {
-        if (isLiked) {
-          dislikeSong(song.id, userToken);
-        } else {
-          likeSong(song.id, userToken);
-        }
-
-        setIsLiked(!isLiked);
+  const handleToggleLike = useCallback(() => {
+    if (userToken) {
+      if (isLiked) {
+        dislikeSong(song.id, userToken);
+      } else {
+        likeSong(song.id, userToken);
       }
-    },
-    [isLiked],
-  );
+
+      setIsLiked(!isLiked);
+    }
+  }, [isLiked]);
 
   return (
     <ContextMenu.Root>
@@ -95,7 +91,7 @@ export const SongItem = ({
           </span>
           {isSearchVariant ? (
             <span className="flex items-center px-2">
-              <button onClick={() => handleToggleLike(song)}>
+              <button onClick={() => handleToggleLike()}>
                 <Heart
                   fill="#1ed760"
                   size={24}

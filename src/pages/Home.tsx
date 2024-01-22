@@ -2,8 +2,10 @@ import { NavLink } from "react-router-dom";
 import * as ScrollArea from "@radix-ui/react-scroll-area";
 import { RecentPlayedCard } from "@components/reusable/RecentPlayedCard";
 import { VerticalCard } from "@components/reusable/VerticalCard";
+import { useUserDataContext } from "@contexts/UserDataContext";
 
 export const Home = () => {
+  const { playlists } = useUserDataContext();
   const testPodcasts = [
     {
       title: "Grizzly Peaks Radio",
@@ -31,37 +33,23 @@ export const Home = () => {
     },
   ];
 
+  const availablePlaylists = playlists && playlists.length > 0 ? playlists : [];
+
   return (
     <ScrollArea.Root>
       <ScrollArea.Viewport>
         <div className="flex flex-1 flex-col gap-y-6 p-6 h-screen relative">
           <h1 className="text-4xl font-display font-bold mt-20">Boa noite</h1>
           <section className="flex  flex-wrap gap-x-6 gap-y-4 mt-4">
-            <RecentPlayedCard
-              currentlyPlaying
-              name="Liked songs"
-              imgSrc="https://images.unsplash.com/photo-1513104487127-813ea879b8da?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2746&q=80"
-            />
-            <RecentPlayedCard
-              name="Liked songs"
-              imgSrc="https://images.unsplash.com/photo-1513104487127-813ea879b8da?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2746&q=80"
-            />
-            <RecentPlayedCard
-              name="Liked songs"
-              imgSrc="https://images.unsplash.com/photo-1513104487127-813ea879b8da?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2746&q=80"
-            />
-            <RecentPlayedCard
-              name="Liked songs"
-              imgSrc="https://images.unsplash.com/photo-1513104487127-813ea879b8da?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2746&q=80"
-            />
-            <RecentPlayedCard
-              name="Liked songs"
-              imgSrc="https://images.unsplash.com/photo-1513104487127-813ea879b8da?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2746&q=80"
-            />
-            <RecentPlayedCard
-              name="Liked songs"
-              imgSrc="https://images.unsplash.com/photo-1513104487127-813ea879b8da?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2746&q=80"
-            />
+            {availablePlaylists.length ? (
+              <RecentPlayedCard
+                currentlyPlaying
+                name="Liked songs"
+                imgSrc="https://images.unsplash.com/photo-1513104487127-813ea879b8da?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2746&q=80"
+              />
+            ) : (
+              <span>No playlists to show...</span>
+            )}
           </section>
           <section className="mt-4">
             <header className="flex justify-between items-center">

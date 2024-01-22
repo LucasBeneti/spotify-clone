@@ -46,7 +46,7 @@ export const UserDataContextProvider = ({ children }: UserDataContextProps) => {
         return { ...playlistInfo, type: "playlist" };
       });
       dispatch({ type: "SET_PLAYLISTS", data: typedPlaylists });
-      return typedPlaylists;
+      return typedPlaylists || [];
     },
     refetchOnWindowFocus: true,
     refetchOnMount: true,
