@@ -1,6 +1,6 @@
 import * as Slider from "@radix-ui/react-slider";
 import { Play, Pause, SkipBack, SkipForward } from "@phosphor-icons/react";
-import { useCustomAudioContext } from "../contexts/CustomAudioContext";
+import { useCustomAudioContext } from "../../contexts/CustomAudioContext";
 
 export const AudioPlayer = () => {
   const { duration, trackProgress, onScrub } = useCustomAudioContext();

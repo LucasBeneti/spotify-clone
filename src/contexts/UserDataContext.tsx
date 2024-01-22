@@ -3,10 +3,10 @@ import { useAuth, useUser } from "@clerk/clerk-react";
 import { useQuery } from "@tanstack/react-query";
 import { useCookies } from "react-cookie";
 import { userReducer, initialUserState } from "./UserDataReducer";
-import { getCookieExpDate } from "../utils";
-import { Playlist } from "../services/playlistServices";
-import { getUserPlaylists } from "../services/playlistServices";
-import { checkUserExistence } from "../services/userServices";
+import { getCookieExpDate } from "@utils/date";
+import { Playlist } from "@services/playlistServices";
+import { getUserPlaylists } from "@services/playlistServices";
+import { checkUserExistence } from "@services/userServices";
 
 type UserDataContext = {
   playlists?: Playlist[] | undefined;
@@ -46,7 +46,7 @@ export const UserDataContextProvider = ({ children }: UserDataContextProps) => {
         return { ...playlistInfo, type: "playlist" };
       });
       dispatch({ type: "SET_PLAYLISTS", data: typedPlaylists });
-      return typedPlaylists;
+      return typedPlaylists || [];
     },
     refetchOnWindowFocus: true,
     refetchOnMount: true,
@@ -75,7 +75,7 @@ export const UserDataContextProvider = ({ children }: UserDataContextProps) => {
     // turns the request not being sent with the token
     console.log("username value coming from upstream", username);
     const userData = state.userinfo;
-    const user = await checkUserExistence(userData.token, userData.username);
+    const user = await checkUserExistence(userData.token, username);
 
     if (user && !user.exists) {
       const { likedSongsPlaylist } = user;

@@ -1,10 +1,8 @@
 import * as Slider from "@radix-ui/react-slider";
-import { Link } from "react-router-dom";
+import { CurrentlyPlaying, AudioPlayer } from "@components/player";
 import { ArrowsOutSimple } from "@phosphor-icons/react";
-import { MicIcon } from "../components/CustomIcons";
-import { AudioPlayer } from "./AudioPlayer";
-import { useCustomAudioContext } from "../contexts/CustomAudioContext";
-import { SpeakerButton } from "./SpeakerButton";
+import { MicIcon, SpeakerButton } from "@components/reusable";
+import { useCustomAudioContext } from "@contexts/CustomAudioContext";
 
 export const Footer = () => {
   const { volume, handleVolumeChange, currentlyPlaying } =
@@ -16,6 +14,7 @@ export const Footer = () => {
           title={currentlyPlaying?.name}
           artist={currentlyPlaying?.artist_name}
           artistId={currentlyPlaying?.author_id}
+          songCoverArt={currentlyPlaying?.cover_art}
         />
       </section>
       <section className="justify-self-center w-96">
@@ -46,42 +45,5 @@ export const Footer = () => {
         <ArrowsOutSimple size={24} />
       </section>
     </footer>
-  );
-};
-
-type CurrentlyPlayingProps = {
-  title?: string;
-  artist?: string;
-  album?: string;
-  artistId?: string | number;
-};
-
-const CurrentlyPlaying = ({
-  title,
-  artist,
-  artistId,
-}: CurrentlyPlayingProps) => {
-  return (
-    <div className="flex gap-x-4 items-center">
-      <img
-        src="https://i.scdn.co/image/ab67616d0000b273585f3d70dce678a5978a0941"
-        alt="Album"
-        className="object-cover w-14 rounded-md"
-      />
-      <div>
-        <a
-          href="#"
-          className="text-sm block hover:underline hover:cursor-pointer"
-        >
-          {title ? title : ""}
-        </a>
-        <Link
-          to={`/artist/${artistId}`}
-          className="text-xs block text-subdued hover:underline hover cursor-pointer"
-        >
-          {artist ? artist : ""}
-        </Link>
-      </div>
-    </div>
   );
 };

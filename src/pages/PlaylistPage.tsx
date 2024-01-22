@@ -1,17 +1,17 @@
 import { useState } from "react";
-import { Clock, Play, Heart } from "@phosphor-icons/react";
-import { useParams, Link } from "react-router-dom";
-import { getSongDurationInMinutes } from "../utils";
-import { SongItem } from "../components/reusable/SongItem";
-import { BigPlayButton } from "../components/reusable/BigPlayButton";
-import { getPlaylistFullInfo } from "../services/playlistServices";
+import { Clock, Heart } from "@phosphor-icons/react";
+import { useParams } from "react-router-dom";
+import { BigPlayButton } from "@components/reusable/BigPlayButton";
+import { getPlaylistFullInfo } from "@services/playlistServices";
 import { useCookies } from "react-cookie";
 import { useQuery } from "@tanstack/react-query";
-import { Modal } from "../components/Modal";
-import { PlaylistModalContent } from "../components/PlaytlistModalContent";
-import { useCustomAudioContext } from "../contexts/CustomAudioContext";
+import { Modal } from "@components/reusable/Modal";
+import { PlaylistModalContent } from "@components/playlist/PlaytlistModalContent";
+import { useCustomAudioContext } from "@contexts/CustomAudioContext";
 
-import type { Song } from "../contexts/AudioPlayerReducer";
+import type { Song } from "@contexts/AudioPlayerReducer";
+
+import SongRow from "@components/reusable/SongRow";
 
 const SERVER_URL = import.meta.env.VITE_SERVER_URL;
 
@@ -156,38 +156,12 @@ export const PlaylistPage = () => {
               ) : (
                 playlistData.songs?.map((song, index) => {
                   return (
-                    <tr
-                      className="group/item hover:bg-highlight transition cursor-pointer"
-                      key={`${song}_${index}`}
-                    >
-                      <td className="text-sm p-4 text-white ">
-                        <span className="flex justify-center items-center">
-                          <span className="block group-hover/item:hidden px-2">
-                            {index + 1}
-                          </span>
-                          <span
-                            onClick={() => handlePlayThis(song)}
-                            className="hidden group-hover/item:block"
-                          >
-                            <Play size={14} weight="fill" fill="white" />
-                          </span>
-                        </span>
-                      </td>
-                      <td className="text-sm p-4 text-left text-white">
-                        <SongItem song={song} variant="playlist" />
-                      </td>
-                      <td className="text-sm p-4 text-left text-white hover:underline">
-                        <Link to={`/album/${song.album_id}`}>
-                          {song.album_name}
-                        </Link>
-                      </td>
-                      <td className="text-sm p-4 text-left text-white">
-                        9 de jun. de 2022
-                      </td>
-                      <td className="p-4 text-left text-white">
-                        {getSongDurationInMinutes(song?.duration)}
-                      </td>
-                    </tr>
+                    <SongRow
+                      song={song}
+                      idx={index}
+                      handlePlaySong={playSongNow}
+                      key={`${song.name}_${index}`}
+                    />
                   );
                 })
               )}

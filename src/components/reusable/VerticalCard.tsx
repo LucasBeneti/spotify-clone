@@ -6,7 +6,7 @@ type VerticalCardProps = {
 export const VerticalCard = ({
   title,
   subtitle,
-  coverSrc = "https://i.scdn.co/image/ab6761610000f1788278b782cbb5a3963db88ada",
+  coverSrc,
 }: VerticalCardProps) => {
   return (
     <div className="flex flex-col bg-highlight items-start rounded-md w-48 min-w-[12rem] p-4">

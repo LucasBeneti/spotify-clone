@@ -1,11 +1,18 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { Link } from "react-router-dom";
 import * as ContextMenu from "@radix-ui/react-context-menu";
-import { Heart, Queue, Playlist, CaretRight } from "@phosphor-icons/react";
-import { useCustomAudioContext } from "../../contexts/CustomAudioContext";
-import { Song } from "../../contexts/AudioPlayerReducer";
-import { useUserDataContext } from "../../contexts/UserDataContext";
-import { addSongToPlaylist } from "../../services/playlistServices";
+import {
+  Heart,
+  Queue,
+  Playlist,
+  CaretRight,
+  Play,
+} from "@phosphor-icons/react";
+import { useCustomAudioContext } from "@contexts/CustomAudioContext";
+import { Song } from "@contexts/AudioPlayerReducer";
+import { useUserDataContext } from "@contexts/UserDataContext";
+import { addSongToPlaylist } from "@services/playlistServices";
+import { likeSong, dislikeSong } from "@services/songServices";
 
 type SongItemProps = {
   song: Song;
@@ -20,25 +27,50 @@ export const SongItem = ({
   liked = false,
   variant = "default",
 }: SongItemProps) => {
-  const { addTrackToQueue } = useCustomAudioContext();
+  const { addTrackToQueue, playSongNow } = useCustomAudioContext();
   const { playlists, userToken } = useUserDataContext();
   const [isLiked, setIsLiked] = useState(liked);
   const isPlaylistVariant = variant === "playlist";
   const isSearchVariant = variant === "search";
+  const isArtistPageVariant = variant === "artist-page";
+
+  const handleToggleLike = useCallback(() => {
+    if (userToken) {
+      if (isLiked) {
+        dislikeSong(song.id, userToken);
+      } else {
+        likeSong(song.id, userToken);
+      }
+
+      setIsLiked(!isLiked);
+    }
+  }, [isLiked]);
 
   return (
     <ContextMenu.Root>
       <ContextMenu.Trigger>
         <li
-          className="flex hover:bg-highlight justify-between transition-all"
+          className="flex hover:bg-highlight justify-between transition-all group/item"
           key={song.id}
         >
           <span className="flex gap-x-2 items-center">
-            <img
-              src={song?.cover_art}
-              alt="An album cover"
-              className={isPlaylistVariant ? "w-8" : "w-12"}
-            />
+            <span
+              onClick={() => playSongNow(song)}
+              className="relative flex flex-1 rounded-md"
+            >
+              {isSearchVariant && (
+                <span className="hidden group-hover/item:flex absolute bg-elevated bg-opacity-50 w-full h-full items-center justify-center hover:cursor-pointer">
+                  <Play size={20} fill="white" weight="fill" />
+                </span>
+              )}
+              <img
+                src={song?.cover_art}
+                alt="An album cover"
+                className={`rounded-sm ${
+                  isPlaylistVariant || isArtistPageVariant ? "w-8" : "w-12"
+                }`}
+              />
+            </span>
             <span className="flex flex-col">
               <p className="text-white text-sm">{song.name}</p>
               <span className="flex gap-x-1 items-center">
@@ -59,7 +91,7 @@ export const SongItem = ({
           </span>
           {isSearchVariant ? (
             <span className="flex items-center px-2">
-              <button onClick={() => setIsLiked(!isLiked)}>
+              <button onClick={() => handleToggleLike()}>
                 <Heart
                   fill="#1ed760"
                   size={24}
