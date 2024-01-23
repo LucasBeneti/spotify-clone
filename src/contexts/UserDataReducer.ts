@@ -54,5 +54,9 @@ export const userReducer = (state: UserStateType, action: UserActionsTypes) => {
         ...state,
         playlists: action.data,
       };
+    default:
+      return {
+        ...state,
+      };
   }
 };
