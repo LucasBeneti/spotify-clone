@@ -46,6 +46,7 @@ export const CreateNewPlaylistModal = ({
           const { createdResponse } = await response.json();
           // navigation is working now, just need to add the playlist to the sidebar
           // something like an updatePlaylist method to fetch newly created playlists
+          // or just set manually the playlist on the sidebar and wait for the refetch for this function to happen
           navigate(`/playlist/${createdResponse.playlist_id}`);
           handleClose();
         })

@@ -100,9 +100,9 @@ export const PlaylistPage = () => {
   // to be the color for this gradient on the header of the playlist
   return (
     <>
-      <div className="overflow-y-auto">
-        <header className="w-100 bg-gradient-to-b from-cyan-950 to-base h-96">
-          <section className="flex gap-x-4 items-end mt-24 px-6">
+      <div className="overflow-y-auto bg-gradient-to-b from-cyan-950 to-base">
+        <header className="w-100">
+          <section className="flex gap-x-4 items-end px-6 mt-20">
             <img
               src={playlistData?.cover_src}
               alt="playlist cover art"
@@ -120,7 +120,7 @@ export const PlaylistPage = () => {
             </div>
           </section>
         </header>
-        <main className="w-full h-full px-6 -translate-y-24 bg-base bg-opacity-10">
+        <main className="w-full px-6 bg-base bg-opacity-10">
           <section className="flex gap-x-8 items-center my-8">
             <BigPlayButton
               onClickHandle={() => {
