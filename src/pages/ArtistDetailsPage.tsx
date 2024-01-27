@@ -22,13 +22,13 @@ export const ArtistDetailsPage = () => {
     queryKey: ["artist_data", artistId],
     queryFn: async () => {
       const userToken = cookies.user_jwt;
-      const artistData = await fetch(`${SERVER_URL}/artist/${artistId}`, {
+      const response = await fetch(`${SERVER_URL}/artist/${artistId}`, {
         headers: {
           Authorization: `Bearer ${userToken}`,
         },
       });
 
-      return await artistData.json();
+      return await response.json();
     },
   });
 
@@ -136,7 +136,10 @@ export const ArtistDetailsPage = () => {
             <section className="flex gap-x-6 scroll-smooth overflow-x-auto">
               {artistAlbums &&
                 artistAlbums.map((album: Album) => (
-                  <Link to={`/album/${album.id}`}>
+                  <Link
+                    to={`/album/${album.id}`}
+                    key={`${album.name}_${album.id}`}
+                  >
                     <VerticalCard
                       title={album.name}
                       subtitle={album.launch_year}
