@@ -93,10 +93,12 @@ export const ArtistDetailsPage = () => {
                       return (
                         <tr
                           className="group/item hover:bg-highlight transition cursor-pointer"
-                          onClick={() => playSongNow(song)}
                           key={`${song}_${index}`}
                         >
-                          <td className="text-sm p-4 text-white text-center flex justify-center w-16">
+                          <td
+                            className="text-sm p-4 text-white text-center flex justify-center w-16"
+                            onClick={() => playSongNow(song)}
+                          >
                             <span className="block group-hover/item:hidden px-2">
                               {index + 1}
                             </span>
