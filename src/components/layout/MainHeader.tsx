@@ -18,7 +18,7 @@ export const MainHeader = () => {
   const showSearchInput = pathname === "/search";
 
   return (
-    <header className="flex w-full absolute top-0 justify-between p-4 backdrop-blur-sm h-20">
+    <header className="flex w-full static top-0 justify-between p-4 h-20">
       <div className="flex gap-x-2 items-center">
         <button
           className="rounded-full bg-black p-1 h-10 w-10 flex justify-center items-center"

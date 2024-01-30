@@ -189,6 +189,10 @@ export const AudioContextProvider = ({
     }
   };
 
+  // TODO dá pra implementar com useState pegando do local storage
+  // pra pegar do localstorage, apenas window.localStorage.getItem('STRING DO VALOR SALVO')
+  // dá pra salvar o valor como @spotify-clone/volume, pra especificar melhor de onde
+  // e pra quê esse valor está sendo salvo
   const handleVolumeChange = (value: number[]) => {
     dispatch({ type: "SET_VOLUME", data: value });
     audioRef.current.volume = value[0] > 1 ? value[0] / 100 : value[0];

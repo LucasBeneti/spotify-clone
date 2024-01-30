@@ -28,6 +28,9 @@ export const CreateNewPlaylistModal = ({
     setPlaylistData((prev) => ({ ...prev, [fieldName]: fieldData }));
   };
 
+  // TODO implementar com useMutations do react-query, pois ele faz que faz o request pra efetivamente adicionar
+  // o dado no banco, e atualizar o cache do request pra já mostrar automaticamente no sidebar
+  // dessa forma o cache estará atualizado e o dado estará também no DB, mas tudo isso sem um request a mais
   const handleSaveEdit = async () => {
     if (playlistInfo?.name) {
       console.log("sending new playlist data", {
