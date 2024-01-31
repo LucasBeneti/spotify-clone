@@ -12,7 +12,7 @@ type SongRowParams = {
   key: string;
 };
 
-const SongRow = ({ song, idx, handlePlaySong }: SongRowParams) => {
+export const SongRow = memo(({ song, idx, handlePlaySong }: SongRowParams) => {
   return (
     <tr className="group/item hover:bg-highlight transition cursor-pointer">
       <td className="text-sm p-4 text-white w-16">
@@ -38,6 +38,4 @@ const SongRow = ({ song, idx, handlePlaySong }: SongRowParams) => {
       </td>
     </tr>
   );
-};
-
-export default memo(SongRow);
+});

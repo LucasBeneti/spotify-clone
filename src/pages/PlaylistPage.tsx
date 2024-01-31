@@ -11,7 +11,7 @@ import { useCustomAudioContext } from "@contexts/CustomAudioContext";
 
 import type { Song } from "@contexts/AudioPlayerReducer";
 
-import SongRow from "@components/reusable/SongRow";
+import { SongRow } from "@components/reusable/SongRow";
 
 const SERVER_URL = import.meta.env.VITE_SERVER_URL;
 
@@ -52,11 +52,6 @@ export const PlaylistPage = () => {
   });
 
   // TODO create the function that will actually play the song, given some information
-  const handlePlayThis = (song: Song) => {
-    console.log("Now playing...", song);
-    playSongNow(song);
-    // here we would call the function from the context to play the song
-  };
 
   const handleLikePlaylist = () => {
     // TODO implement this feature
