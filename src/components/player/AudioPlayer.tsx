@@ -35,23 +35,23 @@ const AudioControls = () => {
     useCustomAudioContext();
 
   return (
-    <div className="flex gap-x-6 justify-center">
+    <div className="flex gap-x-6 justify-center align-center">
       <button className="p-2" onClick={toPreviousTrack}>
         <SkipBack size={24} weight="fill" color="white" />
       </button>
-      <button className="p-2">
+      <button className="p-2 rounded-full h-8 bg-white self-center hover:scale-105 transition">
         {isPlaying ? (
           <Pause
-            size={24}
+            size={16}
             weight="fill"
-            color="white"
+            color="black"
             onClick={toggleIsPlaying}
           />
         ) : (
           <Play
-            size={24}
+            size={16}
             weight="fill"
-            color="white"
+            color="black"
             onClick={toggleIsPlaying}
           />
         )}
