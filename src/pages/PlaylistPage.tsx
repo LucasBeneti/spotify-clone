@@ -51,8 +51,6 @@ export const PlaylistPage = () => {
     refetchOnWindowFocus: false,
   });
 
-  // TODO create the function that will actually play the song, given some information
-
   const handleLikePlaylist = () => {
     // TODO implement this feature
     // setLikedPlaylist(!likedPlaylist);
