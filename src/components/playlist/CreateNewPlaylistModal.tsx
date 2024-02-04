@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { Modal } from "@components/reusable/Modal";
 
 import { PlaylistModalContent } from "./PlaylistModalContent";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 const SERVER_URL = import.meta.env.VITE_SERVER_URL;
 
@@ -27,42 +28,53 @@ export const CreateNewPlaylistModal = ({
 
     setPlaylistData((prev) => ({ ...prev, [fieldName]: fieldData }));
   };
+  const queryClient = useQueryClient();
 
-  // TODO implementar com useMutations do react-query, pois ele faz que faz o request pra efetivamente adicionar
-  // o dado no banco, e atualizar o cache do request pra já mostrar automaticamente no sidebar
-  // dessa forma o cache estará atualizado e o dado estará também no DB, mas tudo isso sem um request a mais
-  const handleSaveEdit = async () => {
-    if (playlistInfo?.name) {
+  const { mutateAsync: handleSaveEditFn } = useMutation({
+    mutationFn: handleSaveEdit,
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["user_playlists"] });
+
+      if (data?.playlist_id) {
+        navigate(`/playlist/${data?.playlist_id}`);
+        handleClose();
+      }
+    },
+    onError: () => {
+      console.error(
+        "Something went wrong while trying to create a new playlist",
+      );
+    },
+  });
+
+  async function handleSaveEdit(playlistData: typeof playlistInfo) {
+    if (playlistData?.name) {
       console.log("sending new playlist data", {
-        ...playlistInfo,
+        ...playlistData,
       });
 
-      await fetch(`${SERVER_URL}/playlist/create`, {
-        method: "POST",
-        headers: { Authorization: `Bearer ${cookies.user_jwt}` },
-        body: JSON.stringify({
-          name: playlistInfo?.name,
-          description: playlistInfo?.description,
-        }),
-      })
-        .then(async (response) => {
-          const { createdResponse } = await response.json();
-          // navigation is working now, just need to add the playlist to the sidebar
-          // something like an updatePlaylist method to fetch newly created playlists
-          // or just set manually the playlist on the sidebar and wait for the refetch for this function to happen
-          navigate(`/playlist/${createdResponse.playlist_id}`);
-          handleClose();
-        })
-        .catch((error) => {
-          console.error("Erro while trying to submit the edit.", error);
+      try {
+        const res = await fetch(`${SERVER_URL}/playlist/create`, {
+          method: "POST",
+          headers: { Authorization: `Bearer ${cookies.user_jwt}` },
+          body: JSON.stringify({
+            name: playlistData?.name,
+            description: playlistData?.description,
+          }),
         });
+
+        const createdPlaylistData = await res?.json();
+        return createdPlaylistData || [];
+      } catch (error) {
+        console.error("Erro while trying to submit the edit.", error);
+      }
     }
-  };
+  }
   return (
     <Modal handleClose={handleClose} title="Criar Playlist">
       <PlaylistModalContent
         handleChange={handleChange}
-        handleSaveEdit={handleSaveEdit}
+        handleSaveEdit={() => handleSaveEditFn(playlistInfo)}
       />
     </Modal>
   );
