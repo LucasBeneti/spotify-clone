@@ -45,11 +45,10 @@ export const UserDataContextProvider = ({ children }: UserDataContextProps) => {
       const typedPlaylists = userPlaylists.map((playlistInfo: Playlist) => {
         return { ...playlistInfo, type: "playlist" };
       });
+
       dispatch({ type: "SET_PLAYLISTS", data: typedPlaylists });
       return typedPlaylists || [];
     },
-    refetchOnWindowFocus: true,
-    refetchOnMount: true,
   });
 
   const setUserToken = async () => {
@@ -70,16 +69,18 @@ export const UserDataContextProvider = ({ children }: UserDataContextProps) => {
     }
   };
 
-  const verifyFirstUserLogIn = async (username: string) => {
+  const verifyFirstUserLogIn = async (username: string | null) => {
     // TODO solve a bug that involves the username parameter, when it is passed to the checkUserExistence
     // turns the request not being sent with the token
-    console.log("username value coming from upstream", username);
-    const userData = state.userinfo;
-    const user = await checkUserExistence(userData.token, username);
+    if (username) {
+      console.log("username value coming from upstream", username);
+      const userData = state.userinfo;
+      const user = await checkUserExistence(userData.token, username);
 
-    if (user && !user.exists) {
-      const { likedSongsPlaylist } = user;
-      addPlaylistToList(likedSongsPlaylist);
+      if (user && !user.exists) {
+        const { likedSongsPlaylist } = user;
+        addPlaylistToList(likedSongsPlaylist);
+      }
     }
   };
 

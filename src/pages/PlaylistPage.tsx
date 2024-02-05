@@ -6,12 +6,12 @@ import { getPlaylistFullInfo } from "@services/playlistServices";
 import { useCookies } from "react-cookie";
 import { useQuery } from "@tanstack/react-query";
 import { Modal } from "@components/reusable/Modal";
-import { PlaylistModalContent } from "@components/playlist/PlaytlistModalContent";
+import { PlaylistModalContent } from "@components/playlist/PlaylistModalContent";
 import { useCustomAudioContext } from "@contexts/CustomAudioContext";
 
 import type { Song } from "@contexts/AudioPlayerReducer";
 
-import SongRow from "@components/reusable/SongRow";
+import { SongRow } from "@components/reusable/SongRow";
 
 const SERVER_URL = import.meta.env.VITE_SERVER_URL;
 
@@ -50,13 +50,6 @@ export const PlaylistPage = () => {
     refetchOnMount: true,
     refetchOnWindowFocus: false,
   });
-
-  // TODO create the function that will actually play the song, given some information
-  const handlePlayThis = (song: Song) => {
-    console.log("Now playing...", song);
-    playSongNow(song);
-    // here we would call the function from the context to play the song
-  };
 
   const handleLikePlaylist = () => {
     // TODO implement this feature
@@ -100,9 +93,9 @@ export const PlaylistPage = () => {
   // to be the color for this gradient on the header of the playlist
   return (
     <>
-      <div className="overflow-y-auto">
-        <header className="w-100 bg-gradient-to-b from-cyan-950 to-base h-96">
-          <section className="flex gap-x-4 items-end mt-24 px-6">
+      <div className="overflow-y-auto bg-gradient-to-b from-cyan-950 to-base">
+        <header className="w-100">
+          <section className="flex gap-x-4 items-end px-6 mt-20">
             <img
               src={playlistData?.cover_src}
               alt="playlist cover art"
@@ -120,7 +113,7 @@ export const PlaylistPage = () => {
             </div>
           </section>
         </header>
-        <main className="w-full h-full px-6 -translate-y-24 bg-base bg-opacity-10">
+        <main className="w-full px-6 bg-base bg-opacity-10">
           <section className="flex gap-x-8 items-center my-8">
             <BigPlayButton
               onClickHandle={() => {

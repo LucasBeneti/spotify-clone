@@ -58,10 +58,6 @@ export const AlbumPage = () => {
     console.log("Liked this playlist");
   };
 
-  // TODO create a way to select random colors (from an array for example)
-  // to be the color for this gradient on the header of the playlist
-
-  // TODO fix the album vertical overflow
   return (
     <>
       <div className="overflow-y-auto bg-gradient-to-b from-cyan-950 to-base">

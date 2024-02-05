@@ -1,6 +1,5 @@
-export const getSongDurationInMinutes = (
-  durationInSeconds: number | undefined,
-) => {
+export const getSongDurationInMinutes = (durationInSeconds = 0) => {
+  console.log(durationInSeconds);
   if (!durationInSeconds) return;
 
   const minutes = Math.floor(durationInSeconds / 60);
