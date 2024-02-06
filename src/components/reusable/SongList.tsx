@@ -1,5 +1,5 @@
 import { Fragment } from "react";
-import { Song } from "../../contexts/AudioPlayerReducer";
+import { Song } from "@contexts/AudioPlayerReducer";
 import { SongItem } from "./SongItem";
 
 type SongListProps = {

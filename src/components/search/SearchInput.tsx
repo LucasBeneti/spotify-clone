@@ -2,7 +2,7 @@ import { useRef, useState } from "react";
 import { Form, useSearchParams } from "react-router-dom";
 import { MagnifyingGlass, X } from "@phosphor-icons/react";
 
-import { debounce } from "../../utils";
+import { debounce } from "@utils/debounce";
 
 export const SearchInput = () => {
   const [inputFocus, setInputFocus] = useState(false);

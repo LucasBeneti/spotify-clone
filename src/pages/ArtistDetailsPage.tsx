@@ -1,13 +1,10 @@
 import { useRef, useState } from "react";
 import { Link, useParams } from "react-router-dom";
+import { useCookies } from "react-cookie";
 import { useQuery } from "@tanstack/react-query";
 import { Play } from "@phosphor-icons/react";
-import { VerticalCard } from "@components/reusable/VerticalCard";
-import { BigPlayButton } from "@components/reusable/BigPlayButton";
-import { useCookies } from "react-cookie";
-import type { Song } from "@contexts/AudioPlayerReducer";
-import { SongItem } from "@components/reusable";
-import { Album } from "@contexts/AudioPlayerReducer";
+import { BigPlayButton, VerticalCard, SongItem } from "@components/reusable";
+import { Album, type Song } from "@contexts/AudioPlayerReducer";
 import { useCustomAudioContext } from "@contexts/CustomAudioContext";
 import { getSongDurationInMinutes } from "@utils/songs";
 

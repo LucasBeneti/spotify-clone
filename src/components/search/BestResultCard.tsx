@@ -1,10 +1,12 @@
 import { Link } from "react-router-dom";
-import { BigPlayButton } from "../reusable/BigPlayButton";
+import { BigPlayButton } from "@components/reusable";
 import type { Song } from "@contexts/AudioPlayerReducer";
+
 type ArtistCardProps = {
   song: Song;
   handlePlaySong: (s: Song) => void;
 };
+
 export const BestResultCard = ({ song, handlePlaySong }: ArtistCardProps) => {
   const { cover_art, name, artist_name, author_id } = song;
 

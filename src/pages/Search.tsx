@@ -1,10 +1,9 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { FilterItem } from "@components/search/FilterItem";
-import { SongList } from "@components/reusable/SongList";
-import { VerticalCard } from "@components/reusable/VerticalCard";
-import { BestResultCard } from "@components/search/BestResultCard";
 import { Link, useSearchParams } from "react-router-dom";
+import { FilterItem } from "@components/search/FilterItem";
+import { SongList, VerticalCard } from "@components/reusable";
+import { BestResultCard } from "@components/search/BestResultCard";
 import { useCustomAudioContext } from "@contexts/CustomAudioContext";
 
 const SERVER_URL = import.meta.env.VITE_SERVER_URL;
@@ -28,7 +27,6 @@ export const Search = () => {
   const handleSelectFilter = (f: string) => {
     if (f === "all" || !searchTerm) {
       searchParams.delete("search_filter");
-      // searchParams.delete("q"); // TODO fix this logic to erase search term
       setSearchParams(searchParams);
     } else {
       setSearchParams({ q: searchTerm, search_filter: f });

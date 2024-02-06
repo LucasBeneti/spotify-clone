@@ -1,11 +1,10 @@
-import { Clock, Play, Heart } from "@phosphor-icons/react";
 import { useParams } from "react-router-dom";
-import { getSongDurationInMinutes } from "@utils/songs";
-import { SongItem } from "@components/reusable/SongItem";
-import { BigPlayButton } from "@components/reusable/BigPlayButton";
-import { getAlbumSongs, getAlbumFullInfo } from "@services/albumServices";
 import { useCookies } from "react-cookie";
 import { useQuery } from "@tanstack/react-query";
+import { Clock, Play, Heart } from "@phosphor-icons/react";
+import { getSongDurationInMinutes } from "@utils/songs";
+import { BigPlayButton, SongItem } from "@components/reusable";
+import { getAlbumSongs, getAlbumFullInfo } from "@services/albumServices";
 import { Song } from "@contexts/AudioPlayerReducer";
 import { useCustomAudioContext } from "@contexts/CustomAudioContext";
 
@@ -20,7 +19,6 @@ type AlbumFullInfo = {
 
 export const AlbumPage = () => {
   const { id } = useParams();
-  // const [likedPlaylist, setLikedPlaylist] = useState(playlistData?.liked);
   const [cookies] = useCookies(["user_jwt"]);
   const { playSongNow } = useCustomAudioContext();
   // TODO implement the error handling for this
@@ -44,8 +42,6 @@ export const AlbumPage = () => {
     refetchOnMount: true,
     refetchOnWindowFocus: false,
   });
-
-  // const albumCover = albumData[0]?.cover_art;
 
   const handlePlayThis = (song: Song) => {
     console.log("Now playing...", song);

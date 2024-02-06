@@ -1,12 +1,11 @@
 import { useState } from "react";
-import { Clock, Heart } from "@phosphor-icons/react";
 import { useParams } from "react-router-dom";
-import { BigPlayButton } from "@components/reusable/BigPlayButton";
-import { getPlaylistFullInfo } from "@services/playlistServices";
 import { useCookies } from "react-cookie";
 import { useQuery } from "@tanstack/react-query";
-import { Modal } from "@components/reusable/Modal";
+import { Clock, Heart } from "@phosphor-icons/react";
+import { BigPlayButton, Modal } from "@components/reusable";
 import { PlaylistModalContent } from "@components/playlist/PlaylistModalContent";
+import { getPlaylistFullInfo } from "@services/playlistServices";
 import { useCustomAudioContext } from "@contexts/CustomAudioContext";
 
 import type { Song } from "@contexts/AudioPlayerReducer";
@@ -15,7 +14,6 @@ import { SongRow } from "@components/reusable/SongRow";
 
 const SERVER_URL = import.meta.env.VITE_SERVER_URL;
 
-// TODO duplicate?
 type PlaylistData = {
   cover_src: string;
   name: string;
@@ -33,7 +31,6 @@ type PlaylistInfoDTO = {
 export const PlaylistPage = () => {
   const [showModal, setShowModal] = useState(false);
   const { id } = useParams();
-  // const [likedPlaylist, setLikedPlaylist] = useState(playlistData?.liked);
   const [cookies] = useCookies(["user_jwt"]);
   const { playSongNow } = useCustomAudioContext();
 

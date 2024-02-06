@@ -3,7 +3,7 @@ import {
   SpeakerSimpleHigh,
   SpeakerSimpleSlash,
 } from "@phosphor-icons/react";
-import { useCustomAudioContext } from "../../contexts/CustomAudioContext";
+import { useCustomAudioContext } from "@contexts/CustomAudioContext";
 
 export const SpeakerButton = () => {
   const { volume, toggleAudioMute } = useCustomAudioContext();

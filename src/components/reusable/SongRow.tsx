@@ -1,8 +1,8 @@
 import { memo } from "react";
-import { Play } from "@phosphor-icons/react";
 import { Link } from "react-router-dom";
+import { Play } from "@phosphor-icons/react";
 import { getSongDurationInMinutes } from "@utils/songs";
-import { SongItem } from "@components/reusable/SongItem";
+import { SongItem } from "@components/reusable";
 import type { Song } from "@contexts/AudioPlayerReducer";
 
 type SongRowParams = {
