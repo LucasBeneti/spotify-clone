@@ -13,11 +13,15 @@ export const CurrentlyPlaying = ({
   artistId,
   songCoverArt = "https://i.scdn.co/image/ab67616d0000b273585f3d70dce678a5978a0941",
 }: CurrentlyPlayingProps) => {
+  const coverImageAltText =
+    title && artist
+      ? `Cover for the song ${title} from ${artist}`
+      : "Default cover alt text";
   return (
     <div className="flex gap-x-4 items-center">
       <img
         src={songCoverArt}
-        alt="Album"
+        alt={coverImageAltText}
         className="object-cover w-14 rounded-md"
       />
       <div>
