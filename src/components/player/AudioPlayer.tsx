@@ -1,7 +1,8 @@
 import * as Slider from "@radix-ui/react-slider";
-import { Play, Pause, SkipBack, SkipForward } from "@phosphor-icons/react";
 import { useCustomAudioContext } from "@contexts/CustomAudioContext";
 import { getSongDurationInMinutes } from "@utils/songs";
+
+import { AudioControls } from "@components/player";
 
 export const AudioPlayer = () => {
   const { duration, trackProgress, onScrub } = useCustomAudioContext();
@@ -24,38 +25,12 @@ export const AudioPlayer = () => {
             <Slider.Range className="absolute bg-white rounded-full h-full" />
           </Slider.Track>
           <Slider.Thumb
-            aria-label="Volume"
+            aria-label="song progress bar"
             className="block bg-white shadow-md rounded-lg"
           />
         </Slider.Root>
         <p>{maxDuration}</p>
       </div>
-    </div>
-  );
-};
-
-const AudioControls = () => {
-  const { isPlaying, toNextTrack, toPreviousTrack, toggleIsPlaying } =
-    useCustomAudioContext();
-
-  return (
-    <div className="flex gap-x-6 justify-center align-center">
-      <button className="p-2" onClick={toPreviousTrack}>
-        <SkipBack size={24} weight="fill" color="white" />
-      </button>
-      <button
-        onClick={toggleIsPlaying}
-        className="p-2 rounded-full h-8 bg-white self-center hover:scale-105 transition"
-      >
-        {isPlaying ? (
-          <Pause size={16} weight="fill" color="black" />
-        ) : (
-          <Play size={16} weight="fill" color="black" />
-        )}
-      </button>
-      <button className="p-2" onClick={toNextTrack}>
-        <SkipForward size={24} weight="fill" color="white" />
-      </button>
     </div>
   );
 };
