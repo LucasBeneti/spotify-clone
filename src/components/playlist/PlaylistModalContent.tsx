@@ -13,6 +13,8 @@ type DefaultValuesType = {
   description?: string;
 };
 
+// the need to setup a handleChange prop is weird...going to look into it
+
 export const PlaylistModalContent = ({
   handleSaveEdit,
   handleChange,
@@ -45,7 +47,10 @@ export const PlaylistModalContent = ({
           defaultValue={defaultValues?.name || ""}
         />
         {hasError ? (
-          <p className="text-xs text-red-700 font-bold mt-2">
+          <p
+            className="text-xs text-red-700 font-bold mt-2"
+            aria-label="required title error message"
+          >
             Campo "Título" é obrigatório para salvar alteração.
           </p>
         ) : null}
