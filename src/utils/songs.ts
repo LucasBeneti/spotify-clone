@@ -1,6 +1,6 @@
 export const getSongDurationInMinutes = (durationInSeconds = 0) => {
   console.log(durationInSeconds);
-  if (!durationInSeconds) return;
+  if (!durationInSeconds || durationInSeconds <= 0) return "00:00";
 
   const minutes = Math.floor(durationInSeconds / 60);
   const seconds = durationInSeconds % 60;
