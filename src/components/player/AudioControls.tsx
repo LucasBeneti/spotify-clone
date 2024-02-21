@@ -10,7 +10,7 @@ export const AudioControls = () => {
       <button
         className="p-2"
         onClick={toPreviousTrack}
-        aria-label="go to previous song"
+        aria-label="previous song button"
       >
         <SkipBack size={24} weight="fill" color="white" />
       </button>
@@ -20,15 +20,20 @@ export const AudioControls = () => {
         aria-label="play/pause song"
       >
         {isPlaying ? (
-          <Pause size={16} weight="fill" color="black" />
+          <Pause
+            size={16}
+            weight="fill"
+            color="black"
+            aria-label="pause icon"
+          />
         ) : (
-          <Play size={16} weight="fill" color="black" />
+          <Play size={16} weight="fill" color="black" aria-label="play icon" />
         )}
       </button>
       <button
         className="p-2"
         onClick={toNextTrack}
-        aria-label="go to next song"
+        aria-label="next song button"
       >
         <SkipForward size={24} weight="fill" color="white" />
       </button>
